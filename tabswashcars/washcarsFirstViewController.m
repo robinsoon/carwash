@@ -24,6 +24,8 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    NSLog(@"MemoryWarning!");
+    NSLog(@"Baidu Key:ZW1T9NczNV0pIY0yjd3e06qM");
 }
 
 @end
