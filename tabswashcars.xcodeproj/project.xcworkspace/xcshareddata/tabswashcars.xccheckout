@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>07DFFE00-C2CF-49BC-A1D3-222D1A219F9D</string>
+	<key>IDESourceControlProjectName</key>
+	<string>tabswashcars</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1DB7EFB4-5F1D-45F6-8D06-D491A77FA9E4</key>
+		<string>https://github.com/robinsoon/carwash.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>tabswashcars.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1DB7EFB4-5F1D-45F6-8D06-D491A77FA9E4</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/robinsoon/carwash.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1DB7EFB4-5F1D-45F6-8D06-D491A77FA9E4</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1DB7EFB4-5F1D-45F6-8D06-D491A77FA9E4</string>
+			<key>IDESourceControlWCCName</key>
+			<string>tabswashcars</string>
+		</dict>
+	</array>
+</dict>
+</plist>
