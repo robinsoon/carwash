@@ -447,6 +447,9 @@
 				9C179633191C5C200027F552 /* washcarsSecondViewController.m */,
 				9C94C625192B4D670064E20F /* AliPayViewController.h */,
 				9C94C626192B4D670064E20F /* AliPayViewController.m */,
+				9CB2C13D19341A8400697A8B /* PoiSearchViewController.h */,
+				9CB2C13E19341A8400697A8B /* PoiSearchViewController.mm */,
+				9CB2C13F19341A8400697A8B /* PoiSearchViewController.xib */,
 				9C1796A51924AA3A0027F552 /* SDWebImage.xcodeproj */,
 				9C179635191C5C200027F552 /* Images.xcassets */,
 				9C179621191C5C200027F552 /* Supporting Files */,
@@ -457,9 +460,6 @@
 		9C179621191C5C200027F552 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				9CB2C13D19341A8400697A8B /* PoiSearchViewController.h */,
-				9CB2C13E19341A8400697A8B /* PoiSearchViewController.mm */,
-				9CB2C13F19341A8400697A8B /* PoiSearchViewController.xib */,
 				9CB2C0FA1933397000697A8B /* BaiduMapAPI */,
 				9CB1F67A192EF05700D2713A /* MJRefresh */,
 				9C94C604192B4D670064E20F /* AlipaySdk */,

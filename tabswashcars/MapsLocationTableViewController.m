@@ -38,6 +38,8 @@
     
     PoiSearchViewController *poimapview = [[PoiSearchViewController alloc] init];
     [self.navigationController pushViewController:poimapview animated:YES];
+    poimapview.title = @"搜索";
+    poimapview.itemname = @"";
 }
 
 - (void)didReceiveMemoryWarning
@@ -121,5 +123,12 @@
     // Pass the selected object to the new view controller.
 }
 */
+- (IBAction)btnSearch:(id)sender {
+    
+    PoiSearchViewController *poimapview = [[PoiSearchViewController alloc] init];
+    [self.navigationController pushViewController:poimapview animated:YES];
+    poimapview.title = @"搜索";
+    poimapview.itemname = @"";
+}
 
 @end

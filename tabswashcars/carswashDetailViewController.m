@@ -227,6 +227,8 @@
     NSString *lsPostion = [[NSString alloc] initWithFormat:@"商铺地图定位Latitude:%@, Longitude:%@",[res objectForKey:@"Latitude"],[res objectForKey:@"Longitude"]];
     self.lbDetails.text = lsPostion;
     
+    _Locationpt.latitude =[[res objectForKey:@"Latitude"] doubleValue];
+    _Locationpt.longitude =[[res objectForKey:@"Longitude"] doubleValue];
     
     //带有缓存机制的图片加载
     NSString *strImgName = [res objectForKey:@"goods_img"];
@@ -309,5 +311,13 @@
     }
     
 }
-
+//定位到地图
+- (IBAction)btnLocation:(id)sender {
+    PoiSearchViewController *poimapview = [[PoiSearchViewController alloc] init];
+    [self.navigationController pushViewController:poimapview animated:YES];
+    poimapview.itemname = _lbName.text;
+    poimapview.title = @"位置";
+    poimapview.Locationpt = _Locationpt;
+    poimapview.iZoomLevel = 17;
+}
 @end

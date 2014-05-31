@@ -123,6 +123,7 @@ BMKMapManager* _mapManager;
 - (void)onGetNetworkState:(int)iError
 {
     if (0 == iError) {
+        
         NSLog(@"地图联网成功");
     }
     else{

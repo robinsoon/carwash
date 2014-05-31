@@ -375,6 +375,16 @@
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="1kJ-7D-Taq">
+                                                <rect key="frame" x="279" y="291" width="36" height="34"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <state key="normal" image="smLocation">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="btnLocation:" destination="vPK-9D-Zmu" eventType="touchUpInside" id="uGw-GN-iGG"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
@@ -432,7 +442,7 @@
             </objects>
             <point key="canvasLocation" x="973" y="1187"/>
         </scene>
-        <!--Maps Location Table View Controller - 我的位置-->
+        <!--Maps Location Table View Controller - 定位-->
         <scene sceneID="mt2-kB-iRI">
             <objects>
                 <tableViewController id="h7r-k0-Qh5" customClass="MapsLocationTableViewController" sceneMemberID="viewController">
@@ -455,7 +465,7 @@
                             <outlet property="delegate" destination="h7r-k0-Qh5" id="kiZ-Fp-1yb"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="我的位置" id="sT2-3U-vCX">
+                    <navigationItem key="navigationItem" title="定位" id="sT2-3U-vCX">
                         <barButtonItem key="rightBarButtonItem" style="plain" id="XKN-aj-1Ng">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Hmf-d1-Amc">
                                 <rect key="frame" x="233" y="5" width="71" height="33"/>
@@ -465,7 +475,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="QUy-BD-bpt" kind="push" id="m9b-Rp-nW4"/>
+                                    <action selector="btnSearch:" destination="h7r-k0-Qh5" eventType="touchUpInside" id="82v-er-3A5"/>
                                 </connections>
                             </button>
                         </barButtonItem>
@@ -1509,6 +1519,7 @@
         <image name="myinfo" width="86" height="81"/>
         <image name="myshopping" width="189" height="248"/>
         <image name="second" width="30" height="30"/>
+        <image name="smLocation" width="62" height="58"/>
         <image name="third" width="30" height="30"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -1517,6 +1528,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="QiA-wo-Ckf"/>
+        <segue reference="Qqg-sS-5Mz"/>
     </inferredMetricsTieBreakers>
 </document>

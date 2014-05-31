@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NSString+URLEncoding.h"
 #import "UIImageView+WebCache.h"
+#import "PoiSearchViewController.h"
 
 @interface carswashDetailViewController : UIViewController
 
@@ -41,7 +42,7 @@
 
 @property (strong,nonatomic) NSMutableData *Requestdata;      //接收数据
 @property (nonatomic) Boolean isConnected;              //连接状态
-
+@property (nonatomic) CLLocationCoordinate2D Locationpt; //初始坐标位置
 //重新加载表视图
 -(void)reloadDetail:(NSDictionary*)res;
 

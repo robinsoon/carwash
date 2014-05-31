@@ -32,6 +32,11 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    //NSDictionary *person = @{@"first name":@"Mart",@"Last name":@"Gallway"};
+    //NSArray *num = @[@"1",@"2"];
+
+    
 }
 
 - (void)didReceiveMemoryWarning
