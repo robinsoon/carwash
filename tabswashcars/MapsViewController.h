@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BMapKit.h"
+#import "washcarsAppDelegate.h"
 @interface MapsViewController : UIViewController<BMKMapViewDelegate, BMKPoiSearchDelegate>{
     BMKPoiSearch* _poisearch;
     IBOutlet BMKMapView* _mapView;

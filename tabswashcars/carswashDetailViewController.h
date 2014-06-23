@@ -10,6 +10,8 @@
 #import "NSString+URLEncoding.h"
 #import "UIImageView+WebCache.h"
 #import "PoiSearchViewController.h"
+#import "washcarsAppDelegate.h"
+
 
 @interface carswashDetailViewController : UIViewController
 
@@ -18,7 +20,7 @@
 @property (nonatomic,strong) NSMutableArray* detailData;  //商品详情数据
 
 @property (nonatomic,strong) NSMutableArray* listcommit;  //商品评论
-
+@property (nonatomic,strong) NSString * iPs_URL;
 
 @property (weak, nonatomic) IBOutlet UILabel *lbID;
 @property (weak, nonatomic) IBOutlet UILabel *lbName;
@@ -33,12 +35,32 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *lbShopPrice;
 @property (weak, nonatomic) IBOutlet UILabel *lbClickcount;
+
+@property (weak, nonatomic) IBOutlet UILabel *lbPhone;
+@property (weak, nonatomic) IBOutlet UITextView *lbAddress;
+@property (weak, nonatomic) IBOutlet UILabel *lbNumber;
+@property (weak, nonatomic) IBOutlet UILabel *lbBusinessName;
+
+@property (weak, nonatomic) IBOutlet UITextView *lbgoodsvalidate;
+
+@property (weak, nonatomic) IBOutlet UILabel *lbgoodsusetime;
+
+@property (weak, nonatomic) IBOutlet UITextView *lbnotice;
+
+@property (weak, nonatomic) IBOutlet UITextView *lbuserole;
+
+@property (weak, nonatomic) IBOutlet UILabel *lbcommitcount;
+
+@property (weak, nonatomic) IBOutlet UILabel *lbcommituser;
+@property (weak, nonatomic) IBOutlet UILabel *lbcommitdate;
+@property (weak, nonatomic) IBOutlet UILabel *lbcommit;
+@property (weak, nonatomic) IBOutlet UILabel *lbcommitno;
+@property (weak, nonatomic) IBOutlet UILabel *lbenddate;
+@property (weak, nonatomic) IBOutlet UILabel *lbenddatehead;
+
 @property (weak, nonatomic) IBOutlet UILabel *lbgoodsn;
 @property (weak, nonatomic) IBOutlet UILabel *lbStyle;
 @property (weak, nonatomic) IBOutlet UILabel *lbDetails;
-@property (weak, nonatomic) IBOutlet UILabel *lbPhone;
-@property (weak, nonatomic) IBOutlet UILabel *lbAddress;
-@property (weak, nonatomic) IBOutlet UILabel *lbNumber;
 
 @property (strong,nonatomic) NSMutableData *Requestdata;      //接收数据
 @property (nonatomic) Boolean isConnected;              //连接状态

@@ -112,6 +112,7 @@
             
 		case MJRefreshStateNormal:
         {
+            //修改标记
             _statusLabel.text = MJRefreshFooterPullToRefresh;
             
             // 刚刷新完毕
@@ -131,6 +132,7 @@
                 inset.bottom = _scrollViewInitInset.bottom;
                 _scrollView.contentInset = inset;
             }];
+            
             
             if (animDuration == 0) {
                 _scrollView.contentOffset = tempOffset;

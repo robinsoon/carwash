@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NSString+URLEncoding.h"
 #import "UIImageView+WebCache.h"
-
+#import "washcarsAppDelegate.h"
 #import "serviceViewCell.h"
 
 @class carswashDetailViewController;
@@ -29,7 +29,12 @@
 //自定义风格的单元格
 @property (strong,nonatomic) carswashDetailViewController *serviceDetail;
 
+@property (weak, nonatomic) IBOutlet UIButton *btnToMap;
+@property (weak, nonatomic) IBOutlet UIButton *btnFilter;
 
+@property (nonatomic, retain) UIBarButtonItem *barButtonItem; //定义一个条件按钮
+@property (nonatomic) CLLocationCoordinate2D Locationpt; //初始坐标位置
+@property (strong, nonatomic)UIColor *CellBgColor;  //单元格背景色
 //重新加载表视图
 -(void)reloadView:(NSDictionary*)res;
 

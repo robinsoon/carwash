@@ -19,5 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *cellOrderDate;
 @property (weak, nonatomic) IBOutlet UILabel *cellOrderID;
 @property (weak, nonatomic) IBOutlet UILabel *cellAmount;
+@property (weak, nonatomic) IBOutlet UILabel *cellOrdersn;
+@property (weak, nonatomic) IBOutlet UILabel *cellrow;
 
 @end

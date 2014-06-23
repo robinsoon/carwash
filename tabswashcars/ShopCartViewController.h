@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "washcarsAppDelegate.h"
 @interface ShopCartViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UITextField *lbBuyCount;
+@property (weak, nonatomic) IBOutlet UITextField *lbUsedMoney;
 @end

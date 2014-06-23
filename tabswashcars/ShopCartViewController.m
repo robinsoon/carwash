@@ -46,4 +46,27 @@
 }
 */
 
+
+
+
+//由于数字键盘没有Return键，当点击界面其它元素自动释放焦点以隐藏键盘
+- (void)touchesBegan: (NSSet *)touches withEvent:(UIEvent *)event
+{
+    // do the following for all textfields in your current view
+    [self.lbBuyCount resignFirstResponder];
+    [self.lbUsedMoney resignFirstResponder];
+    
+}
+
+//修改数量
+- (IBAction)buyCountDidEnd:(id)sender {
+    
+    [sender resignFirstResponder];
+}
+
+- (IBAction)lbusedMoneyDidEnd:(id)sender {
+    
+    [sender resignFirstResponder];
+}
+
 @end

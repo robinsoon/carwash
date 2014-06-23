@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>07DFFE00-C2CF-49BC-A1D3-222D1A219F9D</string>
+	<string>66E322D1-BCFA-464F-A082-439876BD834F</string>
 	<key>IDESourceControlProjectName</key>
 	<string>tabswashcars</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -18,7 +18,7 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>1DB7EFB4-5F1D-45F6-8D06-D491A77FA9E4</key>
-		<string>../..</string>
+		<string>../../../../carwash</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/robinsoon/carwash.git</string>
@@ -28,6 +28,14 @@
 	<string>1DB7EFB4-5F1D-45F6-8D06-D491A77FA9E4</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1DB7EFB4-5F1D-45F6-8D06-D491A77FA9E4</string>
+			<key>IDESourceControlWCCName</key>
+			<string>tabswashcars</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

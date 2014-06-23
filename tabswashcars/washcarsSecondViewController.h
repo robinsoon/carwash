@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "washcarsAppDelegate.h"
 @interface washcarsSecondViewController : UIViewController
 
 @end

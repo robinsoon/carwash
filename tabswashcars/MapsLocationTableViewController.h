@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "PoiSearchViewController.h"
+#import "washcarsAppDelegate.h"
 @interface MapsLocationTableViewController : UITableViewController
 
 @end

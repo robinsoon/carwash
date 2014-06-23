@@ -9,7 +9,7 @@
 #import "carswashServiceTableViewController.h"
 #import "carswashDetailViewController.h"
 #import "MJRefresh.h"
-
+#import "navMapsViewController.h"
 @interface carswashServiceTableViewController (){
     MJRefreshHeaderView *_header;
     MJRefreshFooterView *_footer;
@@ -93,11 +93,15 @@
 
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    //self.tableView.rowHeight = 90;
+    self.tableView.rowHeight = 68;
     //self.tableView.allowsSelection = NO; // We essentially implement our own selection
     //self.tableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0); // Makes the horizontal row seperator stretch the entire length of the table view
     
-    
+    //刷新列表的消息
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(ServiceRefresh:)
+                                                 name:@"ServiceRefreshNotification"
+                                               object:nil];
     //加载数据
     //[self startRequest];
     
@@ -122,7 +126,10 @@
 {
     //根据页面类型不同需要配置的部分
     _iPs_PageName=@"服务列表"; //页面名称(用于标记页面参数配置)
-    _iPs_URL=@"http://114.112.73.223:8080/"; //请求数据接口模板--地址
+    //_iPs_URL=@"http://114.112.73.223:8080/"; //请求数据接口模板--地址
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    _iPs_URL=delegate.iPs_URL; //请求数据接口模板--地址
+
     _iPs_PAGE=@"category_app.php"; //请求数据接口模板--页面
     _iPs_POST=@"act=%@&cat_id=%@&page=%d&sel_attr=%@&region_id=%@"; //请求数据POST参数模板
     _iPs_POSTAction =@"wash_list";
@@ -131,8 +138,17 @@
     _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=@"298"; //请求数据POST参数ID3
     
+    //设置分类
+    if ((delegate.categorylist ==nil)||([delegate.categorylist isEqualToString:@""]))
+    {
+    }else{
+        _iPs_POSTID = delegate.categorylist;
+    
+    }
+    
     //不随页面类型改变的部分
     _iPageIndex = 1;//初始化页面序号
+    _CellBgColor =[UIColor colorWithRed:49/255.0 green:155/255.0 blue:205/255.0 alpha:0.15];
 }
 
 //增加向下滑动刷新下页功能
@@ -229,6 +245,7 @@
     _header = header;
 }
 
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -246,6 +263,7 @@
 //表格的定制化操作
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     static NSString *CellIdentifier = @"serviceCell";
 //    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier  forIndexPath:indexPath];
     //使用自定义的单元格
@@ -259,6 +277,9 @@
     }
     //开始解析数据
     NSMutableDictionary*  dict = self.listData[indexPath.row];
+    
+    @try {
+        
     
     //    cell.imageView.image = [UIImage imageNamed:strImgName];
     //处理来自的网络图片
@@ -293,12 +314,24 @@
          }
      }];
     
+    //修改单元格背景色
+    UIView *bgColorView = [[UIView alloc] init];
     
+    bgColorView.backgroundColor = _CellBgColor;
+    bgColorView.layer.masksToBounds = YES;
+    cell.selectedBackgroundView = bgColorView;
     //填充单元格
-    cell.cellTitle.text =[dict objectForKey:@"goods_name"];
+    NSString *lsTitle = @"";
+    
+    lsTitle = [dict objectForKey:@"goods_name"];
+    if ([lsTitle length]>15) {
+        lsTitle = [[dict objectForKey:@"goods_name"]substringToIndex:15];
+    }
+    cell.cellTitle.text =lsTitle;
+    
     //cell.cellImg.image = [UIImage imageNamed:strImgURL];
     cell.cellMemo.text = [dict objectForKey:@"address_street"];
-    NSString *strLeve = [[NSString alloc] initWithFormat:@"%@˚",[dict objectForKey:@"click_count"]];
+    NSString *strLeve = [[NSString alloc] initWithFormat:@"已售 %@",[dict objectForKey:@"total"]];
     cell.cellLeve.text = strLeve;
     
     cell.cellOrder.text = [NSString stringWithFormat:@"%d", indexPath.row+1];
@@ -307,22 +340,41 @@
     NSString *is_promote = [dict objectForKey:@"is_promote"];
     NSString *nmPrice = [dict objectForKey:@"promote_price"];
     NSString *nmSHPrice = [dict objectForKey:@"shop_price"];
-
+    NSString *nmMKPrice = [dict objectForKey:@"market_price"];
+    //NSString *strEndDate = [dict objectForKey:@"end_time"];
     //判断是否促销
-    if ([is_promote isEqual:@"1"]) {
+    if (([is_promote isEqual:@"1"])&&(![nmPrice isEqual:@"0.00"])) {
         //执行促销活动价格
-        NSString *strPrice = [[NSString alloc] initWithFormat:@"￥%@",nmPrice];
-
+        NSString *strPrice = [[NSString alloc] initWithFormat:@"%@",nmPrice];
+        //NSString *strEnd = @"";
+        //截断末尾 0
+//        strEnd=[strPrice substringFromIndex:[strPrice length]-1];
+//        if ([strEnd isEqualToString:@"0"]) {
+//            strPrice = [strPrice substringToIndex:[strPrice length]-1];
+//        }
         cell.cellPrice.text = strPrice;
         cell.cellcmsPrice.text = [dict objectForKey:@"shop_price"];
     }else{
         //执行商城价格
-        NSString *strPrice = [[NSString alloc] initWithFormat:@"￥%@",nmSHPrice];
-
+        NSString *strPrice = [[NSString alloc] initWithFormat:@"%@",nmSHPrice];
+        //NSString *strEnd = @"";
+        //截断末尾 0
+//        strEnd=[strPrice substringFromIndex:[strPrice length]-1];
+//        if ([strEnd isEqualToString:@"0"]) {
+//            strPrice = [strPrice substringToIndex:[strPrice length]-1];
+//        }
+        
         cell.cellPrice.text = strPrice;
-        cell.cellcmsPrice.text = @"";
+        cell.cellcmsPrice.text = [[NSString alloc] initWithFormat:@"%1.0f元",[nmMKPrice doubleValue]];
+        
     }
-                                
+    
+    }@catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
 
     //NSString *strPrice = [[NSString alloc] initWithFormat:@"￥%@",[dict objectForKey:@"promote_price"]];
     //cell.cellPrice.text = strPrice;
@@ -333,8 +385,162 @@
 }
 
 
+//订单完成后跳转
+-(void)ServiceRefresh:(NSNotification*)notification {
+    
+    //
+    NSLog(@"服务列表页面刷新通知,%@", _iPs_POSTID );
+    [self startRequest];
+}
 
 
+//地图展示
+- (IBAction)btntoMapClicked:(id)sender {
+    
+    if ([self.listData count] == 0) {
+        return;
+    }
+    
+    NSMutableDictionary*  dict = self.listData[0];
+    
+    
+    //取导航列表直接推视图
+    NSArray *arrControllers = self.tabBarController.viewControllers;
+    for(UIViewController *viewController in arrControllers)
+    {
+        if([viewController isKindOfClass:[navMapsViewController class]])
+        {
+            //NavigationController
+            UINavigationController *navCtrl = (UINavigationController *)viewController;
+            
+            //NSLog(@"%@",navCtrl.viewControllers);
+            NSLog(@"服务列表标注到地图");
+            
+            PoiSearchViewController *poimapview;
+            
+            //如果已有初始化过的 PoiSearchViewController 则不再创建新实例
+            for (UIViewController *mapviewController in navCtrl.viewControllers) {
+                
+                if([mapviewController isKindOfClass:[PoiSearchViewController class]]){
+                    //存在,强制转换为地图的View
+                    poimapview = (PoiSearchViewController *)mapviewController;
+                    //传递参数
+                    poimapview.listData = _listData;
+                    poimapview.itemname = [dict objectForKey:@"goods_name"];
+                    _Locationpt.latitude = [[dict objectForKey:@"Latitude"] doubleValue];
+                    _Locationpt.longitude = [[dict objectForKey:@"Longitude"] doubleValue];
+                    poimapview.Locationpt = _Locationpt;
+                    poimapview.iZoomLevel = 14;
+                    
+                    //最后跳转页面
+                    self.tabBarController.selectedIndex = 1;
+                    
+                    [poimapview LocationRefresh];
+                    return;//防止重复推同一个视图
+                }
+                
+            }
+            
+            if (poimapview == nil) {
+                //创建新实例
+                poimapview = [[PoiSearchViewController alloc] init];
+            }
+            
+            //推送地图的视图
+            [navCtrl pushViewController:poimapview animated:NO];
+            //PoiSearchViewController 太多实例
+            
+            //传递参数
+            poimapview.listData = _listData;
+            poimapview.itemname = [dict objectForKey:@"goods_name"];
+            _Locationpt.latitude = [[dict objectForKey:@"Latitude"] doubleValue];
+            _Locationpt.longitude = [[dict objectForKey:@"Longitude"] doubleValue];
+            poimapview.Locationpt = _Locationpt;
+            poimapview.iZoomLevel = 14;
+            
+            //最后跳转页面
+            self.tabBarController.selectedIndex = 1;
+            
+            return;
+        }
+        else
+        {
+            // view controller
+        }
+    }
+    
+    
+    //[self.navigationController pushViewController:poimapview animated:NO];
+
+    
+}
+
+//按照条件查找
+- (IBAction)btnFilter:(id)sender {
+    
+    /*UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:nil
+                                  delegate:self
+                                  cancelButtonTitle:@"取消"
+                                  destructiveButtonTitle:@"默认等级排序"
+                                  otherButtonTitles:@"按人气关注度",@"离我最近",@"近期销量高低",@"优惠价格最低",nil];
+     */
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:nil
+                                  delegate:self
+                                  cancelButtonTitle:@"取消"
+                                  destructiveButtonTitle:@"默认销量排序"
+                                  otherButtonTitles:@"按人气关注度",@"最新上架",@"优惠价格最高",@"优惠价格最低",nil];
+	actionSheet.actionSheetStyle =  UIActionSheetStyleAutomatic;
+	[actionSheet showInView:self.view];
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSLog(@"过滤条件选择 = %i",buttonIndex);
+    
+    NSString *lsButtonTitle = @"";
+
+    switch (buttonIndex) {
+        case 0:
+            _iPs_POSTQueryOption = @"0";
+            lsButtonTitle = @"销量排序";
+            break;
+        case 1:
+            _iPs_POSTQueryOption = @"2";
+            lsButtonTitle = @"人气关注度";
+            break;
+        case 2:
+            _iPs_POSTQueryOption = @"3";
+            lsButtonTitle = @"最新上架";
+            break;
+        case 3:
+            _iPs_POSTQueryOption = @"4";
+            lsButtonTitle = @"价格高优先";
+            break;
+        case 4:
+            _iPs_POSTQueryOption = @"5";
+            lsButtonTitle = @"优惠价最低";
+            break;
+        case 5:
+            return;
+            break;
+        }
+    
+    //[self setTitle:lsButtonTitle];
+    //_barButtonItem = [[UIBarButtonItem alloc] initWithTitle:lsButtonTitle style:UIBarButtonItemStyleDone target:self action:@selector(btnFilter)];
+    //self.navigationItem.leftBarButtonItem = _barButtonItem;
+
+
+    //重新加载数据
+    _iPageIndex = 1;
+    [self startRequest];
+    
+    NSString *lsNotifyTitle = [[NSString alloc]initWithFormat:@"按照 %@ 筛选数据" ,lsButtonTitle];
+    
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    [delegate showNotify:lsNotifyTitle HoldTimes:3];
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -410,7 +616,7 @@
         //NSString *strName = [dict objectForKey:@"goods_name"];
         itemdetail.title = [dict objectForKey:@"goods_name"];
         
-
+        
         itemdetail.itemid = [dict objectForKey:@"goods_id"];
         NSLog(@"进入明细页面 %d",selectedRow);
         
@@ -429,8 +635,15 @@
     
     NSURL *url = [NSURL URLWithString:[strURL URLEncodedString]];
     
-    
-    
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    //设置分类
+    if ((delegate.categorylist ==nil)||([delegate.categorylist isEqualToString:@""]))
+    {
+    }else{
+        _iPs_POSTID = delegate.categorylist;
+        
+    }
+
     //NSString *post = [NSString stringWithFormat:@"act=wash_list&cat_id=139&page=%d&sel_attr=0&region_id=%@",_iPageIndex,@"298"];
     NSString *post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID,_iPageIndex,_iPs_POSTQueryOption,_iPs_POSTQueryRegion];
     
@@ -507,7 +720,7 @@
     _isConnected = true;
     NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:_datas options:NSJSONReadingAllowFragments error:nil];
     
-    //NSLog( @"Result: %@", [dict description] );
+    NSLog( @"Result: %@", [dict description] );
     //激活数据列表的刷新
     [self reloadView:dict];
 }
@@ -553,10 +766,12 @@
         }*/
         NSLog(@"列表视图加载数据...共 %d 条",results.count);
         if (results.count == 0) {
-            _iPageIndex = 0;
-            NSLog(@"列表视图将循环到首行记录");
-            [self startRequest];
-            return;
+            if (_iPageIndex != 0){
+                _iPageIndex = 0;
+                NSLog(@"列表视图将循环到首行记录");
+                [self startRequest];
+                return;
+            }
         }
         [self.tableView reloadData];
     } else {

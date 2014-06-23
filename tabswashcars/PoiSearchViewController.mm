@@ -7,7 +7,7 @@
 //
 
 #import "PoiSearchViewController.h"
-
+#import "UIButton+Bootstrap.h"
 
 @implementation PoiSearchViewController
 
@@ -37,6 +37,12 @@
     }
 	_poisearch = [[BMKPoiSearch alloc]init];
 
+    //刷新列表的消息
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(LocationPoint:)
+                                                 name:@"LocationPointNotification"
+                                               object:nil];
+    
 	_cityText.text = @"滕州";
 	_keyText.text  = @"洗车";
     curPage = 1;
@@ -48,18 +54,54 @@
     [_mapView setZoomLevel:_iZoomLevel];
     _nextPageButton.titleLabel.text = @"搜索";
     _nextPageButton.enabled = true;
+    
+    //提交订单
+    [self.btnSearch primaryStyle];
+    [self.btnSearch addAwesomeIcon:FAIconMapMarker beforeTitle:YES];
+
+    
     _mapView.isSelectedAnnotationViewFront = YES;
     
     //初始定位[模拟器]
     CLLocationCoordinate2D pt;
+    
+    
     
     if ([_itemname isEqual:nil]|[_itemname  isEqual: @""]) {
         pt.latitude = 35.087341;
         pt.longitude = 117.175142;
     }else{
         _showMsgLabel.text = @"定位商家位置";
-        pt.latitude = _Locationpt.latitude*1E6;
-        pt.longitude = _Locationpt.longitude*1E6;
+        if ([_listData count]>0)
+        {
+            //数据不止一条，来自服务列表的定位信息
+            _showMsgLabel.text = @"定位商家位置";
+            for (int i=0; i<[_listData count]; i++) {
+                _Locationpt.latitude = [[[_listData objectAtIndex:i ]objectForKey:@"Latitude"]doubleValue ];
+                _Locationpt.longitude = [[[_listData objectAtIndex:i ]objectForKey:@"Longitude"]doubleValue ];
+                _itemname = [[_listData objectAtIndex:i ]objectForKey:@"goods_name"];
+                
+                //pt.latitude = _Locationpt.latitude*1E6;
+                //pt.longitude = _Locationpt.longitude*1E6;
+                
+                pt = _Locationpt;
+                
+                BMKPointAnnotation* item = [[BMKPointAnnotation alloc]init];
+                item.coordinate = pt;
+                item.title = _itemname;
+                
+                //添加新标记
+                [_mapView addAnnotation:item];
+
+            }
+            
+        }else
+        {
+        
+        //只有一条
+        
+        //pt.latitude = _Locationpt.latitude*1E6;
+        //pt.longitude = _Locationpt.longitude*1E6;
         
         pt = _Locationpt;
         
@@ -69,6 +111,7 @@
         
         //添加新标记
         [_mapView addAnnotation:item];
+        }
 
     }
     
@@ -165,6 +208,82 @@
     }
 
 }
+
+//地图定位页面刷新
+-(void)LocationPoint:(NSNotification*)notification {
+    
+    //解析数据
+    NSDictionary *dataDict = notification.userInfo;
+    if (dataDict==nil) {
+        return;
+    }
+    
+    _itemname = [dataDict objectForKey:@"name"];
+    //title = @"位置";
+    _Locationpt.latitude = [[dataDict objectForKey:@"latitude"] doubleValue];
+    _Locationpt.longitude = [[dataDict objectForKey:@"longitude"] doubleValue];
+    _iZoomLevel = 17;
+
+    NSLog(@"地图定位页面刷新通知" );
+    
+    [_mapView setZoomLevel:_iZoomLevel];
+    
+    //
+    CLLocationCoordinate2D pt;
+    
+    //pt.latitude = _Locationpt.latitude*1E6;
+    //pt.longitude = _Locationpt.longitude*1E6;
+    
+    pt = _Locationpt;
+    
+    BMKPointAnnotation* item = [[BMKPointAnnotation alloc]init];
+    item.coordinate = pt;
+    item.title = _itemname;
+    
+    //删除标记
+    NSArray* array = [NSArray arrayWithArray:_mapView.annotations];
+    [_mapView removeAnnotations:array];
+    //添加新标记
+    [_mapView addAnnotation:item];
+
+    _mapView.centerCoordinate = pt;
+    
+}
+
+-(void)LocationRefresh
+{
+    //移除标记
+    NSArray* array = [NSArray arrayWithArray:_mapView.annotations];
+    [_mapView removeAnnotations:array];
+    
+    CLLocationCoordinate2D pt;
+    
+    if ([_listData count]>0)
+    {
+        //数据不止一条，来自服务列表的定位信息
+        _showMsgLabel.text = @"定位商家位置";
+        for (int i=0; i<[_listData count]; i++) {
+            _Locationpt.latitude = [[[_listData objectAtIndex:i ]objectForKey:@"Latitude"]doubleValue ];
+            _Locationpt.longitude = [[[_listData objectAtIndex:i ]objectForKey:@"Longitude"]doubleValue ];
+            _itemname = [[_listData objectAtIndex:i ]objectForKey:@"goods_name"];
+            
+            //pt.latitude = _Locationpt.latitude*1E6;
+            //pt.longitude = _Locationpt.longitude*1E6;
+            
+            pt = _Locationpt;
+            
+            BMKPointAnnotation* item = [[BMKPointAnnotation alloc]init];
+            item.coordinate = pt;
+            item.title = _itemname;
+            
+            //添加新标记
+            [_mapView addAnnotation:item];
+            
+        }
+        _mapView.centerCoordinate = pt;
+    }
+}
+
 #pragma mark -
 #pragma mark implement BMKMapViewDelegate
 
@@ -297,7 +416,6 @@
             _showMsgLabel.text = @"未发现新标记,搜索将返回首页";
             _nextPageButton.titleLabel.text = @"搜索";
         }
-
     }
 }
 

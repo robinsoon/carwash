@@ -10,8 +10,20 @@
 #import "UIButton+Bootstrap.h"
 
 #import "OrderDetailViewController.h"
-
+#import "OrderSubmitViewController.h"
 @interface carswashDetailViewController ()
+//定义可配置的数据参数（对于简单查询只需1组配置）
+//命名规则： i 表示实例变量；P 表示 页面变量； s 表示 数据类型为String；
+//初始化统一调用方法：initPage
+@property (strong, nonatomic) NSString *iPs_PageName; //页面名称(用于标记参数组)
+@property (strong, nonatomic) NSString *iPs_PAGE; //请求数据接口模板--页面
+@property (strong, nonatomic) NSString *iPs_POST; //请求数据POST参数模板
+@property (strong, nonatomic) NSString *iPs_POSTAction; //请求数据POST参数Action
+
+//传入变化的参数组,参数数目根据接口需要而变化
+@property (strong, nonatomic) NSString *iPs_POSTID; //请求数据POST参数ID1
+@property (strong, nonatomic) NSString *iPs_POSTQueryOption; //请求数据POST参数ID2
+@property (strong, nonatomic) NSString *iPs_POSTQueryRegion; //请求数据POST参数ID3
 
 @end
 
@@ -22,6 +34,9 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        if (_iPs_PageName==nil) {
+            [self initPage];
+        }
     }
     return self;
 }
@@ -48,9 +63,37 @@
     [self.detailscrollview addSubview:self.subViewPrice];
     [self.detailscrollview addSubview:self.subViewComment];
     //self.detailscrollview.delegate = self;
-    
+    if (_iPs_PageName==nil) {
+        [self initPage];
+    }
     //加载数据
     [self startRequestItem];
+    
+}
+
+//页面即将展示
+-(void) viewWillAppear:(BOOL)animated{
+    //如果页面没有初始化则先用初始值
+    if (_iPs_PageName==nil) {
+        [self initPage];
+    }
+
+    if (_isConnected == false) {
+        NSLog(@"尝试重新加载数据...");
+        //重新加载数据
+        [self startRequestItem];
+        
+    }
+    
+    
+    //未避免跳转页面(定位到地图)返回后，按钮消失，特别增加以下代码，重新设定按钮风格
+    //销毁按钮(不需要销毁，否则创建按钮需要代码完成)
+    //[self.btnBuy removeFromSuperview];
+    //[btn release];
+    
+    //重绘按钮
+    [self.btnBuy dangerStyle];
+    [self.btnAddCart successStyle];
     
 }
 
@@ -58,6 +101,25 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+//初始化页面变量组和参数
+- (void)initPage
+{
+    //根据页面类型不同需要配置的部分
+    _iPs_PageName=@"服务明细"; //页面名称(用于标记页面参数配置)
+    //请求数据接口模板--地址
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    _iPs_URL=delegate.iPs_URL; //请求数据接口模板--地址
+    
+    _iPs_PAGE=@"goods_app.php"; //请求数据接口模板--页面
+    _iPs_POST=@"act=%@&goods_id=%@"; //请求数据POST参数模板
+    _iPs_POSTAction =@"goods_item";
+    
+    _iPs_POSTID= _itemid ; //请求数据POST参数ID1
+    _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2
+    _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
+    
 }
 
 /*
@@ -86,11 +148,20 @@
         itemOrder.itemid = self.itemid;
         itemOrder.itemname = self.lbName.text;
         itemOrder.itemprice = self.itemprice;
-        itemOrder.itemdetail = self.lbPhone.text;
+        itemOrder.itemdetail = self.lbAddress.text;
+        itemOrder.itemAmount = @"1";
+        itemOrder.itemTotal = self.itemprice;
+        itemOrder.OrderAction= @"新建";
+        itemOrder.PayStatus = @"0";
+        itemOrder.OrderStatus= @"0";
         
         NSLog(@"进入订单页面 %@",self.itemid);
         
     }
+    
+    //OrderSubmitViewController *ordersubmit = [];
+    
+    
 }
 
 
@@ -102,11 +173,13 @@
 -(void)startRequestItem
 {
     _isConnected = false;
-    NSString *strURL = [[NSString alloc] initWithFormat:@"http://114.112.73.223:8080/goods_app.php"];
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    _iPs_URL=delegate.iPs_URL; //请求数据接口模板--地址
+    NSString *strURL = [[NSString alloc] initWithFormat:@"%@%@",_iPs_URL,_iPs_PAGE];
     
     NSURL *url = [NSURL URLWithString:[strURL URLEncodedString]];
-    
-    NSString *post = [NSString stringWithFormat:@"act=goods_item&goods_id=%@", _itemid ];
+
+    NSString *post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_itemid];
     
 	NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
 	
@@ -118,10 +191,11 @@
                                    initWithRequest:request delegate:self];
 	
     if (connection) {
+        NSLog(@"%@ POST=%@", strURL , post);
         _isConnected = true;
         _Requestdata = [NSMutableData new];
     }else{
-        NSLog(@"无法建立数据连接！%@ POST=%@", strURL , postData);
+        NSLog(@"无法建立数据连接！%@ POST=%@", strURL , post);
         _isConnected = false;
     }
 }
@@ -167,6 +241,7 @@
     
     self.detailData[0] = res;
 
+    //NSLog(@"1399276800  = %@",confromTimesp);
     //填充价格字段
     NSDictionary *is_promote = [res objectForKey:@"is_promote"];
 
@@ -182,24 +257,49 @@
     //判断是否促销
     if ([is_promote isEqual:@"1"]) {
         //执行促销活动价格
-        NSString *strPrice = [[NSString alloc] initWithFormat:@"￥%@",nmPrice];
+        NSString *strPrice = [[NSString alloc] initWithFormat:@"%@",nmPrice];
         self.lbPrice.text =strPrice;
         fPrice = [nmPrice floatValue];
         self.itemprice = nmPrice;
+        
+        //时间转换 promote_end_date
+        NSNumber * promoteend= [res objectForKey:@"promote_end_date"];
+        
+        int nmEndDate = [promoteend intValue];
+        if (nmEndDate>0) {
+            NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:nmEndDate];
+            
+            //处理日期时间的格式
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            
+            [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            
+            NSString *destDateString = [dateFormatter stringFromDate:confromTimesp];
+            //输出
+            _lbenddate.text = destDateString;
+            _lbenddate.hidden = false;
+            _lbenddatehead.hidden = false;
+        }
     }else{
         //执行商城价格
-        NSString *strPrice = [[NSString alloc] initWithFormat:@"￥%@",nmSHPrice];
+        NSString *strPrice = [[NSString alloc] initWithFormat:@"%@",nmSHPrice];
         self.lbPrice.text =strPrice;
         fPrice = [nmSHPrice floatValue];
         self.itemprice = nmSHPrice;
+        
+        _lbenddate.text = @"";
+        _lbenddate.hidden = true;
+        _lbenddatehead.hidden = true;
+
     }
+    
     
     //计算打折
     if (0 != fMKPrice && 0 != fPrice) {
         discount = 10*fPrice/fMKPrice;
         //[self.roundUp:discount afterPoint:2];
         if (discount>=1 && discount<10) {
-            self.lbDiscount.text =[[NSString alloc] initWithFormat:@"%g折",discount];
+            self.lbDiscount.text =[[NSString alloc] initWithFormat:@"%1.1f折",discount];
         }else if (discount<1){
             self.lbDiscount.text =@"低于1折";
         }else{
@@ -213,7 +313,7 @@
 
     
     //填充Detail数据字段
-    self.lbName.text =[res objectForKey:@"business_displayname"];
+    self.lbName.text =[res objectForKey:@"goods_name"];
 
     self.lbClickcount.text =[res objectForKey:@"click_count"];
     self.lbgoodsn.text =[res objectForKey:@"goods_sn"];
@@ -224,15 +324,20 @@
     self.lbAddress.text = [res objectForKey:@"address_street"];
     self.lbPhone.text = [res objectForKey:@"phone"];
     
-    NSString *lsPostion = [[NSString alloc] initWithFormat:@"商铺地图定位Latitude:%@, Longitude:%@",[res objectForKey:@"Latitude"],[res objectForKey:@"Longitude"]];
-    self.lbDetails.text = lsPostion;
+    self.lbBusinessName.text =[res objectForKey:@"business_displayname"];
+    
+    self.lbgoodsvalidate.text =[res objectForKey:@"goods_valid"];
+    self.lbgoodsusetime.text =[res objectForKey:@"use_time_range"];
+    self.lbnotice.text =[res objectForKey:@"goods_remind"];
+    self.lbuserole.text =[res objectForKey:@"use_role"];
     
     _Locationpt.latitude =[[res objectForKey:@"Latitude"] doubleValue];
     _Locationpt.longitude =[[res objectForKey:@"Longitude"] doubleValue];
     
     //带有缓存机制的图片加载
     NSString *strImgName = [res objectForKey:@"goods_img"];
-    NSString *strImgURL = [[NSString alloc] initWithFormat:@"http://114.112.73.223:8080/%@",strImgName];
+    NSString *strImgURL = [[NSString alloc] initWithFormat:@"%@%@",_iPs_URL,strImgName];
+
     //没有必要每次都从网络获取图片，应该建立图片缓存，优先查找本地缓存
     SDWebImageManager *manager = [SDWebImageManager sharedManager];
     NSURL *imgurl = [[NSURL alloc] initWithString: strImgURL];
@@ -302,22 +407,36 @@
     return result;
 }
 
-//页面即将展示
--(void) viewWillAppear:(BOOL)animated{
-    if (_isConnected == false) {
-        NSLog(@"尝试重新加载数据...");
-        //重新加载数据
-        [self startRequestItem];
-    }
-    
-}
+
 //定位到地图
 - (IBAction)btnLocation:(id)sender {
-    PoiSearchViewController *poimapview = [[PoiSearchViewController alloc] init];
-    [self.navigationController pushViewController:poimapview animated:YES];
-    poimapview.itemname = _lbName.text;
-    poimapview.title = @"位置";
-    poimapview.Locationpt = _Locationpt;
-    poimapview.iZoomLevel = 17;
+    
+    
+    self.tabBarController.selectedIndex = 1;
+    [self performSelector:@selector(LocationDelay) withObject:nil afterDelay:0.5f];
+    /*
+     //不用下面的这个方法，切换地图后详情页面布局受到影响(顶部显示不全)
+     PoiSearchViewController *poimapview = [[PoiSearchViewController alloc] init];
+     [self.navigationController pushViewController:poimapview animated:NO];
+     poimapview.itemname = _lbName.text;
+     poimapview.title = @"位置";
+     poimapview.Locationpt = _Locationpt;
+     poimapview.iZoomLevel = 17;
+     */
 }
+
+- (void)LocationDelay{
+    //以下代码需要延迟执行，如果是地图没有初始化
+    NSString *strName = _lbName.text;
+    NSString *strlatitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.latitude];
+    NSString *strlongitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.longitude];
+    NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:strName, @"name", strlatitude,@"latitude",strlongitude,@"longitude", nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"LocationPointNotification"
+     object:nil
+     userInfo:dataDict];
+
+}
+
 @end

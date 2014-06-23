@@ -96,9 +96,26 @@
 		9CB2C1351933397000697A8B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CB2C1341933397000697A8B /* QuartzCore.framework */; };
 		9CB2C1371933397000697A8B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CB2C1361933397000697A8B /* OpenGLES.framework */; };
 		9CB2C1391933397000697A8B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CB2C1381933397000697A8B /* Security.framework */; };
-		9CB2C13C1933397000697A8B /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CB2C13B1933397000697A8B /* libbaidumapapi.a */; };
 		9CB2C14019341A8400697A8B /* PoiSearchViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9CB2C13E19341A8400697A8B /* PoiSearchViewController.mm */; };
 		9CB2C14119341A8400697A8B /* PoiSearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9CB2C13F19341A8400697A8B /* PoiSearchViewController.xib */; };
+		9CB85A111952CB2800475F81 /* navUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB85A101952CB2800475F81 /* navUserViewController.m */; };
+		9CB85A171952CB4800475F81 /* navOrderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB85A161952CB4800475F81 /* navOrderViewController.m */; };
+		9CB85A1A1952CB6000475F81 /* navServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB85A191952CB6000475F81 /* navServiceViewController.m */; };
+		9CB85A28195849BC00475F81 /* navMapsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB85A27195849BC00475F81 /* navMapsViewController.m */; };
+		9CB8CC86194F1BFE003CA815 /* OrderForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB8CC85194F1BFE003CA815 /* OrderForm.m */; };
+		9CB8CC8C194F1D78003CA815 /* RegistrationForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB8CC8B194F1D78003CA815 /* RegistrationForm.m */; };
+		9CB8CC8F194F2620003CA815 /* OrderSubmitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB8CC8E194F2620003CA815 /* OrderSubmitViewController.m */; };
+		9CB8CC9219507EEB003CA815 /* bonusViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB8CC9119507EEB003CA815 /* bonusViewCell.m */; };
+		9CB8CC9519519CE1003CA815 /* shoppingCartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB8CC9419519CE1003CA815 /* shoppingCartViewController.m */; };
+		9CBAAC8F1945485400A15E74 /* couponsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CBAAC8E1945485400A15E74 /* couponsTableViewController.m */; };
+		9CBAAC95194584B300A15E74 /* WSNSCodingData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CBAAC94194584B300A15E74 /* WSNSCodingData.m */; };
+		9CBAAC981945BB3000A15E74 /* userLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CBAAC971945BB3000A15E74 /* userLoginViewController.m */; };
+		9CBAAC9B1946EDA300A15E74 /* RegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CBAAC9A1946EDA300A15E74 /* RegisterViewController.m */; };
+		9CBAACA21949353900A15E74 /* libbaidumapapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CBAACA11949353900A15E74 /* libbaidumapapi.a */; };
+		9CBAACA61949491800A15E74 /* FXForms.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CBAACA51949491800A15E74 /* FXForms.m */; };
+		9CBAACA919499AE600A15E74 /* CouponsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CBAACA819499AE600A15E74 /* CouponsViewCell.m */; };
+		9CBAACAC19499E4600A15E74 /* couponsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CBAACAB19499E4600A15E74 /* couponsDetailViewController.m */; };
+		9CBAACAF194ACE7700A15E74 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CBAACAE194ACE7700A15E74 /* Reachability.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -332,10 +349,45 @@
 		9CB2C1341933397000697A8B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		9CB2C1361933397000697A8B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		9CB2C1381933397000697A8B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		9CB2C13B1933397000697A8B /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbaidumapapi.a; sourceTree = "<group>"; };
 		9CB2C13D19341A8400697A8B /* PoiSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PoiSearchViewController.h; sourceTree = "<group>"; };
 		9CB2C13E19341A8400697A8B /* PoiSearchViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PoiSearchViewController.mm; sourceTree = "<group>"; };
 		9CB2C13F19341A8400697A8B /* PoiSearchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PoiSearchViewController.xib; sourceTree = "<group>"; };
+		9CB85A0F1952CB2800475F81 /* navUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navUserViewController.h; sourceTree = "<group>"; };
+		9CB85A101952CB2800475F81 /* navUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = navUserViewController.m; sourceTree = "<group>"; };
+		9CB85A151952CB4800475F81 /* navOrderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navOrderViewController.h; sourceTree = "<group>"; };
+		9CB85A161952CB4800475F81 /* navOrderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = navOrderViewController.m; sourceTree = "<group>"; };
+		9CB85A181952CB6000475F81 /* navServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navServiceViewController.h; sourceTree = "<group>"; };
+		9CB85A191952CB6000475F81 /* navServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = navServiceViewController.m; sourceTree = "<group>"; };
+		9CB85A26195849BC00475F81 /* navMapsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navMapsViewController.h; sourceTree = "<group>"; };
+		9CB85A27195849BC00475F81 /* navMapsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = navMapsViewController.m; sourceTree = "<group>"; };
+		9CB8CC84194F1BFE003CA815 /* OrderForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderForm.h; sourceTree = "<group>"; };
+		9CB8CC85194F1BFE003CA815 /* OrderForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderForm.m; sourceTree = "<group>"; };
+		9CB8CC8A194F1D78003CA815 /* RegistrationForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegistrationForm.h; sourceTree = "<group>"; };
+		9CB8CC8B194F1D78003CA815 /* RegistrationForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegistrationForm.m; sourceTree = "<group>"; };
+		9CB8CC8D194F2620003CA815 /* OrderSubmitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderSubmitViewController.h; sourceTree = "<group>"; };
+		9CB8CC8E194F2620003CA815 /* OrderSubmitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderSubmitViewController.m; sourceTree = "<group>"; };
+		9CB8CC9019507EEB003CA815 /* bonusViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bonusViewCell.h; sourceTree = "<group>"; };
+		9CB8CC9119507EEB003CA815 /* bonusViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bonusViewCell.m; sourceTree = "<group>"; };
+		9CB8CC9319519CE1003CA815 /* shoppingCartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shoppingCartViewController.h; sourceTree = "<group>"; };
+		9CB8CC9419519CE1003CA815 /* shoppingCartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = shoppingCartViewController.m; sourceTree = "<group>"; };
+		9CBAAC8D1945485400A15E74 /* couponsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = couponsTableViewController.h; sourceTree = "<group>"; };
+		9CBAAC8E1945485400A15E74 /* couponsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = couponsTableViewController.m; sourceTree = "<group>"; };
+		9CBAAC93194584B300A15E74 /* WSNSCodingData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSNSCodingData.h; sourceTree = "<group>"; };
+		9CBAAC94194584B300A15E74 /* WSNSCodingData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSNSCodingData.m; sourceTree = "<group>"; };
+		9CBAAC961945BB2F00A15E74 /* userLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userLoginViewController.h; sourceTree = "<group>"; };
+		9CBAAC971945BB3000A15E74 /* userLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userLoginViewController.m; sourceTree = "<group>"; };
+		9CBAAC991946EDA300A15E74 /* RegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterViewController.h; sourceTree = "<group>"; };
+		9CBAAC9A1946EDA300A15E74 /* RegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController.m; sourceTree = "<group>"; };
+		9CBAAC9F1949340000A15E74 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbaidumapapi.a; sourceTree = "<group>"; };
+		9CBAACA11949353900A15E74 /* libbaidumapapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbaidumapapi.a; path = "../../carwash/tabswashcars/Release-iphoneos/libbaidumapapi.a"; sourceTree = "<group>"; };
+		9CBAACA41949491800A15E74 /* FXForms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXForms.h; sourceTree = "<group>"; };
+		9CBAACA51949491800A15E74 /* FXForms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXForms.m; sourceTree = "<group>"; };
+		9CBAACA719499AE600A15E74 /* CouponsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CouponsViewCell.h; sourceTree = "<group>"; };
+		9CBAACA819499AE600A15E74 /* CouponsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CouponsViewCell.m; sourceTree = "<group>"; };
+		9CBAACAA19499E4600A15E74 /* couponsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = couponsDetailViewController.h; sourceTree = "<group>"; };
+		9CBAACAB19499E4600A15E74 /* couponsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = couponsDetailViewController.m; sourceTree = "<group>"; };
+		9CBAACAD194ACE7700A15E74 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		9CBAACAE194ACE7700A15E74 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,6 +395,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CBAACA21949353900A15E74 /* libbaidumapapi.a in Frameworks */,
 				9CB2C1391933397000697A8B /* Security.framework in Frameworks */,
 				9CB2C1371933397000697A8B /* OpenGLES.framework in Frameworks */,
 				9CB2C1351933397000697A8B /* QuartzCore.framework in Frameworks */,
@@ -350,7 +403,6 @@
 				9C94C65F192B57A30064E20F /* SystemConfiguration.framework in Frameworks */,
 				9C94C65D192B578B0064E20F /* CFNetwork.framework in Frameworks */,
 				9C1796B61924AB150027F552 /* ImageIO.framework in Frameworks */,
-				9CB2C13C1933397000697A8B /* libbaidumapapi.a in Frameworks */,
 				9C17961D191C5C200027F552 /* CoreGraphics.framework in Frameworks */,
 				9C17961F191C5C200027F552 /* UIKit.framework in Frameworks */,
 				9C17961B191C5C200027F552 /* Foundation.framework in Frameworks */,
@@ -396,6 +448,7 @@
 		9C179619191C5C200027F552 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9CBAACA11949353900A15E74 /* libbaidumapapi.a */,
 				9CB2C1381933397000697A8B /* Security.framework */,
 				9CB2C1361933397000697A8B /* OpenGLES.framework */,
 				9CB2C1341933397000697A8B /* QuartzCore.framework */,
@@ -414,42 +467,64 @@
 		9C179620191C5C200027F552 /* tabswashcars */ = {
 			isa = PBXGroup;
 			children = (
-				9C1796641921F8CF0027F552 /* NSString+URLEncoding.h */,
-				9C1796651921F8CF0027F552 /* NSString+URLEncoding.m */,
 				9C179629191C5C200027F552 /* washcarsAppDelegate.h */,
 				9C17962A191C5C200027F552 /* washcarsAppDelegate.mm */,
 				9C17962C191C5C200027F552 /* Main.storyboard */,
-				9C94C5FE192B337E0064E20F /* SysMessageViewController.h */,
-				9C94C5FF192B337E0064E20F /* SysMessageViewController.m */,
-				9C94C5F8192B33230064E20F /* payViewController.h */,
-				9C94C5F9192B33230064E20F /* payViewController.m */,
-				9C397C35192616D7006C586F /* ShopCartViewController.h */,
-				9C397C36192616D7006C586F /* ShopCartViewController.m */,
-				9C397C321925E4A5006C586F /* OrderDetailViewController.h */,
-				9C397C331925E4A5006C586F /* OrderDetailViewController.m */,
-				9C1796611921F7970027F552 /* MapsLocationTableViewController.h */,
-				9C1796621921F7970027F552 /* MapsLocationTableViewController.m */,
-				9C179652191E0FB00027F552 /* washcarsNavigationViewController.h */,
-				9C179653191E0FB00027F552 /* washcarsNavigationViewController.m */,
 				9C17962F191C5C200027F552 /* washcarsFirstViewController.h */,
 				9C179630191C5C200027F552 /* washcarsFirstViewController.m */,
-				9C17965B1921F6B40027F552 /* MapsViewController.h */,
-				9C17965C1921F6B40027F552 /* MapsViewController.mm */,
-				9C17965E1921F6DB0027F552 /* UserTableViewController.h */,
-				9C17965F1921F6DB0027F552 /* UserTableViewController.m */,
 				9C1796551921F66A0027F552 /* carswashServiceTableViewController.h */,
 				9C1796561921F66A0027F552 /* carswashServiceTableViewController.m */,
 				9C17966A19236CD30027F552 /* carswashDetailViewController.h */,
 				9C17966B19236CD30027F552 /* carswashDetailViewController.m */,
 				9C1796581921F6910027F552 /* carswashOrderTableViewController.h */,
 				9C1796591921F6910027F552 /* carswashOrderTableViewController.m */,
-				9C179632191C5C200027F552 /* washcarsSecondViewController.h */,
-				9C179633191C5C200027F552 /* washcarsSecondViewController.m */,
+				9C397C321925E4A5006C586F /* OrderDetailViewController.h */,
+				9C397C331925E4A5006C586F /* OrderDetailViewController.m */,
 				9C94C625192B4D670064E20F /* AliPayViewController.h */,
 				9C94C626192B4D670064E20F /* AliPayViewController.m */,
+				9CB8CC8D194F2620003CA815 /* OrderSubmitViewController.h */,
+				9CB8CC8E194F2620003CA815 /* OrderSubmitViewController.m */,
+				9CB8CC84194F1BFE003CA815 /* OrderForm.h */,
+				9CB8CC85194F1BFE003CA815 /* OrderForm.m */,
+				9CB8CC8A194F1D78003CA815 /* RegistrationForm.h */,
+				9CB8CC8B194F1D78003CA815 /* RegistrationForm.m */,
+				9CBAAC8D1945485400A15E74 /* couponsTableViewController.h */,
+				9CBAAC8E1945485400A15E74 /* couponsTableViewController.m */,
+				9CBAACAA19499E4600A15E74 /* couponsDetailViewController.h */,
+				9CBAACAB19499E4600A15E74 /* couponsDetailViewController.m */,
+				9CBAAC991946EDA300A15E74 /* RegisterViewController.h */,
+				9CBAAC9A1946EDA300A15E74 /* RegisterViewController.m */,
+				9CBAAC961945BB2F00A15E74 /* userLoginViewController.h */,
+				9CBAAC971945BB3000A15E74 /* userLoginViewController.m */,
+				9CB8CC9319519CE1003CA815 /* shoppingCartViewController.h */,
+				9CB8CC9419519CE1003CA815 /* shoppingCartViewController.m */,
+				9C94C5FE192B337E0064E20F /* SysMessageViewController.h */,
+				9C94C5FF192B337E0064E20F /* SysMessageViewController.m */,
+				9CB85A0F1952CB2800475F81 /* navUserViewController.h */,
+				9CB85A101952CB2800475F81 /* navUserViewController.m */,
+				9CB85A151952CB4800475F81 /* navOrderViewController.h */,
+				9CB85A161952CB4800475F81 /* navOrderViewController.m */,
+				9CB85A181952CB6000475F81 /* navServiceViewController.h */,
+				9CB85A191952CB6000475F81 /* navServiceViewController.m */,
+				9CB85A26195849BC00475F81 /* navMapsViewController.h */,
+				9CB85A27195849BC00475F81 /* navMapsViewController.m */,
+				9C179652191E0FB00027F552 /* washcarsNavigationViewController.h */,
+				9C179653191E0FB00027F552 /* washcarsNavigationViewController.m */,
+				9C179632191C5C200027F552 /* washcarsSecondViewController.h */,
+				9C179633191C5C200027F552 /* washcarsSecondViewController.m */,
 				9CB2C13D19341A8400697A8B /* PoiSearchViewController.h */,
 				9CB2C13E19341A8400697A8B /* PoiSearchViewController.mm */,
 				9CB2C13F19341A8400697A8B /* PoiSearchViewController.xib */,
+				9C1796611921F7970027F552 /* MapsLocationTableViewController.h */,
+				9C1796621921F7970027F552 /* MapsLocationTableViewController.m */,
+				9C17965B1921F6B40027F552 /* MapsViewController.h */,
+				9C17965C1921F6B40027F552 /* MapsViewController.mm */,
+				9C17965E1921F6DB0027F552 /* UserTableViewController.h */,
+				9C17965F1921F6DB0027F552 /* UserTableViewController.m */,
+				9C397C35192616D7006C586F /* ShopCartViewController.h */,
+				9C397C36192616D7006C586F /* ShopCartViewController.m */,
+				9C94C5F8192B33230064E20F /* payViewController.h */,
+				9C94C5F9192B33230064E20F /* payViewController.m */,
 				9C1796A51924AA3A0027F552 /* SDWebImage.xcodeproj */,
 				9C179635191C5C200027F552 /* Images.xcassets */,
 				9C179621191C5C200027F552 /* Supporting Files */,
@@ -460,20 +535,31 @@
 		9C179621191C5C200027F552 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9CBAACA31949491800A15E74 /* FXForms */,
 				9CB2C0FA1933397000697A8B /* BaiduMapAPI */,
 				9CB1F67A192EF05700D2713A /* MJRefresh */,
+				9C397BFA1925AF91006C586F /* PullShowAnim */,
+				9C17966E19245EB50027F552 /* SDWebImage */,
 				9C94C604192B4D670064E20F /* AlipaySdk */,
 				9C397C2A1925E345006C586F /* FontAwesome.ttf */,
+				9CBAACAD194ACE7700A15E74 /* Reachability.h */,
+				9CBAACAE194ACE7700A15E74 /* Reachability.m */,
 				9C397C2B1925E345006C586F /* NSString+FontAwesome.h */,
 				9C397C2C1925E345006C586F /* NSString+FontAwesome.m */,
 				9C397C2D1925E345006C586F /* UIButton+Bootstrap.h */,
 				9C397C2E1925E345006C586F /* UIButton+Bootstrap.m */,
-				9C397BFA1925AF91006C586F /* PullShowAnim */,
-				9C17966E19245EB50027F552 /* SDWebImage */,
+				9C1796641921F8CF0027F552 /* NSString+URLEncoding.h */,
+				9C1796651921F8CF0027F552 /* NSString+URLEncoding.m */,
+				9CBAAC93194584B300A15E74 /* WSNSCodingData.h */,
+				9CBAAC94194584B300A15E74 /* WSNSCodingData.m */,
+				9CBAACA719499AE600A15E74 /* CouponsViewCell.h */,
+				9CBAACA819499AE600A15E74 /* CouponsViewCell.m */,
 				9C179667192216B30027F552 /* serviceViewCell.h */,
 				9C179668192216B30027F552 /* serviceViewCell.m */,
 				9CB1F66E192ECE1B00D2713A /* OrderViewCell.h */,
 				9CB1F66F192ECE1B00D2713A /* OrderViewCell.m */,
+				9CB8CC9019507EEB003CA815 /* bonusViewCell.h */,
+				9CB8CC9119507EEB003CA815 /* bonusViewCell.m */,
 				9C179622191C5C200027F552 /* tabswashcars-Info.plist */,
 				9C179623191C5C200027F552 /* InfoPlist.strings */,
 				9C179626191C5C200027F552 /* main.m */,
@@ -660,7 +746,7 @@
 		9CB2C0FA1933397000697A8B /* BaiduMapAPI */ = {
 			isa = PBXGroup;
 			children = (
-				9CB2C13A1933397000697A8B /* Release-iphonesimulator */,
+				9CBAAC9E1949340000A15E74 /* Release-iphoneos */,
 				9CB2C12D1933397000697A8B /* mapapi.bundle */,
 				9CB2C0FE1933397000697A8B /* inc */,
 			);
@@ -715,12 +801,21 @@
 			path = inc;
 			sourceTree = "<group>";
 		};
-		9CB2C13A1933397000697A8B /* Release-iphonesimulator */ = {
+		9CBAAC9E1949340000A15E74 /* Release-iphoneos */ = {
 			isa = PBXGroup;
 			children = (
-				9CB2C13B1933397000697A8B /* libbaidumapapi.a */,
+				9CBAAC9F1949340000A15E74 /* libbaidumapapi.a */,
 			);
-			path = "Release-iphonesimulator";
+			path = "Release-iphoneos";
+			sourceTree = "<group>";
+		};
+		9CBAACA31949491800A15E74 /* FXForms */ = {
+			isa = PBXGroup;
+			children = (
+				9CBAACA41949491800A15E74 /* FXForms.h */,
+				9CBAACA51949491800A15E74 /* FXForms.m */,
+			);
+			path = FXForms;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -772,6 +867,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "___FULLUSERNAME___";
 				TargetAttributes = {
+					9C179616191C5C200027F552 = {
+						DevelopmentTeam = 6E3VE984MN;
+					};
 					9C17963A191C5C210027F552 = {
 						TestTargetID = 9C179616191C5C200027F552;
 					};
@@ -871,56 +969,73 @@
 			files = (
 				9C1796A31924A5910027F552 /* UIImage+MultiFormat.m in Sources */,
 				9C397C031925AF91006C586F /* ViewController.m in Sources */,
+				9CBAAC981945BB3000A15E74 /* userLoginViewController.m in Sources */,
 				9C17969F1924A5910027F552 /* UIImage+GIF.m in Sources */,
 				9C397C341925E4A5006C586F /* OrderDetailViewController.m in Sources */,
 				9C1796661921F8CF0027F552 /* NSString+URLEncoding.m in Sources */,
 				9C1796601921F6DB0027F552 /* UserTableViewController.m in Sources */,
 				9C1796A41924A5910027F552 /* SDWebImageCompat.m in Sources */,
 				9C17968D19245EB50027F552 /* UIImageView+WebCache.m in Sources */,
+				9CB8CC86194F1BFE003CA815 /* OrderForm.m in Sources */,
 				9C17965A1921F6910027F552 /* carswashOrderTableViewController.m in Sources */,
 				9C94C647192B4D670064E20F /* SBJsonWriter.m in Sources */,
 				9C17969E1924A5910027F552 /* UIImage+WebP.m in Sources */,
 				9C94C643192B4D670064E20F /* NSString+SBJSON.m in Sources */,
 				9C94C64C192B4D670064E20F /* AliPayViewController.m in Sources */,
 				9C17968A19245EB50027F552 /* SDWebImageManager.m in Sources */,
+				9CB8CC9519519CE1003CA815 /* shoppingCartViewController.m in Sources */,
 				9C179634191C5C200027F552 /* washcarsSecondViewController.m in Sources */,
 				9C1796631921F7970027F552 /* MapsLocationTableViewController.m in Sources */,
 				9C1796571921F66A0027F552 /* carswashServiceTableViewController.m in Sources */,
 				9C94C645192B4D670064E20F /* SBJsonBase.m in Sources */,
+				9CB85A171952CB4800475F81 /* navOrderViewController.m in Sources */,
 				9C1796A11924A5910027F552 /* NSData+ImageContentType.m in Sources */,
 				9C179654191E0FB00027F552 /* washcarsNavigationViewController.m in Sources */,
 				9C17968819245EB50027F552 /* SDWebImageDecoder.m in Sources */,
 				9C17968B19245EB50027F552 /* SDWebImagePrefetcher.m in Sources */,
+				9CB85A1A1952CB6000475F81 /* navServiceViewController.m in Sources */,
 				9CB1F688192EF05700D2713A /* MJRefreshFooterView.m in Sources */,
 				9C94C641192B4D670064E20F /* AlixPayResult.m in Sources */,
 				9C94C646192B4D670064E20F /* SBJsonParser.m in Sources */,
 				9CB1F687192EF05700D2713A /* MJRefreshConst.m in Sources */,
 				9C397C311925E345006C586F /* UIButton+Bootstrap.m in Sources */,
+				9CBAACA61949491800A15E74 /* FXForms.m in Sources */,
 				9C17968919245EB50027F552 /* SDWebImageDownloader.m in Sources */,
+				9CB85A28195849BC00475F81 /* navMapsViewController.m in Sources */,
 				9CB2C14019341A8400697A8B /* PoiSearchViewController.mm in Sources */,
 				9C17966C19236CD30027F552 /* carswashDetailViewController.m in Sources */,
+				9CBAAC95194584B300A15E74 /* WSNSCodingData.m in Sources */,
 				9C397C37192616D7006C586F /* ShopCartViewController.m in Sources */,
+				9CBAACAF194ACE7700A15E74 /* Reachability.m in Sources */,
+				9CB8CC8C194F1D78003CA815 /* RegistrationForm.m in Sources */,
 				9C17968C19245EB50027F552 /* UIButton+WebCache.m in Sources */,
 				9C94C64D192B4D670064E20F /* AppDelegate.m in Sources */,
 				9C17962B191C5C200027F552 /* washcarsAppDelegate.mm in Sources */,
 				9C1796A01924A5910027F552 /* MKAnnotationView+WebCache.m in Sources */,
 				9C94C642192B4D670064E20F /* NSObject+SBJSON.m in Sources */,
 				9C179669192216B30027F552 /* serviceViewCell.m in Sources */,
+				9CBAAC9B1946EDA300A15E74 /* RegisterViewController.m in Sources */,
+				9CB85A111952CB2800475F81 /* navUserViewController.m in Sources */,
+				9CB8CC9219507EEB003CA815 /* bonusViewCell.m in Sources */,
 				9CB1F689192EF05700D2713A /* MJRefreshHeaderView.m in Sources */,
 				9C179627191C5C200027F552 /* main.m in Sources */,
 				9C94C5FA192B33230064E20F /* payViewController.m in Sources */,
 				9C1796A21924A5910027F552 /* SDWebImageDownloaderOperation.m in Sources */,
 				9C179631191C5C200027F552 /* washcarsFirstViewController.m in Sources */,
 				9C17965D1921F6B40027F552 /* MapsViewController.mm in Sources */,
+				9CBAACAC19499E4600A15E74 /* couponsDetailViewController.m in Sources */,
 				9C94C644192B4D670064E20F /* SBJSON.m in Sources */,
+				9CB8CC8F194F2620003CA815 /* OrderSubmitViewController.m in Sources */,
 				9CB1F670192ECE1B00D2713A /* OrderViewCell.m in Sources */,
 				9C94C658192B4D670064E20F /* PayViewController.m in Sources */,
+				9CBAACA919499AE600A15E74 /* CouponsViewCell.m in Sources */,
 				9CB1F686192EF05700D2713A /* MJRefreshBaseView.m in Sources */,
 				9C94C600192B337E0064E20F /* SysMessageViewController.m in Sources */,
 				9C397C301925E345006C586F /* NSString+FontAwesome.m in Sources */,
 				9C94C640192B4D670064E20F /* AlixPayOrder.m in Sources */,
 				9C397C011925AF91006C586F /* Anim2ViewController.m in Sources */,
 				9C17968719245EB50027F552 /* SDImageCache.m in Sources */,
+				9CBAAC8F1945485400A15E74 /* couponsTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1050,21 +1165,23 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: 玉斌 孙 (RB8QS892A5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 玉斌 孙 (RB8QS892A5)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "tabswashcars/tabswashcars-Prefix.pch";
 				INFOPLIST_FILE = "tabswashcars/tabswashcars-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/libs/Release$(EFFECTIVE_PLATFORM_NAME)",
-					"$(inherited)",
-					"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay",
-					"\"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay/RSA\"",
-					"\"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay\"",
-					"\"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk\"",
 					"$(PROJECT_DIR)/tabswashcars",
-					"$(PROJECT_DIR)/tabswashcars/Release-iphonesimulator",
+					"$(PROJECT_DIR)/tabswashcars/Release-iphoneos",
+					"$(PROJECT_DIR)/tabswashcars/inc",
+					"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay",
+					"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay/RSA",
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "46878237-4DC1-4A2E-B9CD-C68FD2749E0F";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1074,21 +1191,23 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: 玉斌 孙 (RB8QS892A5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 玉斌 孙 (RB8QS892A5)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "tabswashcars/tabswashcars-Prefix.pch";
 				INFOPLIST_FILE = "tabswashcars/tabswashcars-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/libs/Release$(EFFECTIVE_PLATFORM_NAME)",
-					"$(inherited)",
-					"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay",
-					"\"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay/RSA\"",
-					"\"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay\"",
-					"\"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk\"",
 					"$(PROJECT_DIR)/tabswashcars",
-					"$(PROJECT_DIR)/tabswashcars/Release-iphonesimulator",
+					"$(PROJECT_DIR)/tabswashcars/Release-iphoneos",
+					"$(PROJECT_DIR)/tabswashcars/inc",
+					"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay",
+					"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay/RSA",
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "46878237-4DC1-4A2E-B9CD-C68FD2749E0F";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

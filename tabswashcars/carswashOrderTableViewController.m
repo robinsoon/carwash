@@ -79,6 +79,18 @@
     // 3.2.上拉加载更多
     [self addFooter];
     [self addHeader];
+    
+    //用户登录的消息
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loginCompletion:)
+                                                 name:@"LoginCompletionNotification"
+                                               object:nil];
+    
+    //刷新列表的消息
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(couponsRefresh:)
+                                                 name:@"OrderRefreshNotification"
+                                               object:nil];
 }
 
 //释放内存占用,比如数据表格，缓存的图片等
@@ -93,17 +105,64 @@
 {
     //根据页面类型不同需要配置的部分
     _iPs_PageName=@"订单列表"; //页面名称(用于标记页面参数配置)
-    _iPs_URL=@"http://114.112.73.223:8080/"; //请求数据接口模板--地址
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    _iPs_URL=delegate.iPs_URL; //请求数据接口模板--地址
     _iPs_PAGE=@"user_app.php"; //请求数据接口模板--页面1
     _iPs_POST=@"act=%@&user_id=%@"; //请求数据POST参数模板
-    _iPs_POSTAction =@"order_pay_list";   //已付款订单
-    _iPs_POSTAction2 =@"order_unpay_list";//未付款订单
-    _iPs_POSTID=@"2692"; //请求数据POST参数ID1
-    _iPs_POSTQueryOption=@""; //请求数据POST参数ID2
+    _iPs_POSTAction =@"order_unpay_list";   //未付款订单
+    _iPs_POSTAction2 =@"order_pay_list";    //已付款订单
+    //_iPs_POSTID=@"2692"; //请求数据POST参数ID1
+    _iPs_POSTID=delegate.userid;
+    
+    _userid =_iPs_POSTID;
+    
+    // 0 未付款; 1 已付款
+    _iPs_POSTQueryOption=@"1"; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
     
     //不随页面类型改变的部分
     _iPageIndex = 1;//初始化页面序号
+    _CellBgColor =[UIColor colorWithRed:49/255.0 green:155/255.0 blue:205/255.0 alpha:0.15];
+}
+
+//登录返回
+-(void)loginCompletion:(NSNotification*)notification {
+    
+    NSDictionary *theData = [notification userInfo];
+    _userid = [theData objectForKey:@"ID"];
+    NSString *lsLogin = [theData objectForKey:@"isLogin"];
+
+    //页面显示用户登录信息
+    //washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    if ([lsLogin isEqual:@"0"]) {
+        _iPs_POSTID=@"";
+        //未登录
+        //重新请求数据
+        NSLog(@"用户未登录，重新获取数据");
+    }else{
+        if ([_userid isEqual:_iPs_POSTID]) {
+            //用户没有变化，不做刷新
+            return;
+            
+        }else{
+        _iPs_POSTID = _userid;
+        
+        _iPageIndex = 1;
+        //重新请求数据
+        NSLog(@"用户登录状态变更，重新获取数据");
+        }
+    }
+    
+    [self startRequest];
+    
+}
+
+//刷新订单列表
+-(void)OrderRefresh:(NSNotification*)notification {
+    
+    //
+    NSLog(@"刷新订单列表通知,%@", _iPs_POSTID );
+    [self startRequest];
 }
 
 //增加向下滑动刷新下页功能
@@ -163,10 +222,6 @@
             //加载数据
             [self startRequest];
         }
-        //    if (_iPageIndex==0) {
-        //        NSLog(@"页面初始化忽略上拉动作 %d",_iPageIndex);
-        //        return;
-        //    }
         
         
         // 这里的refreshView其实就是header
@@ -267,37 +322,77 @@
          }
      }];
     
+    //修改单元格背景色
+    UIView *bgColorView = [[UIView alloc] init];
     
+    bgColorView.backgroundColor = _CellBgColor;
+    bgColorView.layer.masksToBounds = YES;
+    cell.selectedBackgroundView = bgColorView;
     //填充单元格
     cell.cellOrderID.text =[dict objectForKey:@"order_id"];
+    cell.cellOrdersn.text =[dict objectForKey:@"order_sn"];
+    
     cell.cellTitle.text =[dict objectForKey:@"goods_name"];
-    //cell.cellImg.image = [UIImage imageNamed:strImgURL];
+
     cell.cellMemo.text = [dict objectForKey:@"address_street"];
+    
+    cell.cellrow.text = [NSString stringWithFormat:@"%d", indexPath.row + 1];
+
+    //0 未付款
+    //1 付款中
+    //2 已付款
     NSString *strLeve = [dict objectForKey:@"pay_status"];
     if ([strLeve  isEqual: @"0"]) {
         cell.cellLeve.text = @"未付款";
-    }else{
+    }else if([strLeve  isEqual: @"1"]) {
+        cell.cellLeve.text = @"付款中";
+    }else if([strLeve  isEqual: @"2"]) {
         cell.cellLeve.text = @"已付款";
-    
+    }else{
+        cell.cellLeve.text = @"未付款";
     }
     
+    //0 未确认
+    //1 已确认
+    //2 已取消
+    //3 无效
+    //4 退货
+    //5 已分单
+    //6 部分分单
     NSString *strStatus = [dict objectForKey:@"order_status"];
     if ([strStatus  isEqual: @"0"]) {
-        cell.cellOrderDate.text = @"新建";
+        cell.cellOrderDate.text = @"未确认";
+        cell.cellOrderDate.textColor = [UIColor grayColor];
+    }else if([strStatus  isEqual: @"1"]){
+        cell.cellOrderDate.text = @"已确认";
+        cell.cellOrderDate.textColor = [UIColor darkTextColor];
+    }else if([strStatus  isEqual: @"2"]){
+        cell.cellOrderDate.text = @"已取消";
+        cell.cellOrderDate.textColor = [UIColor redColor];
+    }else if([strStatus  isEqual: @"3"]){
+        cell.cellOrderDate.text = @"无效";
+        cell.cellOrderDate.textColor = [UIColor redColor];
+    }else if([strStatus  isEqual: @"4"]){
+        cell.cellOrderDate.text = @"退货";
+        cell.cellOrderDate.textColor = [UIColor redColor];
+    }else if([strStatus  isEqual: @"5"]){
+        cell.cellOrderDate.text = @"已分单";
+        cell.cellOrderDate.textColor = [UIColor darkTextColor];
+    }else if([strStatus  isEqual: @"6"]){
+        cell.cellOrderDate.text = @"部分分单";
     }else{
-        cell.cellOrderDate.text = @"有效";
+        cell.cellOrderDate.text = @"未知";
+        cell.cellOrderDate.textColor = [UIColor redColor];
     }
 
-    //cell.cellOrder.text = [NSString stringWithFormat:@"%d", indexPath.row+1];
-    
     //填充价格字段
 
     NSString *nmPrice = [dict objectForKey:@"goods_price"];
     
-    NSString *strPrice = [[NSString alloc] initWithFormat:@"￥%@",nmPrice];
+    NSString *strPrice = [[NSString alloc] initWithFormat:@"%@",nmPrice];
         
     cell.cellPrice.text = strPrice;
-    NSString *strAmount = [[NSString alloc] initWithFormat:@"数量：%@",[dict objectForKey:@"goods_number"]];
+    NSString *strAmount = [[NSString alloc] initWithFormat:@"%@",[dict objectForKey:@"goods_number"]];
     cell.cellAmount.text = strAmount;
 
     //NSString *strPrice = [[NSString alloc] initWithFormat:@"￥%@",[dict objectForKey:@"promote_price"]];
@@ -357,6 +452,55 @@
     // Pass the selected object to the new view controller.
 }
 */
+//筛选
+- (IBAction)btnFilterClicked:(id)sender {
+    
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:nil
+                                  delegate:self
+                                  cancelButtonTitle:@"取消"
+                                  destructiveButtonTitle:@"未付款订单"
+                                  otherButtonTitles:@"已支付订单",nil];
+	actionSheet.actionSheetStyle =  UIActionSheetStyleAutomatic;
+	[actionSheet showInView:self.view];
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSLog(@"过滤条件选择 = %i",buttonIndex);
+    
+    NSString *lsButtonTitle = @"";
+    
+    switch (buttonIndex) {
+        case 0:
+            _iPs_POSTQueryOption = @"0";
+            lsButtonTitle = @"未付款订单";
+            break;
+        case 1:
+            _iPs_POSTQueryOption = @"1";
+            lsButtonTitle = @"已支付订单";
+            break;
+        case 2:
+            return;
+            break;
+    }
+    
+    //[self setTitle:lsButtonTitle];
+    //_barButtonItem = [[UIBarButtonItem alloc] initWithTitle:lsButtonTitle style:UIBarButtonItemStyleDone target:self action:@selector(btnFilter)];
+    //self.navigationItem.leftBarButtonItem = _barButtonItem;
+    
+    
+    //重新加载数据
+    _iPageIndex = 1;
+    [self startRequest];
+    
+    NSString *lsNotifyTitle = [[NSString alloc]initWithFormat:@"显示 %@" ,lsButtonTitle];
+    
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    [delegate showNotify:lsNotifyTitle HoldTimes:3];
+}
+
 
 #pragma mark - Navigation
 //页面发生跳转，进入明细
@@ -372,19 +516,43 @@
         
         NSMutableDictionary*  dict = self.listData[selectedRow];
         
-        //itemdetail.title = [dict objectForKey:@"goods_name"];
+        
         
         itemdetail.itemname = [dict objectForKey:@"goods_name"];
         
         itemdetail.itemid = [dict objectForKey:@"goods_id"];
         itemdetail.OrderID = [dict objectForKey:@"order_id"];
+        itemdetail.Ordersn = [dict objectForKey:@"order_sn"];
         itemdetail.UserID = _iPs_POSTID;
+        
         itemdetail.itemprice = [dict objectForKey:@"goods_price"];
+        
         itemdetail.itemdetail = [dict objectForKey:@"address_street"];
         itemdetail.itemAmount = [dict objectForKey:@"goods_number"];
+        
         itemdetail.PayStatus = [dict objectForKey:@"pay_status"];
         itemdetail.OrderStatus = [dict objectForKey:@"order_status"];
-        itemdetail.OrderAction = @"支付";
+        
+        if ([itemdetail.PayStatus isEqualToString:@"0"]) {
+            if ([itemdetail.OrderStatus isEqualToString:@"4"]) {
+                //退款
+                itemdetail.OrderAction = @"中止购买";
+            }else if ([itemdetail.OrderStatus isEqualToString:@"1"]) {
+                //购买过的订单但并未支付
+                itemdetail.OrderAction = @"继续支付";
+            }else{
+                itemdetail.OrderAction = @"支付";
+            
+            }
+        }else if([itemdetail.PayStatus isEqualToString:@"2"]){
+            //已付款
+            itemdetail.OrderAction = @"已付款";
+        }else{
+            itemdetail.OrderAction = @"支付";
+            
+        }
+        
+        
         //OrderAction
         NSLog(@"进入明细页面 %d",selectedRow);
         
@@ -397,6 +565,18 @@
 -(void)startRequest
 {
     _isConnected = false;
+    
+    if ([_iPs_POSTID isEqualToString:@""]) {
+        //传递消息
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"OrderWithLoginNotification"
+         object:nil
+         userInfo:nil];
+
+        self.tabBarController.selectedIndex = 4;
+        return;
+    }
+    
     NSString *strURL = [[NSString alloc] initWithFormat:@"%@%@",_iPs_URL,_iPs_PAGE];
     
     NSURL *url = [NSURL URLWithString:[strURL URLEncodedString]];
@@ -404,7 +584,16 @@
     
     
     //NSString *post = [NSString stringWithFormat:@"act=wash_list&cat_id=139&page=%d&sel_attr=0&region_id=%@",_iPageIndex,@"298"];
-    NSString *post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction2,_iPs_POSTID];
+    NSString *post = @"";
+    if ([_iPs_POSTQueryOption isEqual:@"0"]) {
+        //默认显示未付款订单
+        post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID];
+    }else{
+        //显示已付款订单
+        post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction2,_iPs_POSTID];
+    }
+    
+    
     
 	NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
 	
@@ -479,7 +668,7 @@
     _isConnected = true;
     NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:_datas options:NSJSONReadingAllowFragments error:nil];
     
-    //NSLog( @"Result: %@", [dict description] );
+    NSLog( @"Result: %@", [dict description] );
     //激活数据列表的刷新
     [self reloadView:dict];
 }
@@ -526,8 +715,8 @@
         if (results.count == 0) {
             _iPageIndex = 0;
             NSLog(@"列表视图将循环到首行记录");
-            [self startRequest];
-            return;
+            _listData = nil;
+            
         }
         [self.tableView reloadData];
     } else {
@@ -536,6 +725,22 @@
         if ([resultStateObj integerValue] ==0){
             self.iPageIndex = 1;
             NSLog(@"列表视图页面下次滚动将返回首行...");
+            
+            self.iPageIndex = 1;
+            washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+            
+            if (![_iPs_POSTID isEqualToString:@""]) {
+                //只有登录后才会提示
+            
+                if ([_iPs_POSTQueryOption isEqualToString:@"1"]) {
+                    [delegate showNotify:@"当前用户没有找到已付款的订单，请尝试切换分类查找" HoldTimes:2];
+                    
+                }else{
+                    [delegate showNotify:@"当前用户没有找到未付款的订单，请尝试切换分类查找" HoldTimes:2];
+                }
+            }
+            _listData = nil;
+            [self.tableView reloadData];
             return;
         }
         NSString *errorStr = @"Service Error";
