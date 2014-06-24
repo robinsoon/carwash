@@ -84,7 +84,7 @@
     
     //订单的消息
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(loginCompletion:)
+                                             selector:@selector(OrderCompletion:)
                                                  name:@"OrderCompletionNotification"
                                                object:nil];
 

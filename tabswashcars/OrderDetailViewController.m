@@ -138,6 +138,16 @@
         self.lbOrderStatus.text = @"未知";
     }
     
+    if ((![_OrderDate isEqualToString:@""])&&(_OrderDate != nil)) {
+        
+        _lbOrderDate.text = _OrderDate;
+        _lbOrderDate.hidden = false;
+        _lbOrderDatehead.hidden = false;
+    }else{
+        _lbOrderDate.hidden = true;
+        _lbOrderDatehead.hidden = true;
+    }
+    
     //支付
     [self.btnSubmit primaryStyle];
     [self.btnSubmit addAwesomeIcon:FAIconLegal beforeTitle:NO];
@@ -970,6 +980,27 @@
             self.lbOrderStatus.textColor = [UIColor redColor];
         }
         
+        //时间转换 promote_end_date
+        NSNumber * promoteend= [dict_order objectForKey:@"add_time"];
+        
+        int nmEndDate = [promoteend intValue];
+        if (nmEndDate>0) {
+            NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:nmEndDate];
+            
+            //处理日期时间的格式
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            
+            [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            
+            NSString *destDateString = [dateFormatter stringFromDate:confromTimesp];
+            //输出
+            _lbOrderDate.text = destDateString;
+            _lbOrderDate.hidden = false;
+            _lbOrderDatehead.hidden = false;
+        }else{
+            _lbOrderDate.hidden = true;
+            _lbOrderDatehead.hidden = true;
+        }
         
         //根据订单状态决定动作
         

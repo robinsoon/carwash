@@ -88,7 +88,7 @@
     
     //刷新列表的消息
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(couponsRefresh:)
+                                             selector:@selector(OrderRefresh:)
                                                  name:@"OrderRefreshNotification"
                                                object:nil];
 }
@@ -338,6 +338,11 @@
     
     cell.cellrow.text = [NSString stringWithFormat:@"%d", indexPath.row + 1];
 
+    //cell.cellAddDate.text = [dict objectForKey:@"add_time"];
+    NSString *strDate = [dict objectForKey:@"add_time"];
+    strDate = [strDate substringToIndex:11];
+
+    cell.cellAddDate.text = strDate;
     //0 未付款
     //1 付款中
     //2 已付款
@@ -551,6 +556,8 @@
             itemdetail.OrderAction = @"支付";
             
         }
+        
+        itemdetail.OrderDate = [dict objectForKey:@"add_time"];
         
         
         //OrderAction

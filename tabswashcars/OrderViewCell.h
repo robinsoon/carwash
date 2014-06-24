@@ -21,5 +21,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *cellAmount;
 @property (weak, nonatomic) IBOutlet UILabel *cellOrdersn;
 @property (weak, nonatomic) IBOutlet UILabel *cellrow;
+@property (weak, nonatomic) IBOutlet UILabel *cellAddDate;
 
 @end
