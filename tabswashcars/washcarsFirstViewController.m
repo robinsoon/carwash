@@ -132,7 +132,7 @@
     
     [LoginView autoLogin:delegate.username password:delegate.password ];
     
-    NSLog(@"启动延迟登录完毕");
+    //NSLog(@"启动延迟登录完毕");
 }
 
 //更新账户信息
