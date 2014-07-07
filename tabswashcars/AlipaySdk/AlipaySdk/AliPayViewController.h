@@ -25,7 +25,7 @@
 
 @end
 
-@interface AliPayViewController : UIViewController
+@interface AliPayViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 {
     NSMutableArray *_products;
     SEL _result;

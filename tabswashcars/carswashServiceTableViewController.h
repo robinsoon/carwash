@@ -14,7 +14,7 @@
 
 @class carswashDetailViewController;
 
-@interface carswashServiceTableViewController : UITableViewController
+@interface carswashServiceTableViewController : UITableViewController<UIActionSheetDelegate>
 
 //保存数据列表[表现层所依赖的内部数据集合]
 @property (nonatomic,strong) NSMutableArray* listData;  //商品列表
