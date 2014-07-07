@@ -16,8 +16,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *lbusedtime;
 
 @property (weak, nonatomic) IBOutlet UILabel *lbName;
-@property (weak, nonatomic) IBOutlet UILabel *lbAddress;
-@property (weak, nonatomic) IBOutlet UILabel *lbPhone;
+@property (weak, nonatomic) IBOutlet UITextView *lbAddress;
+@property (weak, nonatomic) IBOutlet UITextView *lbPhone;
 
 @property (weak, nonatomic) IBOutlet UIButton *btntoMap;
 @property (weak, nonatomic) IBOutlet UIButton *btnShowOrder;

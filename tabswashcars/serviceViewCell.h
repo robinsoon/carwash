@@ -16,5 +16,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *cellcmsPrice;
 @property (weak, nonatomic) IBOutlet UILabel *cellLeve;
 @property (weak, nonatomic) IBOutlet UITextView *cellMemo;
+@property (weak, nonatomic) IBOutlet UILabel *cellDistance;
 
 @end

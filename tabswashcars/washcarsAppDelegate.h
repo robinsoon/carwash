@@ -56,6 +56,20 @@ static NSString * staticURL  = @"http://www.2345mall.com/"; //@"http://taotao400
 
 @property (nonatomic) BOOL isreachChanged;        //网络连接变更
 @property (strong, nonatomic) NSString *reachStatus; //网络连接状态
+
+//需要初始化
+@property (nonatomic) BOOL isFixedPosition;        //定位开关，限制定位次数(开启应用只定位一次)
+
+@property (strong, nonatomic) NSString *userlatitude;//坐标位置1
+@property (strong, nonatomic) NSString *userlongitude;//坐标位置2
+@property (nonatomic) CLLocationCoordinate2D Userpt;
+@property (nonatomic,strong) NSString *userProvince;//城市位置，省
+@property (nonatomic,strong) NSString *userCity;    //市级
+@property (nonatomic,strong) NSString *userDistrict;//具体的区县市
+@property (nonatomic,strong) NSString *userAddress;
+@property (nonatomic,strong) NSString *userAreaID;  //存储定位ID
+
+
 //存档本地配置信息
 - (void)saveUserDefaults;
 //读取本地配置信息
@@ -74,4 +88,7 @@ static NSString * staticURL  = @"http://www.2345mall.com/"; //@"http://taotao400
 - (void)LoadConfig;
 - (void)SaveConfig;
 
+- (void)SetUserLocation:(NSString *)Pmlatitude longitude:(NSString *)Pmlongitude;
+- (void)SetUserLocation:(CLLocationCoordinate2D)PmUserpt;
+- (void)ReadUserLocation;
 @end

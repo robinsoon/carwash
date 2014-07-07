@@ -45,6 +45,9 @@
 @property (nonatomic,strong) NSString *itemprice;  //商品单价
 @property (nonatomic,strong) NSString *itemAmount;  //商品数量
 @property (nonatomic,strong) NSString *itemTotal;  //商品总价[主要]
+@property (nonatomic,strong) NSString *itemPay;  //商品应付金额[主要]
+@property (nonatomic,strong) NSString *PayAction;  //是否是继续支付
+@property (nonatomic,strong) NSString *Payid;  //继续支付的id
 @property (nonatomic,strong) NSString *OrderID;  //订单编号
 @property (nonatomic,strong) NSString *OrderSn;  //订单编号
 @property (nonatomic,strong) NSString *UserID;   //用户编号
@@ -85,6 +88,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *lbName;
 @property (weak, nonatomic) IBOutlet UILabel *lbPrice;
 @property (weak, nonatomic) IBOutlet UITextView *lbDescription;
+@property (weak, nonatomic) IBOutlet UILabel *lbPayContinue;
+
+@property (weak, nonatomic) IBOutlet UILabel *txtMoney;
+
+@property (weak, nonatomic) IBOutlet UILabel *txtPoints;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *detailscrollview;
 @property (weak, nonatomic) IBOutlet UIView *subViewPrice;

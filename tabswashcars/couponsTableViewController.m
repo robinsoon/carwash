@@ -8,6 +8,7 @@
 
 #import "couponsTableViewController.h"
 #import "MJRefresh.h"
+#import "UIButton+Bootstrap.h"
 
 @interface couponsTableViewController (){
     MJRefreshHeaderView *_header;
@@ -32,6 +33,9 @@
 @property (strong, nonatomic) NSString *iPs_POSTQueryOption; //请求数据POST参数ID2
 @property (strong, nonatomic) NSString *iPs_POSTQueryRegion; //请求数据POST参数ID3
 
+@property (strong, nonatomic) NSString *iPs_PAGE3; //请求数据接口模板--页面
+@property (strong, nonatomic) NSString *iPs_POST3; //请求数据POST参数模板
+@property (strong, nonatomic) NSString *iPs_POSTAction3; //请求数据POST参数Action
 //页面内部变量(由程序控制实际值)
 @property (nonatomic) int iPageIndex;
 @property (nonatomic) Boolean isConnected;
@@ -75,7 +79,12 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+
+    [self.btnAbout defaultStyle];
+    [self.btnAbout addAwesomeIcon:FAIconTrophy beforeTitle:YES];
     
+    //[self.btnmyCoupons successStyle];
+    //[self.btnmyCoupons addAwesomeIcon:FAIconAsterisk beforeTitle:YES];
     //用户登录的消息
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loginCompletion:)
@@ -109,8 +118,10 @@
         UIStoryboard* mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         UIViewController *loginViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"userLoginViewController"];
         
-        _lbUsername.text = @"";
-        _lbUserInfo.text = @"查看账户信息，请先登录";
+        _lbUsername.text = @"查看账户信息，请先登录";
+        _lbUserInfo.text = @"";
+        _txtMoney.text = @"余额 0 元";
+        _txtPoint.text = @"积分 0";
         _btnLogin.titleLabel.text = @"登录";
         
         loginViewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
@@ -124,9 +135,12 @@
         _usermoney = delegate.usermoney;
         _userpoints = delegate.userpoints;
         
-        NSString * userinfo = [[NSString alloc]initWithFormat:@"   余额：%1.2f   积分：%1.0f", _usermoney,_userpoints];
-        _lbUserInfo.text = userinfo;
+        //NSString * userinfo = [[NSString alloc]initWithFormat:@"   余额：%1.2f   积分：%1.0f", _usermoney,_userpoints];
+        _lbUserInfo.text = @"";//userinfo;
         _lbUsername.text = _username;
+        
+        _txtMoney.text = [[NSString alloc]initWithFormat:@"余额 %1.2f 元", _usermoney];
+        _txtPoint.text = [[NSString alloc]initWithFormat:@"积分 %1.0f", _userpoints];
         _btnLogin.titleLabel.text = @"退出";
         
     }
@@ -164,6 +178,12 @@
     _iPs_POSTQueryOption=@""; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
     
+    //短信验证的接口
+    _iPs_PAGE3=@"messageAuthentication.php"; //请求数据接口模板--页面1
+    _iPs_POST3=@"action=%@&phone=%@&invitationCode=%@&username=%@&bussinessname=%@"; //请求数据POST参数模板
+    _iPs_POSTAction3 =@"order";   //订单完成后发送消费券密码
+    
+
     //不随页面类型改变的部分
     _iPageIndex = 1;//初始化页面序号
     
@@ -182,8 +202,12 @@
 -(void)loginCompletion:(NSNotification*)notification {
     
     NSDictionary *theData = [notification userInfo];
-    _username = [theData objectForKey:@"name"];
     _userid = [theData objectForKey:@"ID"];
+    _username = [theData objectForKey:@"name"];
+    
+    _usermoney = [[theData objectForKey:@"user_money"]doubleValue];
+    _userpoints = [[theData objectForKey:@"pay_points"]doubleValue];
+    
     NSLog(@"登录页面返回,username = %@", _username);
     NSString *lsLogin = [theData objectForKey:@"isLogin"];
     
@@ -192,20 +216,29 @@
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
     //if (false==delegate.isLogin) {
     if ([lsLogin isEqual:@"0"]) {
-        _lbUsername.text = _username;
+        _lbUsername.text = @"查看账户信息，请先登录";//_username;
         _lbUserInfo.text = @"    未登录，无法使用订单和交易功能";
         _btnLogin.titleLabel.text = @"登录";
         _withnoLogin = @"1";
+        _txtMoney.text = [[NSString alloc]initWithFormat:@"余额 0 元"];
+        _txtPoint.text = [[NSString alloc]initWithFormat:@"积分 0"];
+        
+        _listData = nil;
+        
+        [self.tableView reloadData];
         
     }else{
-    _userid = delegate.userid;
-    _username = delegate.username;
-    _usermoney = delegate.usermoney;
-    _userpoints = delegate.userpoints;
+    
+    delegate.userid = _userid;
+    delegate.username = _username;
+    delegate.usermoney = _usermoney;
+    delegate.userpoints = _userpoints;
     
     _btnLogin.titleLabel.text = @"退出";
     _lbUsername.text = _username;
     NSString * userinfo = [[NSString alloc]initWithFormat:@"   余额：%1.2f   积分：%1.0f", _usermoney,_userpoints];
+    _txtMoney.text = [[NSString alloc]initWithFormat:@"余额 %1.2f 元", _usermoney];
+    _txtPoint.text = [[NSString alloc]initWithFormat:@"积分 %1.0f", _userpoints];
     _lbUserInfo.text = userinfo;
     _withnoLogin = @"";
         
@@ -225,8 +258,15 @@
 //订单完成后跳转
 -(void)OrderCompletion:(NSNotification*)notification {
 
+    NSDictionary *theData = [notification userInfo];
+    _orderName = [theData objectForKey:@"name"];
+    _orderID = [theData objectForKey:@"ID"];
+    _FromOrder = @"1";
+    _iPageIndex = 0;
     //
     NSLog(@"订单完成后跳转,%@",_orderID);
+    _btnmyCoupons.titleLabel.text = @"订单消费券";
+    [self startRequest];
 }
 
 //订单无法提交的跳转,需要登录
@@ -244,6 +284,7 @@
     NSLog(@"刷新优惠券列表通知,%@", _iPs_POSTID );
     [self startRequest];
 }
+
 
 
 //增加向下滑动刷新下页功能
@@ -557,6 +598,11 @@
         itemdetail.Phone = _Phone;
         itemdetail.Locationpt = _Locationpt;
 
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+
         /*
          //点击消费券会重置cell导致信息丢失,由于Cell被释放
         static NSString *CellIdentifier = @"CouponsCell";
@@ -601,6 +647,28 @@
     {
     }
 }
+
+
+- (IBAction)btnmycouponsClicked:(id)sender {
+    [self performSelector:@selector(couponsDelay) withObject:nil afterDelay:0.2f];
+}
+
+- (void)couponsDelay{
+    //以下代码需要延迟执行，如果没有初始化
+    if ([_FromOrder isEqualToString: @"1"]) {
+        _FromOrder = @"0";
+        _btnmyCoupons.titleLabel.text = @"我的消费券";
+        [self startRequest];
+        
+    }else if((_orderID != nil)&&(![_orderID isEqualToString:@""])){
+        //_FromOrder = @"1";
+        //_btnmyCoupons.titleLabel.text = @"订单消费券";
+        //[self startRequest];
+        _iPageIndex = 0;
+    }
+
+}
+
 
 //登录退出
 - (IBAction)btnLogin:(id)sender {
@@ -676,12 +744,22 @@
     if ((_orderID == nil)||([_orderID isEqualToString:@""])) {
         //查找用户的密码券
         post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID];
+        _iPageIndex = 0;
     }else{
         //带订单号过滤[防止使用过OrderID后，过滤不全]
         if ([_FromOrder isEqualToString:@"1"]) {
-        post = [NSString stringWithFormat:_iPs_POST2,_iPs_POSTAction2,_iPs_POSTID,_orderID];
+            _iPageIndex = _iPageIndex + 1;
+            if (_iPageIndex > 3) {
+                //滑动3次显示全部
+                _FromOrder=@"0";
+                _btnmyCoupons.titleLabel.text = @"我的消费券";
+                post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID];
+            }else{
+            post = [NSString stringWithFormat:_iPs_POST2,_iPs_POSTAction2,_iPs_POSTID,_orderID];
+            }
         }else{
             post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID];
+            _iPageIndex = 0;
         }
     }
     

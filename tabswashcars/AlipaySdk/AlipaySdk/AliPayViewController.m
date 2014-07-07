@@ -50,8 +50,11 @@
 @property (strong, nonatomic) NSString *iPs_PageName; //页面名称(用于标记参数组)
 @property (strong, nonatomic) NSString *iPs_URL; //请求数据接口模板--地址
 @property (strong, nonatomic) NSString *iPs_PAGE; //请求数据接口模板--页面
+
 @property (strong, nonatomic) NSString *iPs_POST; //请求数据POST参数模板
+
 @property (strong, nonatomic) NSString *iPs_POSTAction; //请求数据POST参数Action
+
 
 //传入变化的参数组,参数数目根据接口需要而变化
 @property (strong, nonatomic) NSString *iPs_POSTID; //请求数据POST参数ID1
@@ -106,12 +109,31 @@
     self.lbPrice.text = self.itemTotal;
     self.lbDescription.text = self.itemdetail;
 
+    if ([_PayAction isEqualToString:@"继续支付"]) {
+        //继续付款逻辑
+        NSLog(@"付款进入继续支付流程");
+        
+        _lbPayContinue.text = [[NSString alloc]initWithFormat:@"订单总金额：%@元",_itemTotal];
+        
+        //将应付金额修改为剩余金额
+        _itemTotal = _itemPay;
+        self.lbPrice.text = self.itemTotal;
+        
+    }
+
 
     //用户登录的消息
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loginCompletion:)
                                                  name:@"LoginCompletionNotification"
                                                object:nil];
+    
+    //支付回调完成的消息
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(payCompletion:)
+                                                 name:@"UserPayCompletionNotification"
+                                               object:nil];
+
     
     
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
@@ -123,6 +145,10 @@
         
         _lbUsername.text = @"";
         _lbUserInfo.text = @"查看账户信息，请先登录";
+        _usermoney = 0;
+        _userpoints = 0;
+        _txtMoney.text = [[NSString alloc]initWithFormat:@"余额 %1.2f 元", _usermoney];
+        _txtPoints.text = [[NSString alloc]initWithFormat:@"积分 %1.0f", _userpoints];
         
         loginViewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         [self presentViewController:loginViewController animated:YES completion:^{
@@ -135,10 +161,13 @@
         _usermoney = delegate.usermoney;
         _userpoints = delegate.userpoints;
         
-        NSString * userinfo = [[NSString alloc]initWithFormat:@"   余额：%1.2f   积分：%1.0f", _usermoney,_userpoints];
+        NSString * userinfo = [[NSString alloc]initWithFormat:@"   余额：%1.2f 元   积分：%1.0f", _usermoney,_userpoints];
         _lbUserInfo.text = userinfo;
         _lbUsername.text = _username;
         
+        _txtMoney.text = [[NSString alloc]initWithFormat:@"余额 %1.2f 元", _usermoney];
+        _txtPoints.text = [[NSString alloc]initWithFormat:@"积分 %1.0f", _userpoints];
+
     }
     
 
@@ -214,6 +243,7 @@
     _iPs_POSTQueryOption=@"0"; //请求数据POST参数// 0=支付宝, 1=财付通,2=银联支付
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
     
+
     //不随页面类型改变的部分
     _iPageIndex = 1;//初始化页面序号
     _CellBgColor =[UIColor colorWithRed:49/255.0 green:155/255.0 blue:205/255.0 alpha:0.15];
@@ -275,6 +305,56 @@
     
 }
 
+//支付完成
+-(void)payCompletion:(NSNotification*)notification {
+    
+    NSDictionary *theData = [notification userInfo];
+    //_username = [theData objectForKey:@"name"];
+    //_userid = [theData objectForKey:@"ID"];
+    
+    NSString *lsPayCompletion = [theData objectForKey:@"isPayCompletion"];
+
+    //页面显示用户登录信息
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+
+    if ([lsPayCompletion isEqual:@"1"]) {
+        //成功
+        NSLog(@"支付页面返回。交易成功");
+        //提示付款成功，并跳转到密码券
+        NSString *lsNotifyTitle = [[NSString alloc]initWithFormat:@"您已成功支付1个订单,订单号:%@",_OrderSn ];
+        
+        [delegate showNotify:lsNotifyTitle HoldTimes:3];
+        
+        //返回到前一个界面
+        //[self.navigationController popViewControllerAnimated:YES]; //PUSH
+        
+        //传递消息
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"OrderRefreshNotification"
+         object:nil
+         userInfo:nil];
+        
+        //跳转到消费券列表(已付款)
+        
+        NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:_itemname, @"name", _OrderID,@"ID", nil];
+        
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"OrderCompletionNotification"
+         object:nil
+         userInfo:dataDict];
+        
+        //重要：主动调用 Segue 呈现页面
+        [self performSegueWithIdentifier:@"couponslist" sender:self];
+        
+    }else{
+        //失败
+        NSLog(@"支付页面返回。支付未成功");
+        NSString *lsNotifyTitle = [[NSString alloc]initWithFormat:@"支付未完成,请尝试其它支付方式,订单号:%@",_OrderSn ];
+        
+        [delegate showNotify:lsNotifyTitle HoldTimes:5];
+    }
+}
+
 //修改数量更新价格
 - (IBAction)lbUsedMoneyChanged:(id)sender {
     //界面的TextField取消键盘事件传递影响了 余额变更，需要特别处理。
@@ -292,7 +372,7 @@
         iPrice = [_lbPrice.text doubleValue];
         
         iTotal =  iPrice - icount;
-        if (iTotal >= 0) {
+        if ((iTotal >= 0)&&(icount<= _usedmoneylimit)) {
             _lbPayMoney.text = [[NSString alloc] initWithFormat:@"%1.2f",iTotal];
             _usedmoney = icount;
         }else{
@@ -594,8 +674,36 @@
         _usedbonuslimit = 0;
         _usedbonus = 0;
         //添加一条数据
-        NSDictionary *data = [[NSDictionary alloc] initWithObjectsAndKeys:@"", @"bonus_id", @"", @"type_id", @"", @"type_money", @"没有红包", @"type_name",nil];
-        [_listData addObject:data];
+        //NSDictionary *data = [[NSDictionary alloc] initWithObjectsAndKeys:@"0", @"bonus_id", @"0", @"type_id", @"0", @"type_money", @"没有红包", @"type_name",nil];
+        //[_listData addObject:data];
+        //没有红包不显示列表
+        _tableView.hidden = true;
+        //CGContextRef startPath = UIGraphicsGetCurrentContext();
+        //CGRect  frame = _tableView.frame;
+        
+        //位置向上偏移
+        CGPoint subviewPoint = _subViewPay.center;
+        
+        subviewPoint.y = subviewPoint.y - 117;
+        
+        _subViewPay.center = subviewPoint;
+        
+
+    }
+    
+    if ([_PayAction isEqualToString:@"继续支付"]) {
+        //禁用积分、余额、红包
+        _usedpointslimit = 0;
+        _usedmoneylimit = 0;
+        _usedbonuslimit = 0;
+        
+        _usedbonus = 0;
+        _usedmoney = 0;
+        _usedpoints = 0;
+        
+        _selectPoints.on = false;
+        _selectUserMoney.on = false;
+        _tableView.userInteractionEnabled = false;
         
     }
     
@@ -856,7 +964,7 @@
 	 *由于demo的局限性，采用了将私钥放在本地签名的方法，商户可以根据自身情况选择签名方法(为安全起见，在条件允许的前提下，我们推荐从商户服务器获取完整的订单信息)
 	 */
     /*
-    NSString *appScheme = @"AlipaySdkCARWash";
+    NSString *appScheme = @"MQPAlipayCARWASH";
     NSString* orderInfo = [self getOrderInfo:indexPath.row];
     NSString* signedStr = [self doRsa:orderInfo];
     
@@ -1015,7 +1123,11 @@
         
         //不要再push了，已经执行了push，否则会错误。
         //[self.navigationController pushViewController:couponsview animated:YES];
-        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+
         
     }
     
@@ -1043,6 +1155,8 @@
     //NSString *post = [NSString stringWithFormat:@"act=wash_list&cat_id=139&page=%d&sel_attr=0&region_id=%@",_iPageIndex,@"298"];
     //_iPs_POST=@"act=%@&user_id=%@&order_id=%@&pay_id=%@&pay_name=%@&surplus=%@&integral=%@&bonus=%@"; //请求数据POST参数模板
     NSString *post = @"";
+    
+    
     if ([_iPs_POSTQueryOption isEqual:@"0"]) {
         NSString *str_surplus = [[NSString alloc]initWithFormat:@"%1.2f" ,_usedmoney];    //余额
         NSString *str_integral = [[NSString alloc]initWithFormat:@"%1.0f" ,_usedpoints];   //积分
@@ -1052,11 +1166,23 @@
         }
         
         NSString *str_bonusid = _usedbonusid;    //红包
+        
+        if ((![_Payid isEqualToString:_iPs_POSTQueryOption])&&(_Payid!=nil)) {
+            //可能是继续支付，需要pay_id
+            _iPs_POSTQueryOption = _Payid;
+        }
+        
         //默认显示未付款订单
         post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID,_OrderID,_iPs_POSTQueryOption,@"支付宝支付",str_surplus,str_integral,str_bonusid];
     
     }
     
+    if ([_PayAction isEqualToString:@"继续支付"]) {
+        //禁用积分、余额、红包
+        NSLog(@"继续支付：%@", _itemTotal);
+        
+    }
+
     
     
 	NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
@@ -1171,8 +1297,8 @@
             [delegate showNotify:lsNotifyTitle HoldTimes:3];
         
             //开启支付宝
-            //走支付流程
-            NSString *appScheme = @"AlipaySdkCARWash";//@"AlipaySdkDemo";
+            //走支付流程 MQPAlipayCARWASH
+            NSString *appScheme = @"MQPAlipayCARWASH";//@"AlipaySdkDemo";
             NSString* orderInfo = [self getOrderInfo:1];
             NSString* signedStr = [self doRsa:orderInfo];
             
@@ -1180,7 +1306,7 @@
             
             NSString *orderString = [NSString stringWithFormat:@"%@&sign=\"%@\"&sign_type=\"%@\"",
                                      orderInfo, signedStr, @"RSA"];
-            
+            ////////////////////////////////////////////////////////
             [AlixLibService payOrder:orderString AndScheme:appScheme seletor:_result target:self];
             
         }else{
@@ -1201,10 +1327,17 @@
             
             //跳转到消费券列表(已付款)
             //传递消息
+//            [[NSNotificationCenter defaultCenter]
+//             postNotificationName:@"couponsRefreshNotification"
+//             object:nil
+//             userInfo:nil];
+            
+            NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:_itemname, @"name", _OrderID,@"ID", nil];
+            
             [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"couponsRefreshNotification"
+             postNotificationName:@"OrderCompletionNotification"
              object:nil
-             userInfo:nil];
+             userInfo:dataDict];
 
             
             //重要：主动调用 Segue 呈现页面

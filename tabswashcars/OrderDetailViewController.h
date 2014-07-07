@@ -13,6 +13,9 @@
 
 @interface OrderDetailViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UIScrollView *mainscrollview;
+@property (weak, nonatomic) IBOutlet UIView *subview;
+
 @property (weak, nonatomic) IBOutlet UIButton *btnSubmit;
 @property (weak, nonatomic) IBOutlet UIButton *btnCreate;
 @property (weak, nonatomic) IBOutlet UIButton *btnRebackOrder;
@@ -38,6 +41,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *lbOrderDate;
 @property (weak, nonatomic) IBOutlet UILabel *lbOrderDatehead;
+@property (weak, nonatomic) IBOutlet UILabel *lbContinue;
 
 @property (strong, nonatomic) NSString *itemid;           //传入参数id
 
@@ -46,6 +50,8 @@
 @property (nonatomic,strong) NSString *itemprice;  //商品单价
 @property (nonatomic,strong) NSString *itemAmount;  //商品数量
 @property (nonatomic,strong) NSString *itemTotal;  //商品总价
+
+@property (nonatomic,strong) NSString *payTotal;  //订单应付款
 
 @property (nonatomic,strong) NSString *OrderAction;  //订单动作(新建，付款，完成)
 @property (nonatomic,strong) NSString *OrderID;  //订单编号

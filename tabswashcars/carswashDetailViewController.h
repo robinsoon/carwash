@@ -22,6 +22,8 @@
 @property (nonatomic,strong) NSMutableArray* listcommit;  //商品评论
 @property (nonatomic,strong) NSString * iPs_URL;
 
+
+
 @property (weak, nonatomic) IBOutlet UILabel *lbID;
 @property (weak, nonatomic) IBOutlet UILabel *lbName;
 @property (weak, nonatomic) IBOutlet UIImageView *imgServiceView;
@@ -36,7 +38,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *lbShopPrice;
 @property (weak, nonatomic) IBOutlet UILabel *lbClickcount;
 
-@property (weak, nonatomic) IBOutlet UILabel *lbPhone;
+@property (weak, nonatomic) IBOutlet UITextView *lbPhone;
+
 @property (weak, nonatomic) IBOutlet UITextView *lbAddress;
 @property (weak, nonatomic) IBOutlet UILabel *lbNumber;
 @property (weak, nonatomic) IBOutlet UILabel *lbBusinessName;
@@ -61,6 +64,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *lbgoodsn;
 @property (weak, nonatomic) IBOutlet UILabel *lbStyle;
 @property (weak, nonatomic) IBOutlet UILabel *lbDetails;
+@property (weak, nonatomic) IBOutlet UILabel *lbsellout;
+
+@property (nonatomic,strong) NSString * iSellNumber;      //已售数量
 
 @property (strong,nonatomic) NSMutableData *Requestdata;      //接收数据
 @property (nonatomic) Boolean isConnected;              //连接状态

@@ -97,6 +97,8 @@
     self.lbBuyCount.text = self.itemAmount;//1
     self.btnstep.value = 1;
     
+    self.mainscrollview.contentSize = CGSizeMake(320,500);
+    [self.mainscrollview addSubview:self.subview];
     
     //0 未付款
     //1 付款中
@@ -186,6 +188,10 @@
     //从外部页面跳转过来参数传递不全，只包含orderID,需要刷新
     if ([_PageAction isEqualToString:@"1"])
     {
+        [self getOrderDetails:_OrderID];
+    }
+    
+    if ([_OrderAction  isEqual: @"继续支付"]){
         [self getOrderDetails:_OrderID];
     }
     
@@ -282,7 +288,7 @@
         
         self.lbBuyCount.enabled = true;
         self.btnstep.enabled = true;
-        
+        self.btnstep.hidden = false;
         
     }else if ([_OrderAction  isEqual: @"支付"]){
         //默认
@@ -296,19 +302,21 @@
         
         self.lbBuyCount.enabled = false;
         self.btnstep.enabled = false;
+        self.btnstep.hidden = true;
     }else if ([_OrderAction  isEqual: @"继续支付"]){
         //订单状态已确认，支付状态未支付
+        NSLog(@"继续支付流程");
         self.btnSubmit.hidden = true;
         self.btnCreate.hidden = true;
         self.btnDeleteOrder.hidden = false;//删除
         self.btnRebackOrder.hidden = true;//退款
-        self.btnBuyAgain.hidden = false;//再买
+        self.btnBuyAgain.hidden = false;//继续支付
         self.btncoupons.hidden = true;
         self.btnRefresh.hidden = false;
         
         self.lbBuyCount.enabled = false;
         self.btnstep.enabled = false;
-
+        self.btnstep.hidden = true;
     }else if ([_OrderAction  isEqual: @"已付款"]){
 
         self.btnSubmit.hidden = true;
@@ -321,6 +329,7 @@
         
         self.lbBuyCount.enabled = false;
         self.btnstep.enabled = false;
+        self.btnstep.hidden = true;
     }else  if ([_OrderAction  isEqual: @"中止购买"]){
         self.btnSubmit.hidden = true;//支付
         self.btnCreate.hidden = true;
@@ -332,6 +341,7 @@
         
         self.lbBuyCount.enabled = false;
         self.btnstep.enabled = false;
+        self.btnstep.hidden = true;
     }
 
     //支付
@@ -466,15 +476,63 @@
 
 //支付按钮
 - (IBAction)btnpayclicked:(id)sender {
+    [self performSegueWithIdentifier:@"ShowPay" sender:self];
+    
+    
 }
 
 
 - (IBAction)btnDeleteOrderClicked:(id)sender {
-    [self deleteOrder:_OrderID];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"删除订单提示"
+                                                        message:@"您确实要删除该订单吗？通过审核后您未消费的金额将返还到账户余额。"
+                                                       delegate:self
+                                              cancelButtonTitle:@"取消"
+                                              otherButtonTitles:@"删除",nil];
+    alertView.tag = 2;
+    [alertView show];
+    
+    
 }
 
 - (IBAction)btnRebackOrderClicked:(id)sender {
-    [self rebackOrder:_OrderID];
+
+    //订单申请退款
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"退款申请"
+                                                        message:@"您确实要申请退款吗？红包使用后将不会退还。订单退款后，金额将返回到您的账户余额。"
+                                                       delegate:self
+                                              cancelButtonTitle:@"取消"
+                                              otherButtonTitles:@"退款",nil];
+    alertView.tag = 1;
+    [alertView show];
+
+
+    
+}
+
+//退出 询问操作结果
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 1) {
+        if (buttonIndex == 1) {
+            NSLog(@"确认退款");
+            [self rebackOrder:_OrderID];
+            
+        }else{
+            
+            NSLog(@"取消退款");
+        }
+    }else if(alertView.tag == 2){
+        if (buttonIndex == 1) {
+            NSLog(@"确认删除");
+            [self deleteOrder:_OrderID];
+            
+        }else{
+            
+            NSLog(@"取消删除");
+        }
+
+    }
+
 }
 
 - (IBAction)btnBuyAgainClicked:(id)sender {
@@ -491,9 +549,27 @@
 //跳转到优惠券
 - (IBAction)btnCouponsClicked:(id)sender {
     
+    //washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    //[delegate showNotify:_lsNotifyTitle HoldTimes:2];
     
+    self.tabBarController.selectedIndex = 4;
+    
+    [self performSelector:@selector(couponsDelay) withObject:nil afterDelay:0.5f];
+
+    /*NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:_itemname, @"name", _OrderID,@"ID", nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"OrderCompletionNotification"
+     object:nil
+     userInfo:dataDict];
+    */
+    
+    
+    //重要：主动调用 Segue 呈现页面
+    //[self performSegueWithIdentifier:@"ordercoupons" sender:self];
+    /*
     //传递消息
-    /*UIStoryboard* mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UIStoryboard* mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *couponsViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"couponslistView"];
     
     couponsViewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
@@ -503,6 +579,16 @@
 
 }
 
+- (void)couponsDelay{
+    //以下代码需要延迟执行，如果没有初始化
+    NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:_itemname, @"name", _OrderID,@"ID", nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"OrderCompletionNotification"
+     object:nil
+     userInfo:dataDict];
+    
+}
 
 //刷新订单明细
 - (void)getOrderDetails:(NSString *)lsOrderID{
@@ -524,7 +610,9 @@
 //处理其它业务： 再次购买
 - (void)buyAgainOrder:(NSString *)lsOrderID{
     _iPs_POSTQueryOption=@"4";
-    [self startRequest];
+    //进入付款页面
+    [self performSegueWithIdentifier:@"ShowPay" sender:self];
+    //[self startRequest];
 }
 //处理其它业务： 再次购买的支付
 - (void)buyAgainPay:(NSString *)lsOrderID{
@@ -583,12 +671,31 @@
         itemPay.itemname = self.lbName.text;
         itemPay.itemprice = self.itemprice;
         itemPay.itemAmount = self.itemAmount;
+        
+        
         itemPay.itemTotal = self.itemTotal;
+        itemPay.itemPay = self.payTotal; //订单应付款 order_amount
+        itemPay.Payid = self.PayID;
+        
+        //如果是继续支付则显示剩余金额,并在支付时标记
+        if ((![_payTotal isEqualToString:_itemTotal])&&(![_payTotal isEqualToString:@"0.00"])) {
+            
+            _OrderAction = @"继续支付";
+            _iPs_POSTQueryOption =@"4";
+            itemPay.PayAction = _OrderAction;
+        }else{
+            itemPay.PayAction = @""; // 正常支付流程
+        }
+        
         itemPay.itemdetail = self.lbDescription.text;
 
         
         NSLog(@"进入支付页面 %@",self.Ordersn);
-        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+
     }
     
     if([segue.identifier isEqualToString:@"ordercoupons"])
@@ -662,7 +769,7 @@
         //act = reback&user_id=?&order_id=?
         post = [NSString stringWithFormat:_iPs_POST3,_iPs_POSTAction3,_iPs_POSTID,_OrderID];
     }else if([_iPs_POSTQueryOption isEqualToString:@"4"]){
-        //再次购买
+        //继续支付
         //act = buy_again_order&user_id=?&order_id=?
         post = [NSString stringWithFormat:_iPs_POST4,_iPs_POSTAction4,_iPs_POSTID,_OrderID];
     }else if([_iPs_POSTQueryOption isEqualToString:@"5"]){
@@ -751,7 +858,7 @@
     
     NSLog( @"Result: %@", [dict description] );
 
-    ///////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
     
     //数据页面请求结果的解析
     if([_iPs_POSTQueryOption isEqualToString:@"0"]){
@@ -771,7 +878,7 @@
         [self resolverebackOrder:dict];
         
     }else if([_iPs_POSTQueryOption isEqualToString:@"4"]){
-        //再次购买
+        //继续支付
         //act = buy_again_order&user_id=?&order_id=?
         [self resolvebuyAgain:dict];
     }else if([_iPs_POSTQueryOption isEqualToString:@"5"]){
@@ -903,8 +1010,11 @@
         _OrderStatus=[dict_order objectForKey:@"order_status"];
         _PayStatus=[dict_order objectForKey:@"pay_status"];
     
-        _itemTotal =[dict_order objectForKey:@"order_amount"];
-
+        _itemTotal = [dict_order objectForKey:@"goods_amount"];
+        _payTotal = [dict_order objectForKey:@"order_amount"]; //应付款
+        
+        _PayID = [dict_order objectForKey:@"pay_id"];
+        
         _lbID.text = _Ordersn;
         
         
@@ -928,12 +1038,18 @@
         
         self.lbDescription.text = self.itemdetail;
         //self.lbAmount.text = self.itemAmount;
+        if ((![_payTotal isEqualToString:_itemTotal])&&(![_payTotal isEqualToString:@"0.00"])) {
+            self.lbContinue.text = [[NSString alloc] initWithFormat:@"还需付%@元", _payTotal];
+            _OrderAction = @"继续支付";
+            _iPs_POSTQueryOption =@"4";
+        }
+        
+        
         //0 未付款
         //1 付款中
         //2 已付款
         if ([_PayStatus  isEqual: @"0"]) {
             self.lbPayStatus.text = @"未付款";
-            _OrderAction=@"支付";
         }else if([_PayStatus  isEqual: @"1"]) {
             self.lbPayStatus.text = @"付款中";
             _OrderAction=@"支付";
@@ -942,8 +1058,8 @@
             _OrderAction=@"已付款";
         }else{
             self.lbPayStatus.text = @"未付款";
-            _OrderAction=@"支付";
         }
+        
         
         //0 未确认
         //1 已确认
@@ -980,16 +1096,37 @@
             self.lbOrderStatus.textColor = [UIColor redColor];
         }
         
+        if ([_PayStatus isEqualToString:@"0"]) {
+            if ([_OrderStatus isEqualToString:@"4"]) {
+                //退款
+                _OrderAction = @"中止购买";
+            }else if ([_OrderStatus isEqualToString:@"1"]) {
+                //购买过的订单但并未支付
+                _OrderAction = @"继续支付";
+            }else{
+                _OrderAction = @"支付";
+                
+            }
+        }else if([_PayStatus isEqualToString:@"2"]){
+            //已付款
+            _OrderAction = @"已付款";
+        }else{
+            _OrderAction = @"支付";
+            
+        }
+        
+        
         //时间转换 promote_end_date
         NSNumber * promoteend= [dict_order objectForKey:@"add_time"];
         
-        int nmEndDate = [promoteend intValue];
+        int nmEndDate = [promoteend intValue]+ 8*60*60;
         if (nmEndDate>0) {
             NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:nmEndDate];
             
             //处理日期时间的格式
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            
+            [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"Asia/Shanghai"]];
+            //[dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
             [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
             
             NSString *destDateString = [dateFormatter stringFromDate:confromTimesp];
@@ -1142,6 +1279,9 @@
 //对于支付中的订单(部分完成)
 -(void)resolvebuyAgain:(NSDictionary*)res
 {
+    
+    //解析订单支付信息后进入支付页面 支付尾款 order_amount
+    
     NSNumber *resultCodeObj = [res objectForKey:@"is_error"];
     if (resultCodeObj==nil) {
         //无法处理的结果

@@ -26,7 +26,9 @@
 @property (strong, nonatomic) NSString *iPs_PageName; //页面名称(用于标记参数组)
 @property (strong, nonatomic) NSString *iPs_URL; //请求数据接口模板--地址
 @property (strong, nonatomic) NSString *iPs_PAGE; //请求数据接口模板--页面
+@property (strong, nonatomic) NSString *iPs_PAGE2;//页面请求
 @property (strong, nonatomic) NSString *iPs_POST; //请求数据POST参数模板
+@property (strong, nonatomic) NSString *iPs_POST2; //请求数据POST参数模板
 @property (strong, nonatomic) NSString *iPs_POSTAction; //请求数据POST参数Action
 
 //传入变化的参数组,参数数目根据接口需要而变化
@@ -50,6 +52,7 @@
 
 @implementation carswashServiceTableViewController
 
+#pragma mark - initial View
 //底层的初始化
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -75,6 +78,15 @@
         [self startRequest];
     }
     
+    ////[self setServiceTitle];
+    
+    //地区变更，刷新
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    if ((delegate.userAreaID != nil)&&(![delegate.userAreaID isEqualToString:@""])) {
+        _iPs_POSTQueryRegion = delegate.userAreaID;
+    }
+
+    
 }
 
 //页面基本元素已载入,开始增添个性化的功能
@@ -93,7 +105,7 @@
 
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.rowHeight = 68;
+    self.tableView.rowHeight = 78;//68;
     //self.tableView.allowsSelection = NO; // We essentially implement our own selection
     //self.tableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0); // Makes the horizontal row seperator stretch the entire length of the table view
     
@@ -119,6 +131,8 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    [_listData removeAllObjects ];
+    [self startRequest];
 }
 
 //初始化页面变量组和参数
@@ -131,13 +145,17 @@
     _iPs_URL=delegate.iPs_URL; //请求数据接口模板--地址
 
     _iPs_PAGE=@"category_app.php"; //请求数据接口模板--页面
+    _iPs_PAGE2=@"distance.php";      //距离查询
     _iPs_POST=@"act=%@&cat_id=%@&page=%d&sel_attr=%@&region_id=%@"; //请求数据POST参数模板
+    _iPs_POST2=@"act=%@&cat_id=%@&page=%d&sel_attr=%@&region_id=%@&latitude=%@&longitude=%@&meter=%@"; //请求数据POST参数模板
     _iPs_POSTAction =@"wash_list";
     
     _iPs_POSTID=@"139"; //请求数据POST参数ID1
     _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2
-    _iPs_POSTQueryRegion=@"298"; //请求数据POST参数ID3
-    
+    _iPs_POSTQueryRegion=delegate.userAreaID ; //请求数据POST参数ID3
+    if (_iPs_POSTQueryRegion==nil) {
+        _iPs_POSTQueryRegion = @"298";
+    }
     //设置分类
     if ((delegate.categorylist ==nil)||([delegate.categorylist isEqualToString:@""]))
     {
@@ -145,7 +163,7 @@
         _iPs_POSTID = delegate.categorylist;
     
     }
-    
+    [self setServiceTitle];
     //不随页面类型改变的部分
     _iPageIndex = 1;//初始化页面序号
     _CellBgColor =[UIColor colorWithRed:49/255.0 green:155/255.0 blue:205/255.0 alpha:0.15];
@@ -331,7 +349,9 @@
     
     //cell.cellImg.image = [UIImage imageNamed:strImgURL];
     cell.cellMemo.text = [dict objectForKey:@"address_street"];
+    //已售
     NSString *strLeve = [[NSString alloc] initWithFormat:@"已售 %@",[dict objectForKey:@"total"]];
+        
     cell.cellLeve.text = strLeve;
     
     cell.cellOrder.text = [NSString stringWithFormat:@"%d", indexPath.row+1];
@@ -367,8 +387,11 @@
         cell.cellPrice.text = strPrice;
         cell.cellcmsPrice.text = [[NSString alloc] initWithFormat:@"%1.0f元",[nmMKPrice doubleValue]];
         
+        
     }
     
+        cell.cellDistance.text = [dict objectForKey:@"distance"];
+        //cell.cellDistance.text = @"<500m";
     }@catch (NSException *exception) {
         
     }
@@ -384,12 +407,32 @@
     return cell;
 }
 
-
+#pragma mark - Event Processor
 //订单完成后跳转
 -(void)ServiceRefresh:(NSNotification*)notification {
     
-    //
+    
+    
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    
+    //地区变更，刷新
+    if ((delegate.userAreaID != nil)&&(![delegate.userAreaID isEqualToString:@""])) {
+        _iPs_POSTQueryRegion = delegate.userAreaID;
+
+    }
+    
+    if ((delegate.categorylist ==nil)||([delegate.categorylist isEqualToString:@""]))
+    {
+        _iPs_POSTID = @"139";
+    }else{
+        _iPs_POSTID = delegate.categorylist;
+        
+    }
     NSLog(@"服务列表页面刷新通知,%@", _iPs_POSTID );
+    
+    [self setServiceTitle];
+    
+    _iPageIndex = 0;
     [self startRequest];
 }
 
@@ -401,11 +444,23 @@
         return;
     }
     
+    self.tabBarController.selectedIndex = 1;
+    [self performSelector:@selector(LocationDelay) withObject:nil afterDelay:0.8f];
+    
+    
+    //[self.navigationController pushViewController:poimapview animated:NO];
+
+    
+}
+
+- (void)LocationDelay{
     NSMutableDictionary*  dict = self.listData[0];
     
     
     //取导航列表直接推视图
     NSArray *arrControllers = self.tabBarController.viewControllers;
+    self.tabBarController.selectedIndex = 1;
+    
     for(UIViewController *viewController in arrControllers)
     {
         if([viewController isKindOfClass:[navMapsViewController class]])
@@ -468,12 +523,9 @@
             // view controller
         }
     }
-    
-    
-    //[self.navigationController pushViewController:poimapview animated:NO];
-
-    
 }
+
+
 
 //按照条件查找
 - (IBAction)btnFilter:(id)sender {
@@ -490,15 +542,15 @@
                                   delegate:self
                                   cancelButtonTitle:@"取消"
                                   destructiveButtonTitle:@"默认销量排序"
-                                  otherButtonTitles:@"按人气关注度",@"最新上架",@"优惠价格最高",@"优惠价格最低",nil];
+                                  otherButtonTitles:@"按人气关注度",@"最新上架",@"优惠价格最高",@"优惠价格最低",@"离我最近",nil];
 	actionSheet.actionSheetStyle =  UIActionSheetStyleAutomatic;
 	[actionSheet showInView:self.view];
     
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSLog(@"过滤条件选择 = %i",buttonIndex);
-    
+    //NSLog(@"过滤条件选择 = %i",buttonIndex);
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
     NSString *lsButtonTitle = @"";
 
     switch (buttonIndex) {
@@ -523,13 +575,29 @@
             lsButtonTitle = @"优惠价最低";
             break;
         case 5:
+            _iPs_POSTQueryOption = @"6";
+            lsButtonTitle = @"距离最近";
+            //如果位置不确定需要先推送到地图定位后再回来刷新
+            if ((delegate.userlatitude==nil)||([delegate.userlatitude isEqualToString:@""])) {
+                NSString *lsMsg = [[NSString alloc]initWithFormat:@" %@ 筛选需要开启 定位服务" ,lsButtonTitle];
+                
+                [delegate showNotify:lsMsg HoldTimes:2.5];
+                self.tabBarController.selectedIndex = 1;
+                return;
+            }
+
+            break;
+        case 6:
             return;
             break;
+    
         }
     
     //[self setTitle:lsButtonTitle];
     //_barButtonItem = [[UIBarButtonItem alloc] initWithTitle:lsButtonTitle style:UIBarButtonItemStyleDone target:self action:@selector(btnFilter)];
     //self.navigationItem.leftBarButtonItem = _barButtonItem;
+    
+    
 
 
     //重新加载数据
@@ -537,9 +605,24 @@
     [self startRequest];
     
     NSString *lsNotifyTitle = [[NSString alloc]initWithFormat:@"按照 %@ 筛选数据" ,lsButtonTitle];
-    
-    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
-    [delegate showNotify:lsNotifyTitle HoldTimes:3];
+
+    [delegate showNotify:lsNotifyTitle HoldTimes:2];
+}
+
+//更新服务列表标题
+- (void) setServiceTitle{
+    NSLog(@"页面标题：%@",_iPs_POSTID);
+    if ([_iPs_POSTID isEqualToString:@"139" ]) {
+        self.title = @"洗车服务";
+    }else if ( [_iPs_POSTID isEqualToString:@"141" ]) {
+        self.title = @"打蜡服务";
+    }else if ( [_iPs_POSTID isEqualToString:@"176" ]) {
+        self.title = @"贴膜服务";
+    }else if ( [_iPs_POSTID isEqualToString:@"181" ]) {
+        self.title = @"推荐套餐";
+    }else{
+        self.title = @"服务列表";
+    }
 }
 /*
 // Override to support conditional editing of the table view.
@@ -615,10 +698,16 @@
         
         //NSString *strName = [dict objectForKey:@"goods_name"];
         itemdetail.title = [dict objectForKey:@"goods_name"];
-        
+        //已售
+        itemdetail.iSellNumber = [dict objectForKey:@"total"];
         
         itemdetail.itemid = [dict objectForKey:@"goods_id"];
         NSLog(@"进入明细页面 %d",selectedRow);
+        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
         
     }
 }
@@ -631,6 +720,9 @@
 -(void)startRequest
 {
     _isConnected = false;
+    
+    
+    
     NSString *strURL = [[NSString alloc] initWithFormat:@"%@%@",_iPs_URL,_iPs_PAGE];
     
     NSURL *url = [NSURL URLWithString:[strURL URLEncodedString]];
@@ -639,6 +731,7 @@
     //设置分类
     if ((delegate.categorylist ==nil)||([delegate.categorylist isEqualToString:@""]))
     {
+        _iPs_POSTID = @"139";
     }else{
         _iPs_POSTID = delegate.categorylist;
         
@@ -646,6 +739,20 @@
 
     //NSString *post = [NSString stringWithFormat:@"act=wash_list&cat_id=139&page=%d&sel_attr=0&region_id=%@",_iPageIndex,@"298"];
     NSString *post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID,_iPageIndex,_iPs_POSTQueryOption,_iPs_POSTQueryRegion];
+    
+    if ([_iPs_POSTQueryOption isEqualToString:@"6"]) {
+        //距离最近        pt.latitude = 35.087341;pt.longitude = 117.175142;
+        //////////////////////////////////////////////////////////////////
+        strURL = [[NSString alloc] initWithFormat:@"%@%@", _iPs_URL,_iPs_PAGE2];
+        
+        url = [NSURL URLWithString:[strURL URLEncodedString]];
+        @try{
+        post = [NSString stringWithFormat:_iPs_POST2,_iPs_POSTAction,_iPs_POSTID,_iPageIndex,_iPs_POSTQueryOption,_iPs_POSTQueryRegion,delegate.userlatitude,delegate.userlongitude,@"10000"];
+        }@catch(NSException *excp1){
+            NSLog(@"最近距离查询数据错误");
+        }
+        
+    }
     
 	NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
 	
@@ -720,25 +827,12 @@
     _isConnected = true;
     NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:_datas options:NSJSONReadingAllowFragments error:nil];
     
-    NSLog( @"Result: %@", [dict description] );
+    //NSLog( @"Result: %@", [dict description] );
     //激活数据列表的刷新
     [self reloadView:dict];
 }
 
-//控制Page页面数据翻页
-- (int)setPageNext
-{
-	const int N = 15;
-	int nextPage = 0;
-    nextPage = _iPageIndex + 1;
-    if (nextPage>N) {
-        nextPage = 1;
-    }
-    _iPageIndex = nextPage;
-    NSLog(@"NextPage=%d",_iPageIndex);
-    return nextPage;
-}
-
+#pragma mark - Page Data
 
 
 //重新加载表视图
@@ -747,9 +841,16 @@
     NSNumber *resultCodeObj = [res objectForKey:@"count"];
     if ([resultCodeObj integerValue] >=0)
     {
-        self.listData = [res objectForKey:@"goods_list"];
-        
         NSArray *results = [res objectForKey:@"goods_list"];
+        
+        self.listData = [res objectForKey:@"goods_list"];
+
+        //[self.listSort addObjectsFromArray:self.listData ];
+        //self.listSort = [res objectForKey:@"goods_list"];
+//        for (id item in self.listSort){
+//            [self.listData insertObject:item ];
+//        }
+        
         //NSNumber *nIndex = [[NSNumber alloc] initWithInt:0];
         /*
         if (results && results.count > 0)
@@ -762,18 +863,27 @@
                 NSDictionary *address = [[results objectAtIndex:nIndex]objectForKey:@"address_street"];
                 NSLog(@"id = %@, name = %@, address = %@",goods_id.description,goods_name.description, address.description);
             }
-
         }*/
         NSLog(@"列表视图加载数据...共 %d 条",results.count);
         if (results.count == 0) {
-            if (_iPageIndex != 0){
-                _iPageIndex = 0;
+            if (_iPageIndex != 1){
+                _iPageIndex = 1;
                 NSLog(@"列表视图将循环到首行记录");
                 [self startRequest];
                 return;
             }
         }
+        
         [self.tableView reloadData];
+        
+        if (_iPageIndex>1) {
+            //移动到首行
+            [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]
+                                        animated:YES
+                                  scrollPosition:UITableViewScrollPositionMiddle];
+
+        }
+        
     } else {
         //{"state":0}
         NSNumber *resultStateObj = [res objectForKey:@"state"];
@@ -794,6 +904,21 @@
     
     
 }
+
+//控制Page页面数据翻页
+- (int)setPageNext
+{
+	const int N = 15;
+	int nextPage = 0;
+    nextPage = _iPageIndex + 1;
+    if (nextPage>N) {
+        nextPage = 1;
+    }
+    _iPageIndex = nextPage;
+    NSLog(@"NextPage=%d",_iPageIndex);
+    return nextPage;
+}
+
 
 //图片的处理
 -(UIImage *) getImageFromURL:(NSString *)fileURL {

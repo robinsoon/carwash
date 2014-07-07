@@ -139,6 +139,10 @@
         //未登录
         //重新请求数据
         NSLog(@"用户未登录，重新获取数据");
+        
+        _listData = nil;
+        [self.tableView reloadData];
+        
     }else{
         if ([_userid isEqual:_iPs_POSTID]) {
             //用户没有变化，不做刷新
@@ -150,10 +154,12 @@
         _iPageIndex = 1;
         //重新请求数据
         NSLog(@"用户登录状态变更，重新获取数据");
+        
+        [self startRequest];
         }
     }
     
-    [self startRequest];
+    
     
 }
 
@@ -562,7 +568,11 @@
         
         //OrderAction
         NSLog(@"进入明细页面 %d",selectedRow);
-        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+
     }
 }
 

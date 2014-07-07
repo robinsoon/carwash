@@ -8,7 +8,7 @@
 
 #import "carswashDetailViewController.h"
 #import "UIButton+Bootstrap.h"
-
+#import "navMapsViewController.h"
 #import "OrderDetailViewController.h"
 #import "OrderSubmitViewController.h"
 @interface carswashDetailViewController ()
@@ -48,18 +48,19 @@
     NSString *strID = [[NSString alloc] initWithFormat:@"ID: %@",self.itemid];
     self.lbID.text = strID;
 
+    //销量
+    self.lbNumber.text = _iSellNumber;
+    
     [self.btnBuy dangerStyle];
     
     [self.btnBuy addAwesomeIcon:FAIconCheck beforeTitle:YES];
-    
-    
+
     [self.btnAddCart successStyle];
     
     //[self.btnAddCart addAwesomeIcon:FAIconStar beforeTitle:NO];
     [self.btnAddCart addAwesomeIcon:FAIconShoppingCart beforeTitle:NO];
     
-    
-    self.detailscrollview.contentSize = CGSizeMake(320,800);
+    self.detailscrollview.contentSize = CGSizeMake(320,650);
     [self.detailscrollview addSubview:self.subViewPrice];
     [self.detailscrollview addSubview:self.subViewComment];
     //self.detailscrollview.delegate = self;
@@ -156,7 +157,11 @@
         itemOrder.OrderStatus= @"0";
         
         NSLog(@"进入订单页面 %@",self.itemid);
-        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+
     }
     
     //OrderSubmitViewController *ordersubmit = [];
@@ -311,13 +316,13 @@
         self.lbDiscount.text =@"";
     }
 
-    
+    @try{
     //填充Detail数据字段
     self.lbName.text =[res objectForKey:@"goods_name"];
 
     self.lbClickcount.text =[res objectForKey:@"click_count"];
     self.lbgoodsn.text =[res objectForKey:@"goods_sn"];
-    self.lbNumber.text =[res objectForKey:@"goods_number"];
+    
     self.lbStyle.text =[res objectForKey:@"add_time"];
     
     
@@ -333,6 +338,29 @@
     
     _Locationpt.latitude =[[res objectForKey:@"Latitude"] doubleValue];
     _Locationpt.longitude =[[res objectForKey:@"Longitude"] doubleValue];
+    
+    //销量
+    self.lbNumber.text = _iSellNumber;//[res objectForKey:@"goods_number"];
+    
+    //库存
+    NSInteger goodsnumber = [[res objectForKey:@"goods_number"] integerValue];
+    if ((10>=goodsnumber)&&(0<goodsnumber)) {
+        //货源紧张
+        _lbsellout.text = [[NSString alloc] initWithFormat:@"限售%d个",(int)goodsnumber];
+
+        _lbsellout.hidden = false;
+        _btnBuy.hidden = false;
+        [self.btnBuy dangerStyle];
+    }else if(0>=goodsnumber) {
+        //已售完
+        _lbsellout.text = @"已售完";
+        _lbsellout.hidden = false;
+        _btnBuy.hidden = true;
+    }else{
+        _lbsellout.hidden = true;
+        _btnBuy.hidden = false;
+        [self.btnBuy dangerStyle];
+    }
     
     //带有缓存机制的图片加载
     NSString *strImgName = [res objectForKey:@"goods_img"];
@@ -361,7 +389,10 @@
              NSLog(@"异步载入图片 %@",strImgURL);
          }
      }];
+        
+    }@catch(NSException *exp1){
     
+    }
     //加载完毕
     NSLog(@"商品&服务详情加载完毕。");
 }
@@ -414,6 +445,11 @@
     
     self.tabBarController.selectedIndex = 1;
     [self performSelector:@selector(LocationDelay) withObject:nil afterDelay:0.5f];
+    return;
+    
+    //[self LocationDelay];
+    
+    
     /*
      //不用下面的这个方法，切换地图后详情页面布局受到影响(顶部显示不全)
      PoiSearchViewController *poimapview = [[PoiSearchViewController alloc] init];
@@ -426,6 +462,69 @@
 }
 
 - (void)LocationDelay{
+    
+    
+    //取导航列表直接推视图
+    NSArray *arrControllers = self.tabBarController.viewControllers;
+    for(UIViewController *viewController in arrControllers)
+    {
+        if([viewController isKindOfClass:[navMapsViewController class]])
+        {
+            //NavigationController
+            UINavigationController *navCtrl = (UINavigationController *)viewController;
+            
+            //NSLog(@"%@",navCtrl.viewControllers);
+            NSLog(@"服务列表标注到地图");
+            
+            PoiSearchViewController *poimapview;
+            
+            //如果已有初始化过的 PoiSearchViewController 则不再创建新实例
+            for (UIViewController *mapviewController in navCtrl.viewControllers) {
+                
+                if([mapviewController isKindOfClass:[PoiSearchViewController class]]){
+                    //存在,强制转换为地图的View
+                    poimapview = (PoiSearchViewController *)mapviewController;
+                    //传递参数
+//                    poimapview.listData = nil;
+//                    poimapview.itemname = _lbName.text;
+//                    poimapview.Locationpt = _Locationpt;
+//                    poimapview.iZoomLevel = 14;
+                    
+                    //最后跳转页面
+                    self.tabBarController.selectedIndex = 1;
+                    
+                    [poimapview LocationRefresh];
+                    return;//防止重复推同一个视图
+                }
+                
+            }
+            
+            if (poimapview == nil) {
+                //创建新实例
+                poimapview = [[PoiSearchViewController alloc] init];
+            }
+            
+            //推送地图的视图
+            [navCtrl pushViewController:poimapview animated:NO];
+            //PoiSearchViewController 太多实例
+            
+            //传递参数
+//            poimapview.listData = nil;
+//            poimapview.itemname = _lbName.text;
+//            poimapview.Locationpt = _Locationpt;
+//            poimapview.iZoomLevel = 14;
+            
+            //最后跳转页面
+            self.tabBarController.selectedIndex = 1;
+            
+            
+        }
+        else
+        {
+            // view controller
+        }
+    }
+    
     //以下代码需要延迟执行，如果是地图没有初始化
     NSString *strName = _lbName.text;
     NSString *strlatitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.latitude];

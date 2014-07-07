@@ -41,6 +41,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *lbUsername;
 @property (weak, nonatomic) IBOutlet UILabel *lbUserInfo;
 @property (weak, nonatomic) IBOutlet UIButton *btnLogin;
+@property (weak, nonatomic) IBOutlet UIButton *btnAbout;
+@property (weak, nonatomic) IBOutlet UIButton *btnmyCoupons;
+@property (weak, nonatomic) IBOutlet UILabel *txtMoney;
+@property (weak, nonatomic) IBOutlet UILabel *txtPoint;
 
 @property (strong, nonatomic) NSString * orderID;   //订单ID
 

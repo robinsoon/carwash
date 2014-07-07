@@ -27,10 +27,13 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.tongkang.tabswashingcars</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>MAPBaiduCARWASH</string>
 				<string>MQPAlipayCARWASH</string>
 			</array>
 		</dict>

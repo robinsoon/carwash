@@ -49,13 +49,14 @@
                                                  name:@"RegisterCompletionNotification"
                                                object:nil];
     
-    [self.btnOK dangerStyle];
+    //[self.btnOK dangerStyle];
+    [self.btnOK successStyle];
     
     [self.btnOK addAwesomeIcon:FAIconUser  beforeTitle:YES];
     
-    [self.btnRegist successStyle];
+    //[self.btnRegist successStyle];
     
-    [self.btnRegist addAwesomeIcon:FAIconKey beforeTitle:YES];
+    //[self.btnRegist addAwesomeIcon:FAIconKey beforeTitle:YES];
     
     if(_isDebug){
         _txtUserName.text = @"syb_ceshi";
@@ -112,7 +113,7 @@
     _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
 
-    _isDebug = true;
+    _isDebug = false;
 }
 
 /*
@@ -130,14 +131,29 @@
 -(void)registerCompletion:(NSNotification*)notification {
     
     NSDictionary *theData = [notification userInfo];
+    
+    NSString *isRegist = [theData objectForKey:@"isRegist"];
+    if ([isRegist isEqualToString:@"0"]) {
+        //注册失败
+        NSLog(@"注册无效！");
+        _isLogin = false;
+        return;
+    }else if ([isRegist isEqualToString:@"1"]){
+        NSLog(@"注册成功！回到登录页面");
+        _isLogin = true;
+    }
+    
+    _userid = [theData objectForKey:@"ID"];
+    
     _username = [theData objectForKey:@"name"];
     _password = [theData objectForKey:@"password"];
-    _userid = [theData objectForKey:@"ID"];
+    
+    _userphone = [theData objectForKey:@"phone"];
+    
     NSLog(@"注册用户返回,username = %@",_username);
     
-    
-    
-    if ([_userid isEqual:@""]) {
+    if (([_userid isEqualToString:@""])||(_userid==nil)) {
+        NSLog(@"注册用户ID无效");
         return;
     }
     
@@ -145,11 +161,9 @@
     if (_isLogin == true) {
         _txtPassword.text=_password;
         //直接登录
-        
+        NSLog(@"注册用户首次登录");
         [self btnLogin:_btnOK];
     }
-
-    
 }
 
 
@@ -216,6 +230,8 @@
     _iPs_POSTQueryOption=_password; //请求数据POST参数ID2
     
     if ([_username  isEqual: @""]||[_password isEqual:@""]) {
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+        [delegate showNotify:@"用户名和密码不能为空！" HoldTimes:2];
         return;
     }
     
@@ -254,11 +270,13 @@
     //存档配置
     [delegate SaveConfig];
     
+    NSString *strMoney = [[NSString alloc]initWithFormat:@"%1.2f",_usermoney];
+    NSString *strpoints = [[NSString alloc]initWithFormat:@"%1.0f",_userpoints];
     [self dismissViewControllerAnimated:YES completion:^{
         NSLog(@"Modal View done");
         //构造消息
 
-        NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"isLogin",_userid, @"ID",_username, @"name", nil];
+        NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"isLogin",_userid, @"ID",_username, @"name",_password,@"user_pass",strMoney,@"user_money",strpoints,@"pay_points", nil];
         //传递消息
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"LoginCompletionNotification"

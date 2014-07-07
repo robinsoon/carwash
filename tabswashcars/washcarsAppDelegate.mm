@@ -12,6 +12,7 @@
 #import "PayViewController.h"
 #import "AliPayViewController.h"
 
+
 BMKMapManager* _mapManager;
 @implementation washcarsAppDelegate
 @synthesize window;
@@ -38,6 +39,7 @@ BMKMapManager* _mapManager;
     _isAutoLogin = true;
     _isreachChanged = false;        //网络连接变更
     _reachStatus=@"";               //网络连接状态
+    //_userAreaID = @"298";
     //禁止加载应用的过程中做复杂的业务，以防卡死在黑屏阶段
     //首页加载完成以后再去处理初始化工作
 
@@ -136,29 +138,58 @@ BMKMapManager* _mapManager;
 		
 		if (result.statusCode == 9000)
         {
+            NSLog(@"交易成功");
+            
+            [self showNotify:@"交易成功！您的支付已经完成。" HoldTimes:1];
+            
+            //isPayCompletion
+            NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"isPayCompletion", nil];
+
+            //传递消息
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"UserPayCompletionNotification"
+             object:nil
+             userInfo:dataDict];
+            
+            return;
 			/*
 			 *用公钥验证签名 严格验证请使用result.resultString与result.signString验签
 			 */
             
             //交易成功
-            //            NSString* key = @"签约帐户后获取到的支付宝公钥";
-            //			id<DataVerifier> verifier;
-            //            verifier = CreateRSADataVerifier(key);
-            //
-            //			if ([verifier verifyString:result.resultString withSign:result.signString])
-            //            {
-            //                //验证签名成功，交易结果无篡改
-            //			}
+//            NSString* key = @"签约帐户后获取到的支付宝公钥";
+//			id<DataVerifier> verifier;
+//            verifier = CreateRSADataVerifier(key);
+//
+//			if ([verifier verifyString:result.resultString withSign:result.signString])
+//            {
+//                //验证签名成功，交易结果无篡改
+//			}
             
         }
         else
         {
             //交易失败
+            NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"0", @"isPayCompletion", nil];
+            
+            //传递消息
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"UserPayCompletionNotification"
+             object:nil
+             userInfo:dataDict];
+            
         }
     }
     else
     {
         //失败
+        NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"0", @"isPayCompletion", nil];
+        
+        //传递消息
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"UserPayCompletionNotification"
+         object:nil
+         userInfo:dataDict];
     }
     
 }
@@ -285,6 +316,14 @@ BMKMapManager* _mapManager;
 
     _userpoints = [[self readUserDefaults:@"userpoints"] doubleValue];
     _usermoney = [[self readUserDefaults:@"usermoney"] doubleValue];
+    
+    //位置信息
+    _userProvince = [self readUserDefaults:@"userprovince"];
+    _userCity = [self readUserDefaults:@"usercity"];
+    _userDistrict = [self readUserDefaults:@"userdistrict"];
+    _userAddress  = [self readUserDefaults:@"useraddress"];
+    _userAreaID  = [self readUserDefaults:@"userareaid"];
+    [self ReadUserLocation];
 }
 
 //统一存取用户数据 -- 保存
@@ -306,8 +345,61 @@ BMKMapManager* _mapManager;
     [self saveUserDefaults:@"userpoints" setValue:lsValue];
     lsValue = [NSString  stringWithFormat:@"%f",_usermoney];
     [self saveUserDefaults:@"usermoney" setValue:lsValue];
+    
+    [self saveUserDefaults:@"userlatitude" setValue:_userlatitude];
+    [self saveUserDefaults:@"userlongitude" setValue:_userlongitude];
+    
+    [self saveUserDefaults:@"userprovince" setValue:_userProvince];
+    [self saveUserDefaults:@"usercity" setValue:_userCity];
+    [self saveUserDefaults:@"userdistrict" setValue:_userDistrict];
+    [self saveUserDefaults:@"useraddress" setValue:_userAddress];
+    [self saveUserDefaults:@"userareaid" setValue:_userAreaID];
 }
 
+//更新坐标
+- (void)SetUserLocation:(NSString *)Pmlatitude longitude:(NSString *)Pmlongitude
+{
+    NSLog(@"保存用户位置信息");
+
+    _userlatitude = Pmlatitude;
+    _userlongitude = Pmlongitude;
+
+}
+- (void)SetUserLocation:(CLLocationCoordinate2D)PmUserpt
+{
+    NSLog(@"保存用户位置信息");
+    
+    _Userpt = PmUserpt;
+    
+    _userlatitude = [[NSString alloc] initWithFormat:@"%f" ,PmUserpt.latitude ];
+    _userlongitude = [[NSString alloc] initWithFormat:@"%f" ,PmUserpt.longitude ];
+
+    [self saveUserDefaults:@"userlatitude" setValue:_userlatitude];
+    [self saveUserDefaults:@"userlongitude" setValue:_userlongitude];
+
+}
+
+- (void)ReadUserLocation
+{
+
+    _userlatitude = [self readUserDefaults:@"userlatitude"];
+    _userlongitude = [self readUserDefaults:@"userlongitude"];
+    
+    if ((_userlatitude == nil)||([_userlatitude isEqualToString:@""])) {
+        //无定位
+        
+        
+        
+        
+        return;
+    }
+    
+    CLLocationCoordinate2D PmUserpt;
+    PmUserpt.latitude = [_userlatitude doubleValue];
+    PmUserpt.longitude = [_userlongitude doubleValue];
+    _Userpt = PmUserpt;
+    
+}
 
 //
 /*!
