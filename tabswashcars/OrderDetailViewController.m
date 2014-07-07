@@ -677,6 +677,9 @@
         itemPay.itemPay = self.payTotal; //订单应付款 order_amount
         itemPay.Payid = self.PayID;
         
+        itemPay.usermoney = _usermoney;
+        itemPay.userpoints = _userpoints;
+        
         //如果是继续支付则显示剩余金额,并在支付时标记
         if ((![_payTotal isEqualToString:_itemTotal])&&(![_payTotal isEqualToString:@"0.00"])) {
             
@@ -987,6 +990,7 @@
 //刷新订单明细的返回
 -(void)resolveOrderDetail:(NSDictionary*)res
 {
+    @try{
     NSNumber *resultCodeObj = [res objectForKey:@"is_error"];
     if (resultCodeObj==nil) {
         //无法处理的结果
@@ -999,7 +1003,7 @@
         //解析订单明细：
         NSDictionary* dict_goods = [res objectForKey:@"order_goods"];
         NSDictionary* dict_order = [res objectForKey:@"order_info"];
-        //NSDictionary* dict_paylist = [res objectForKey:@"order_select"]; //支付方式选择
+        NSDictionary* dict_paylist = [res objectForKey:@"order_select"]; //支付方式选择
         //NSDictionary* dict_payname = [res objectForKey:@"order_pay"];    //支付方式类型
         
         
@@ -1017,8 +1021,21 @@
         
         _lbID.text = _Ordersn;
         
+        //余额、积分
+        NSLog(@"更新用户余额、积分信息");
+        _usermoney = [[dict_paylist objectForKey:@"your_surplus"]doubleValue];
+        _userpoints = [[dict_paylist objectForKey:@"your_integral"]doubleValue];
         
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
 
+        delegate.usermoney = _usermoney;
+        delegate.userpoints = _userpoints;
+        
+        //存档配置
+        [delegate SaveConfig];
+
+        
+        
         //订单信息的解析
         _itemname = [dict_goods objectForKey:@"goods_name"];
         _itemprice = [dict_goods objectForKey:@"goods_price"];
@@ -1167,6 +1184,7 @@
                                                   otherButtonTitles: nil];
         [alertView show];
     }
+    }@catch(NSException *excp2){}
 }
 
 //删除订单的返回
@@ -1192,7 +1210,11 @@
          postNotificationName:@"OrderRefreshNotification"
          object:nil
          userInfo:nil];
-        
+
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"AccountRefreshNotification"
+         object:nil
+         userInfo:nil];
         //返回到前一个界面
         //[self dismissViewControllerAnimated:YES completion:nil]; //模态
         [self.navigationController popViewControllerAnimated:YES]; //PUSH
@@ -1254,6 +1276,11 @@
         //传递消息
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"couponsRefreshNotification"
+         object:nil
+         userInfo:nil];
+        
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"AccountRefreshNotification"
          object:nil
          userInfo:nil];
         //返回到前一个界面

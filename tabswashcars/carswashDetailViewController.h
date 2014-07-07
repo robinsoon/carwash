@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NSString+URLEncoding.h"
 #import "UIImageView+WebCache.h"
-#import "PoiSearchViewController.h"
+
 #import "washcarsAppDelegate.h"
 
 

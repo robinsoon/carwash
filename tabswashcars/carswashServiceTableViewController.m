@@ -10,6 +10,8 @@
 #import "carswashDetailViewController.h"
 #import "MJRefresh.h"
 #import "navMapsViewController.h"
+#import "PoiSearchViewController.h"
+
 @interface carswashServiceTableViewController (){
     MJRefreshHeaderView *_header;
     MJRefreshFooterView *_footer;
@@ -392,6 +394,17 @@
     
         cell.cellDistance.text = [dict objectForKey:@"distance"];
         //cell.cellDistance.text = @"<500m";
+        
+        //调整文本位置
+        //位置向上偏移
+        //CGPoint cellPricePoint = cell.cellPrice.center;
+        
+        //cellPricePoint.x = cellPricePoint.x - 20;
+        
+        //cell.cellPrice.center = cellPricePoint;
+        
+        
+        
     }@catch (NSException *exception) {
         
     }
@@ -455,8 +468,7 @@
 
 - (void)LocationDelay{
     NSMutableDictionary*  dict = self.listData[0];
-    
-    
+
     //取导航列表直接推视图
     NSArray *arrControllers = self.tabBarController.viewControllers;
     self.tabBarController.selectedIndex = 1;

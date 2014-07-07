@@ -66,6 +66,15 @@
         [self startRequest];
     }
     
+    //主动查一下积分、余额信息 （以后改为消息触发）
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    _usermoney = delegate.usermoney;
+    _userpoints = delegate.userpoints;
+    
+    _txtMoney.text = [[NSString alloc]initWithFormat:@"余额 %1.2f 元", _usermoney];
+    _txtPoint.text = [[NSString alloc]initWithFormat:@"积分 %1.0f", _userpoints];
+    
+    
 }
 //页面基本元素已载入,开始增添个性化的功能
 - (void)viewDidLoad
@@ -275,6 +284,7 @@
     //
     _withnoLogin = @"";
     NSLog(@"订单无法提交的跳转，缺少用户登录信息。");
+    [self btnLogin:_btnLogin];
 }
 
 //刷新优惠券列表
@@ -697,6 +707,30 @@
     if (buttonIndex == 1) {
         //退出
         _isQuitCurrent = true;
+        
+
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+        
+        delegate.isLogin= false;
+        delegate.userid = @"";
+
+        delegate.password = @"";
+        delegate.isAutoLogin = false;
+        
+        delegate.usermoney = 0;
+        delegate.userpoints = 0;
+        
+        //存档配置
+        [delegate SaveConfig];
+        
+        NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"0", @"isLogin",@"", @"ID",@"", @"name", nil];
+        
+            //传递消息
+        [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"LoginCompletionNotification"
+             object:nil
+             userInfo:dataDict];
+
         //重要：主动调用 Segue 呈现页面
         NSLog(@"退出登录");
         [self performSegueWithIdentifier:@"userlogin" sender:self];
@@ -878,37 +912,31 @@
         }*/
     }
     
-
+    //以下代码需要重构，由于考虑兼容多种结果导致解析异常
+    //需要规范请求返回数据格式
     
     @try{
         //尝试取 is_error
-        NSNumber *resultCodeObj = [res objectForKey:@"is_error"];
-        if (resultCodeObj==nil) {
-            //无法处理的结果
-            
-            resultCodeObj = [[NSNumber alloc] initWithInt:0];
-            
-        }
         
-        if ([resultCodeObj integerValue] ==1)
+//        NSNumber *resultCodeObj = [res objectForKey:@"is_error"];
+//            
+//        if (resultCodeObj==nil) {
+//            //无法处理的结果
+//            
+//            resultCodeObj = [[NSNumber alloc] initWithInt:0];
+//        }
+        int resultCodeObj = 2;
+        if (resultCodeObj  ==1)
         {
             
             NSString *strError = [res objectForKey:@"err_msg"];
             //请求失败
-            /*
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"请求错误"
-                                                                message:strError
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles: nil];
-            [alertView show];
-             */
             NSLog(@"请求数据返回 %@",strError);
             _listData = nil;
             [self.tableView reloadData];
             return;
             
-        }else{
+        }else if (resultCodeObj  ==0){
             //正常
             NSString *strResult = [res objectForKey:@"result"];
             if (strResult == nil) {

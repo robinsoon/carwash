@@ -8,7 +8,8 @@
 
 #import "couponsDetailViewController.h"
 #import "UIButton+Bootstrap.h"
-
+#import "navMapsViewController.h"
+#import "PoiSearchViewController.h"
 @interface couponsDetailViewController ()
 
 @end
@@ -111,7 +112,99 @@
     }
 }
 
+/*
 - (void)LocationDelay{
+    //以下代码需要延迟执行，如果是地图没有初始化
+    NSString *strName = _lbName.text;
+    NSString *strlatitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.latitude];
+    NSString *strlongitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.longitude];
+    NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:strName, @"name", strlatitude,@"latitude",strlongitude,@"longitude", nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"LocationPointNotification"
+     object:nil
+     userInfo:dataDict];
+    
+}*/
+
+- (void)LocationDelay{
+    
+    
+    //取导航列表直接推视图
+    NSArray *arrControllers = self.tabBarController.viewControllers;
+    for(UIViewController *viewController in arrControllers)
+    {
+        if([viewController isKindOfClass:[navMapsViewController class]])
+        {
+            //NavigationController
+            UINavigationController *navCtrl = (UINavigationController *)viewController;
+            
+            //NSLog(@"%@",navCtrl.viewControllers);
+            NSLog(@"服务列表标注到地图");
+            
+            PoiSearchViewController *poimapview;
+            
+            //如果已有初始化过的 PoiSearchViewController 则不再创建新实例
+            for (UIViewController *mapviewController in navCtrl.viewControllers) {
+                
+                if([mapviewController isKindOfClass:[PoiSearchViewController class]]){
+                    //存在,强制转换为地图的View
+                    poimapview = (PoiSearchViewController *)mapviewController;
+                    //传递参数
+                    poimapview.listData = nil;
+                    poimapview.itemname = _lbName.text;
+                    poimapview.Locationpt = _Locationpt;
+                    poimapview.iZoomLevel = 14;
+                    
+                    //最后跳转页面
+                    self.tabBarController.selectedIndex = 1;
+                    
+                    [poimapview LocationRefresh];
+                    
+                    return;
+                    
+                    NSString *strName = _lbName.text;
+                    NSString *strlatitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.latitude];
+                    NSString *strlongitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.longitude];
+                    NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:strName, @"name", strlatitude,@"latitude",strlongitude,@"longitude", nil];
+                    
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:@"LocationPointNotification"
+                     object:nil
+                     userInfo:dataDict];
+                    
+                    [poimapview LocationRefresh];
+                    return;//防止重复推同一个视图
+                }
+                
+            }
+            
+            if (poimapview == nil) {
+                //创建新实例
+                poimapview = [[PoiSearchViewController alloc] init];
+            }
+            
+            //推送地图的视图
+            [navCtrl pushViewController:poimapview animated:NO];
+            //PoiSearchViewController 太多实例
+            
+            //传递参数
+            poimapview.listData = nil;
+            poimapview.itemname = _lbName.text;
+            poimapview.Locationpt = _Locationpt;
+            poimapview.iZoomLevel = 14;
+            
+            //最后跳转页面
+            self.tabBarController.selectedIndex = 1;
+            
+            return;
+        }
+        else
+        {
+            // view controller
+        }
+    }
+    
     //以下代码需要延迟执行，如果是地图没有初始化
     NSString *strName = _lbName.text;
     NSString *strlatitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.latitude];
@@ -145,6 +238,10 @@
         //缺乏订单信息
         orderview.PageAction = @"1";    //强制刷新
         
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
     }
     
     

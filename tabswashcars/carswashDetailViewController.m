@@ -9,6 +9,7 @@
 #import "carswashDetailViewController.h"
 #import "UIButton+Bootstrap.h"
 #import "navMapsViewController.h"
+#import "PoiSearchViewController.h"
 #import "OrderDetailViewController.h"
 #import "OrderSubmitViewController.h"
 @interface carswashDetailViewController ()
@@ -485,14 +486,28 @@
                     //存在,强制转换为地图的View
                     poimapview = (PoiSearchViewController *)mapviewController;
                     //传递参数
-//                    poimapview.listData = nil;
-//                    poimapview.itemname = _lbName.text;
-//                    poimapview.Locationpt = _Locationpt;
-//                    poimapview.iZoomLevel = 14;
+                    poimapview.listData = nil;
+                    poimapview.itemname = _lbName.text;
+                    poimapview.Locationpt = _Locationpt;
+                    poimapview.iZoomLevel = 14;
                     
                     //最后跳转页面
                     self.tabBarController.selectedIndex = 1;
                     
+                    [poimapview LocationRefresh];
+                    
+                    return;
+                    
+                    NSString *strName = _lbName.text;
+                    NSString *strlatitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.latitude];
+                    NSString *strlongitude = [[NSString alloc]initWithFormat:@"%f", _Locationpt.longitude];
+                    NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:strName, @"name", strlatitude,@"latitude",strlongitude,@"longitude", nil];
+                    
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:@"LocationPointNotification"
+                     object:nil
+                     userInfo:dataDict];
+
                     [poimapview LocationRefresh];
                     return;//防止重复推同一个视图
                 }
@@ -509,15 +524,15 @@
             //PoiSearchViewController 太多实例
             
             //传递参数
-//            poimapview.listData = nil;
-//            poimapview.itemname = _lbName.text;
-//            poimapview.Locationpt = _Locationpt;
-//            poimapview.iZoomLevel = 14;
+            poimapview.listData = nil;
+            poimapview.itemname = _lbName.text;
+            poimapview.Locationpt = _Locationpt;
+            poimapview.iZoomLevel = 14;
             
             //最后跳转页面
             self.tabBarController.selectedIndex = 1;
             
-            
+            return;
         }
         else
         {

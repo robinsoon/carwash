@@ -52,7 +52,7 @@
     
     [self.btnSubmit addAwesomeIcon:FAIconKey beforeTitle:YES];
     
-    self.scrollMain.contentSize = CGSizeMake(320,450);
+    self.scrollMain.contentSize = CGSizeMake(320,550);
     [self.scrollMain addSubview:self.subView];
 }
 

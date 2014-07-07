@@ -325,6 +325,33 @@
     
 }
 
+//自动验证用户身份
+-(BOOL)autoLogin:(NSString *)name password:(NSString *)password{
+
+    [self initPage];
+    _isAutoValidate = true;
+    
+    if (([password isEqualToString:@""])||(password ==nil)) {
+        NSLog(@"自动登录无效的密码");
+        return false;
+    }
+    
+    if (([name isEqualToString:@""])||(name ==nil)) {
+        NSLog(@"自动登录无效的用户名");
+        return false;
+    }
+    
+    _username = name;
+    _password = password;
+    
+    _iPs_POSTID= name; //请求数据POST参数ID1
+    _iPs_POSTQueryOption= password; //请求数据POST参数ID2
+    
+    [self startRequest];
+    
+    return true;
+}
+
 /*
  * 开始请求Web Service
  */
@@ -435,8 +462,13 @@
         _isLogin = false;
         _lbReturn.text = @"请输入用户名和密码";
         
-        NSLog(@"登录失败！");
-        
+        NSLog(@"登录失败！%@ %@",_username,_password);
+        if (_isAutoValidate == true) {
+            //自动登录需要重置账户信息
+            [self userLogout];
+            
+            return;
+        }
         UIAlertView*alert1 = [[UIAlertView alloc]initWithTitle:@"登录失败" message:@"用户名或密码错误！" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alert1 show];
     }

@@ -63,6 +63,8 @@
 @property (nonatomic,strong) NSString *PayID;   //支付编号
 @property (nonatomic,strong) NSString *PayName;   //支付编号
 @property (nonatomic,strong) NSString *OrderDate;   //订单日期
+@property (nonatomic) double usermoney;         //余额
+@property (nonatomic) double userpoints;        //积分
 
 @property (strong, nonatomic) NSString *PageAction;           //页面动作[主要用于第一次刷新]
 //保存数据列表[表现层所依赖的内部数据集合]

@@ -1289,11 +1289,27 @@
     }
     
     if ([resultCodeObj integerValue] ==0){
+        //更新账户信息
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+        
+        _usermoney = delegate.usermoney - _usedmoney;
+        _userpoints = delegate.userpoints - _usedpoints;
+        
+        delegate.usermoney = _usermoney;
+        delegate.userpoints = _userpoints;
+        
+        NSString *lsValue = [NSString  stringWithFormat:@"%f", _usermoney];
+        [delegate saveUserDefaults:@"usermoney" setValue:lsValue];
+        lsValue = [NSString  stringWithFormat:@"%f", _userpoints];
+        [delegate saveUserDefaults:@"userpoints" setValue:lsValue];
+
+        _txtMoney.text = [[NSString alloc]initWithFormat:@"余额 %1.2f 元", _usermoney];
+        _txtPoints.text = [[NSString alloc]initWithFormat:@"积分 %1.0f", _userpoints];
+        
         if (_totalpay>0.001) {
         //需要网上支付 -- 支付宝
             NSString *lsNotifyTitle = [[NSString alloc]initWithFormat:@"正在处理支付,订单号:%@,应付金额:%1.2f元,将委托您选择的交易方式支付。",_OrderSn ,_totalpay];
             
-            washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
             [delegate showNotify:lsNotifyTitle HoldTimes:3];
         
             //开启支付宝
@@ -1313,7 +1329,7 @@
         //提示付款成功，并跳转到密码券
             NSString *lsNotifyTitle = [[NSString alloc]initWithFormat:@"您已成功支付1个订单,订单号:%@",_OrderSn ];
             
-            washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+            
             [delegate showNotify:lsNotifyTitle HoldTimes:3];
             
             //返回到前一个界面
@@ -1339,12 +1355,17 @@
              object:nil
              userInfo:dataDict];
 
+            //self.tabBarController.selectedIndex = 2;
+            //需要帮用户关闭支付页面、订单页面回到列表
+
+            self.tabBarController.selectedIndex = 4;
             
+            [self.navigationController popToRootViewControllerAnimated:NO];
             //重要：主动调用 Segue 呈现页面
-            [self performSegueWithIdentifier:@"couponslist" sender:self];
+            //[self performSegueWithIdentifier:@"couponslist" sender:self];
             /*couponsTableViewController *couponsview = [[couponsTableViewController alloc] init];
              [self.navigationController pushViewController:couponsview animated:YES];*/
-
+            
         }
         
         

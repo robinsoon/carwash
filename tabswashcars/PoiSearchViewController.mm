@@ -333,6 +333,35 @@
         
         _mapView.centerCoordinate = pt;
             
+    }else{
+        
+        if ((_itemname ==nil)||([_itemname isEqualToString:@""])) {
+            return;
+        }
+        //单点定位
+        if (_isDidGeocode) {
+            //加位置标记 一定要先加可重用标记
+            BMKPointAnnotation* myitem = [[BMKPointAnnotation alloc]init];
+            myitem.coordinate = _myLocationpt;
+            myitem.title = @"我的位置";
+            myitem.subtitle = _geoAddress;
+            //添加新标记
+            [_mapView addAnnotation:myitem];
+        }
+        
+        //数据不止一条，来自服务列表的定位信息
+        _showMsgLabel.text = @"定位商家位置";
+        pt = _Locationpt;
+            
+        BMKPointAnnotation* item = [[BMKPointAnnotation alloc]init];
+        item.coordinate = pt;
+        item.title = _itemname;
+            
+        //添加新标记
+        [_mapView addAnnotation:item];
+        
+        _mapView.centerCoordinate = pt;
+    
     }
 }
 

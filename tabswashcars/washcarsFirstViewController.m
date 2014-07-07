@@ -8,6 +8,8 @@
 
 #import "washcarsFirstViewController.h"
 
+#import "userLoginViewController.h"
+
 @interface washcarsFirstViewController ()
 
 @end
@@ -48,6 +50,12 @@
     self.mainscrollview.hidden = true;
     self.homebkgmode.hidden = true;
     
+    //刷新列表的消息
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(AccountRefresh:)
+                                                 name:@"AccountRefreshNotification"
+                                               object:nil];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -70,6 +78,13 @@
         {
             [self performSelector:@selector(DelayLocation) withObject:nil afterDelay:1.8f];
         }
+        
+        if ((delegate.userid!=nil)&&(![delegate.userid isEqualToString:@""] )) {
+            //存在userid 说明有记录登录用户，允许自动登录校验身份
+            [self performSelector:@selector(DelayLogin) withObject:nil afterDelay:2.3f];
+        }
+        
+        
         
         _isInital = true;
     }else{
@@ -99,6 +114,36 @@
     [delegate showNotify:@"欢迎您安装了去洗车应用，本地服务需要定位您当前的位置。" HoldTimes:1.8f];
     self.tabBarController.selectedIndex = 1;
     
+}
+
+//延迟登录
+- (void)DelayLogin
+{
+    
+    //根据本地存储的位置信息判断是否有必要执行以下逻辑
+    
+    //询问用户是否继续
+    NSLog(@"启动延迟登录");
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    //[delegate showNotify:@"欢迎您安装了去洗车应用，本地服务需要定位您当前的位置。" HoldTimes:1.8f];
+    //self.tabBarController.selectedIndex = 1;
+    
+    userLoginViewController *LoginView = [userLoginViewController alloc];
+    
+    [LoginView autoLogin:delegate.username password:delegate.password ];
+    
+    NSLog(@"启动延迟登录完毕");
+}
+
+//更新账户信息
+- (void)AccountRefresh:(NSNotification*)notification
+{
+    NSLog(@"更新账户信息");
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    
+    userLoginViewController *LoginView = [userLoginViewController alloc];
+    
+    [LoginView autoLogin:delegate.username password:delegate.password ];
 }
 
 //首页按钮

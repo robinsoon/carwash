@@ -34,6 +34,7 @@
 @property (nonatomic) BOOL isAutoLogin;           //传入参数id
 @property (nonatomic) BOOL isLogin;           //传入参数id
 @property (nonatomic) BOOL isConnected;
+@property (nonatomic) BOOL isAutoValidate;
 @property (strong, nonatomic) NSString *PageReturn;           //登录结果
 
 //保存数据列表[表现层所依赖的内部数据集合]
@@ -43,5 +44,7 @@
 
 //开始请求Web Service
 -(void)startRequest;
+
+-(BOOL)autoLogin:(NSString *)name password:(NSString *)password; //自动验证用户
 
 @end
