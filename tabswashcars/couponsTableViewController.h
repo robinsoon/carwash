@@ -46,6 +46,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *txtMoney;
 @property (weak, nonatomic) IBOutlet UILabel *txtPoint;
 
+@property (weak, nonatomic) IBOutlet UILabel *txtBonus;
+
 @property (strong, nonatomic) NSString * orderID;   //订单ID
 
 @property (strong, nonatomic) NSString * orderName;   //订单名称

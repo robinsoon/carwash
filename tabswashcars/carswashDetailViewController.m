@@ -21,6 +21,9 @@
 @property (strong, nonatomic) NSString *iPs_POST; //请求数据POST参数模板
 @property (strong, nonatomic) NSString *iPs_POSTAction; //请求数据POST参数Action
 
+@property (strong, nonatomic) NSString *iPs_POSTAction2; //请求数据POST参数Action
+
+@property (strong, nonatomic) NSString *iPs_POSTAction3; //请求数据POST参数Action
 //传入变化的参数组,参数数目根据接口需要而变化
 @property (strong, nonatomic) NSString *iPs_POSTID; //请求数据POST参数ID1
 @property (strong, nonatomic) NSString *iPs_POSTQueryOption; //请求数据POST参数ID2
@@ -29,7 +32,7 @@
 @end
 
 @implementation carswashDetailViewController
-
+@synthesize starView =_starView;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -61,14 +64,23 @@
     //[self.btnAddCart addAwesomeIcon:FAIconStar beforeTitle:NO];
     [self.btnAddCart addAwesomeIcon:FAIconShoppingCart beforeTitle:NO];
     
-    self.detailscrollview.contentSize = CGSizeMake(320,650);
+    self.detailscrollview.contentSize = CGSizeMake(320,750);
     [self.detailscrollview addSubview:self.subViewPrice];
+    
     [self.detailscrollview addSubview:self.subViewComment];
+    
+    [self.detailscrollview addSubview:self.subViewDescribe];
+    
+    [_starView setImagesDeselected:@"Star0.png" partlySelected:@"Star1.png" fullSelected:@"Star2.png" andDelegate:self];
+	[_starView displayRating:4.5];
+    
     //self.detailscrollview.delegate = self;
     if (_iPs_PageName==nil) {
         [self initPage];
     }
+    
     //加载数据
+    _iPs_POSTQueryOption = @"0";
     [self startRequestItem];
     
 }
@@ -119,9 +131,19 @@
     _iPs_POSTAction =@"goods_item";
     
     _iPs_POSTID= _itemid ; //请求数据POST参数ID1
-    _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2
+    
+    //_iPs_POSTAction2 =@"goods_comment"; //用户评论
+    _iPs_POSTAction2 =@"goods_new_comment"; //用户评论
+    
+    _iPs_POSTAction3 =@"goods_record"; //销售记录
+    
+    _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2：0 详情 1评论 2销售记录
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
     
+}
+
+-(void)ratingChanged:(float)newRating {
+	_ratingLabel.text = [NSString stringWithFormat:@"%1.1f", newRating];
 }
 
 /*
@@ -187,6 +209,24 @@
 
     NSString *post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_itemid];
     
+    if ([_iPs_POSTQueryOption isEqualToString:@"0"]) {
+        post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_itemid];
+        
+    }else if ([_iPs_POSTQueryOption isEqualToString:@"1"]) {
+        //评论的请求
+        post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction2,_itemid];
+        
+    }else if ([_iPs_POSTQueryOption isEqualToString:@"2"]) {
+        //评论的请求
+        post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction3,_itemid];
+        
+    }
+
+    
+    
+    
+    
+    
 	NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
 	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -225,7 +265,31 @@
     NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:_Requestdata options:NSJSONReadingAllowFragments error:nil];
     
     NSLog( @"Result: %@", [dict description] );
-    [self reloadDetail:dict];
+    
+    if ([_iPs_POSTQueryOption isEqualToString:@"1"]){
+        
+        [self reloadCommit:dict];
+        
+        //请求购买记录
+        
+        //暂不开启
+        //_iPs_POSTQueryOption = @"2";
+        //[self startRequestItem];
+        
+    }else if([_iPs_POSTQueryOption isEqualToString:@"2"]){
+        
+        [self reloadSellRecord:dict];
+        
+    }else{
+        
+        [self reloadDetail:dict];
+        
+        //请求用户评论
+        
+        _iPs_POSTQueryOption = @"1";
+        [self startRequestItem];
+    }
+    
 }
 
 
@@ -396,6 +460,116 @@
     }
     //加载完毕
     NSLog(@"商品&服务详情加载完毕。");
+}
+
+//重新加载表视图--用户评论
+-(void)reloadCommit:(NSDictionary*)res
+{
+    NSString *commit_id = @"";
+    NSString *lsName = @"";
+    NSString *lsCommit = @"";
+    NSString *lsRank = @"";
+    NSString *lsDate = @"";
+    NSString *lsEmail = @"";
+    
+    @try{
+        NSEnumerator *enumerator = [res objectEnumerator];
+
+        NSArray *results = [enumerator allObjects];
+        
+        NSDictionary* dict;
+        double ldRank = 0;
+        double ldRankSum = 0;
+        
+        
+        if (results.count > 0)
+        {
+            for (int i=0; i<results.count; i++) {
+                dict = [results objectAtIndex:i];
+                commit_id = [dict objectForKey:@"id"];
+                if ([commit_id isEmpty]) {
+                    continue;
+                }
+                //填充Detail数据字段
+                lsDate =[dict objectForKey:@"add_time"];
+                lsEmail =[dict objectForKey:@"email"];
+                lsRank =[dict objectForKey:@"rank"];
+                lsName = [dict objectForKey:@"username"];
+                lsCommit =[dict objectForKey:@"content"];
+                //[@"user_id"];
+                
+                ldRank = [lsRank doubleValue];
+                ldRankSum += ldRank;
+            }
+            
+            _lbCommitCount.text = [[NSString alloc]initWithFormat:@"%d人评价",results.count];
+            ldRank = ldRankSum/results.count;
+            if (ldRank<=0.5) {
+                ldRank = 1;
+            }
+            
+            [_starView displayRating:ldRank];
+            NSLog(@"加载评论数据...共 %d 条",results.count);
+
+        } else {
+            NSLog(@"暂无评论");
+            _lbCommitCount.text = @"暂无评论";
+            [_starView displayRating:5.0];
+        }
+        
+    }@catch(NSException *exp1){
+        
+    }
+
+}
+
+//重新加载表视图--销售记录
+-(void)reloadSellRecord:(NSDictionary*)res
+{
+
+    NSString *lsName = @"";
+    NSString *lstatus = @"";
+    NSString *lsBuyCount = @"";
+    NSString *lsDate = @"";
+    NSString *lsAmount = @"";
+    
+    @try{
+        NSEnumerator *enumerator = [res objectEnumerator];
+        
+        NSArray *results = [enumerator allObjects];
+        NSDictionary* dict;
+        double ldSellSum = 0;
+        
+        if (results.count > 0)
+        {
+            for (int i=0; i<results.count; i++) {
+                dict = [results objectAtIndex:i];
+                lsName = [dict objectForKey:@"user_name"];
+                if ([lsName isEmpty]) {
+                    continue;
+                }
+                //填充Detail数据字段
+                lsDate =[dict objectForKey:@"add_time"];
+                lsAmount =[dict objectForKey:@"goods_price"];
+                lsBuyCount =[dict objectForKey:@"goods_number"];
+                
+                lstatus =[dict objectForKey:@"order_status"];
+                ldSellSum+=[lsAmount doubleValue];
+                
+            }
+
+            //_lbSellCount.text = [[NSString alloc]initWithFormat:@"平均售价 %d，最高",results.count];
+            NSLog(@"加载购买记录...共 %d 条",results.count);
+            
+        } else {
+            NSLog(@"暂无购买记录");
+            
+        }
+        
+    }@catch(NSException *exp1){
+        
+    }
+    
 }
 
 //小数位数据处理

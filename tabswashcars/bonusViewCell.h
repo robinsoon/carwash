@@ -19,4 +19,14 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *lbbonusID;
 
+@property (weak, nonatomic) IBOutlet UILabel *lbStatus;
+
+@property (weak, nonatomic) IBOutlet UILabel *lbSN;
+@property (weak, nonatomic) IBOutlet UILabel *lbtype_name;
+@property (weak, nonatomic) IBOutlet UILabel *lbuse_startdate;
+@property (weak, nonatomic) IBOutlet UILabel *lbuse_enddate;
+@property (weak, nonatomic) IBOutlet UILabel *lbuse_limit;
+@property (weak, nonatomic) IBOutlet UILabel *lborder_id;
+
+
 @end

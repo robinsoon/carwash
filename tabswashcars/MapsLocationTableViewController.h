@@ -24,6 +24,9 @@
 @property (nonatomic,strong) NSString *PostCity;    //市级
 @property (nonatomic,strong) NSString *PostDistrict;//具体的区县市
 
+@property (nonatomic,strong) NSString *isOpenCurrent;
+@property (nonatomic,strong) NSString *defaultCode;
+@property (nonatomic,strong) NSString *defaultArea;
 @property (nonatomic,strong) NSString *CityFinded;//标记用户是否已选中了城市
 @property (nonatomic) int iFindLevel;//标记用户城市层级:省、市、区
 @property (nonatomic,strong) NSString *CurrentCity;//用户已选中的城市

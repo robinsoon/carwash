@@ -16,4 +16,5 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *lbID;
 
+@property (weak, nonatomic) IBOutlet UILabel *lbisOpen;
 @end

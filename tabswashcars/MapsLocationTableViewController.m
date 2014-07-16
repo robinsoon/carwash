@@ -141,7 +141,8 @@
     _iPs_PageName=@"地区列表"; //页面名称(用于标记页面参数配置)
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
     _iPs_URL=delegate.iPs_URL; //请求数据接口模板--地址
-    ////_iPs_URL=@"http://192.168.1.43/mall/";
+    //_iPs_URL=@"http://192.168.1.43/mall/";
+    
     _iPs_PAGE=@"getLocationList.php"; //请求数据接口模板--页面1
     _iPs_POST=@"act=%@&city=%@&district=%@"; //请求数据POST参数模板
     _iPs_POSTAction =@"region_list";
@@ -154,6 +155,8 @@
     _iPs_POSTQueryOption=@""; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
     
+    _defaultCode = @"298";
+    _defaultArea = @"枣庄市";
     
     _lbAddress.text = delegate.userAddress;
     _AreaID = delegate.userAreaID;
@@ -290,9 +293,7 @@
 
     }
     //开始解析数据
-    
-    
-    
+
     NSMutableDictionary*  dict = self.listData[indexPath.row];
     
     //修改单元格背景色
@@ -305,12 +306,15 @@
     //填充单元格
     NSString * strID;
     NSString * strName;
+    NSString * strisopen;
     NSString * strNamePlus1;
     NSString * strNamePlus2;
     cell.lbNo.text = [NSString stringWithFormat:@"%d", indexPath.row + 1];
     
     strID =[dict objectForKey:@"region_id"];
     strName =[dict objectForKey:@"region_name"];
+    strisopen =[dict objectForKey:@"isopen"]; //0 未开通  1 已开通
+    
     //适当扩展，增加识别概率
     strNamePlus1 = [[NSString alloc]initWithFormat:@"%@省",strName];
     strNamePlus2 = [[NSString alloc]initWithFormat:@"%@市",strName];
@@ -318,28 +322,43 @@
     cell.lbName.text =  strName;
     cell.lbID.text = strID;
     
+    if ([strisopen isEqualToString:@"1"]) {
+        //
+        //@"已开通";
+        cell.lbisOpen.text = @"已开通";
+        cell.lbName.textColor = [UIColor darkTextColor];
+    }else{
+        cell.lbisOpen.text = @"";
+        cell.lbName.textColor = [UIColor grayColor];
+    }
+
+    
+    
     if(_selectedRow == indexPath.row){
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         cell.selected = YES;
         _CurrentCity = strName;
         _AreaID = strID;
+        _isOpenCurrent = strisopen;
     }else if(_selectedRow == -1){
         if (([strName isEqualToString:_District])||([strNamePlus2 isEqualToString:_District])) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
             cell.selected = YES;
             _CurrentCity = strName;
             _AreaID = strID;
-            
+            _isOpenCurrent = strisopen;
         }else if(([strName isEqualToString:_City])||([strNamePlus1 isEqualToString:_City])||([strNamePlus2 isEqualToString:_City])){
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
             cell.selected = YES;
             _CurrentCity = strName;
             _AreaID = strID;
+            _isOpenCurrent = strisopen;
         }else if(([strName isEqualToString:_Province])||([strNamePlus1 isEqualToString:_Province])||([strNamePlus2 isEqualToString:_Province])){
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
             cell.selected = YES;
             _CurrentCity = strName;
             _AreaID = strID;
+            _isOpenCurrent = strisopen;
         }else{
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
@@ -380,7 +399,7 @@
 
 }
 
-//订单完成后跳转
+//定位获取位置后的跳转标记
 -(void)DidLocationCompletion:(NSNotification*)notification {
     
     NSDictionary *theData = [notification userInfo];
@@ -394,6 +413,8 @@
     
     //
     NSLog(@"定位完成后识别位置,%@",_Address);
+    
+    
     _selectedRow = -1;
     _iFindLevel = 1;
 
@@ -426,6 +447,59 @@
     //在用户修改城市前不变更原自动定位
 }
 
+//询问用户位置变更，同时包含了服务支持信息
+- (void)RequestAutoChanged:(NSString *)strMsg isOpen:(NSString *)lsOpened {
+    
+    //询问变更定位信息
+    //NSString *strMsg = [[NSString alloc ] initWithFormat:@"当前城市定位至:%@", _CurrentCity];
+    if([lsOpened isEqualToString:@"1"]){
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"位置服务提醒"
+                                                            message:strMsg
+                                                           delegate:self
+                                                  cancelButtonTitle:@"取消"
+                                                  otherButtonTitles:@"确定",nil];
+
+        alertView.tag = 1;
+        [alertView show];
+    }else{
+        //未开通的地区
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"未开通的地区提醒"
+                                                            message:strMsg
+                                                           delegate:self
+                                                  cancelButtonTitle:@"取消"
+                                                  otherButtonTitles:@"确定",nil];
+
+        alertView.tag = 2;
+        [alertView show];
+    }
+
+    
+}
+
+//退出 询问操作结果
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 1) {
+        if (buttonIndex == 1) {
+            NSLog(@"确认使用当前城市");
+            [self findedAreaID];
+        }else{
+
+            _CurrentCity = _defaultArea;
+            _AreaID = _defaultCode;
+            NSLog(@"取消当前定位采用默认位置 %@",_CurrentCity);
+            [self findedAreaID];
+        }
+    }else if(alertView.tag == 2){
+        //无论选择什么都使用默认地区
+        
+        _CurrentCity = _defaultArea;
+        _AreaID = _defaultCode;
+        NSLog(@"未开通地区，采用默认位置 %@",_CurrentCity);
+        [self findedAreaID];
+    }
+    
+}
 
 //展开地区,找到并更换地区ID ,用户选择城市时触发
 -(void)usedAreaID{
@@ -441,10 +515,18 @@
         
         if (_iFindLevel>=4) {
             //已经进入到具体区域，不需要再展开
-            NSString *strMsg = [[NSString alloc ] initWithFormat:@"当前城市定位至:%@", _CurrentCity];
-            [delegate showNotify:strMsg HoldTimes:2];
-            NSLog(@"当前城市: %@ , %@",_CurrentCity ,_AreaID);
-            
+            if([_isOpenCurrent isEqualToString:@"1"]){
+                NSString *strMsg = [[NSString alloc ] initWithFormat:@"当前城市定位至:%@", _CurrentCity];
+                [delegate showNotify:strMsg HoldTimes:2];
+                NSLog(@"当前城市: %@ , %@",_CurrentCity ,_AreaID);
+            }else{
+                //未开通
+                NSString *strMsg = [[NSString alloc ] initWithFormat:@"您选择的城市: %@ ,目前尚未开通服务支持。我们将在服务列表中展示默认的服务项目。", _CurrentCity];
+
+                [self RequestAutoChanged:strMsg isOpen:_isOpenCurrent];
+                //修改默认城市
+            }
+
             //刷新服务列表
             self.tabBarController.selectedIndex = 2;
             
@@ -711,7 +793,20 @@
                 NSMutableDictionary*  dict = self.listData[0];
                 _AreaID =[dict objectForKey:@"region_id"];
                 _CurrentCity =[dict objectForKey:@"region_name"];
-                [self findedAreaID];
+                NSString *strisOpen =[dict objectForKey:@"isopen"];
+                NSString *strMsg = @"";
+                if ([strisOpen isEqualToString:@"1"]) {
+                    //已开通
+                    strMsg = [[NSString alloc ] initWithFormat:@"是否接受将我的位置定位到: %@ %@ ,该城市已开通服务。", _City,_District];
+                }else{
+                    //未开通地区
+                    strMsg = [[NSString alloc ] initWithFormat:@"您所在的城市: %@ %@ ,目前尚未开通服务支持。我们将在服务列表中展示默认的服务项目。", _City,_District];
+                }
+                
+                [self RequestAutoChanged:strMsg isOpen:strisOpen];
+                
+                //调用位置后的动作
+                //[self findedAreaID];
                 
             }else{
                 _CityFinded = @"0";

@@ -9,11 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "NSString+URLEncoding.h"
 #import "UIImageView+WebCache.h"
-
+#import "RatingView.h"
 #import "washcarsAppDelegate.h"
 
 
-@interface carswashDetailViewController : UIViewController
+@interface carswashDetailViewController : UIViewController<RatingViewDelegate>{
+    RatingView *starView;
+}
+
+@property (nonatomic, retain) IBOutlet RatingView *starView;
+@property (nonatomic, retain) IBOutlet UILabel *ratingLabel;
+@property (weak, nonatomic) IBOutlet UILabel *lbCommitCount;
+@property (weak, nonatomic) IBOutlet UILabel *lbSellCount;
 
 @property (strong, nonatomic) NSString *itemid;           //传入参数id
 @property (nonatomic,strong) NSString *itemprice;         //商品价格
@@ -32,6 +39,8 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *detailscrollview;
 @property (weak, nonatomic) IBOutlet UIView *subViewPrice;
 @property (weak, nonatomic) IBOutlet UIView *subViewComment;
+@property (weak, nonatomic) IBOutlet UIView *subViewDescribe;
+
 @property (weak, nonatomic) IBOutlet UILabel *lbDiscount;
 @property (weak, nonatomic) IBOutlet UITextField *lbPrice;
 
@@ -77,5 +86,6 @@
 //开始请求Web Service
 -(void)startRequestItem;
 
+-(void)ratingChanged:(float)newRating;
 
 @end

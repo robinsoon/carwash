@@ -156,7 +156,7 @@
     _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=delegate.userAreaID ; //请求数据POST参数ID3
     if (_iPs_POSTQueryRegion==nil) {
-        _iPs_POSTQueryRegion = @"298";
+        _iPs_POSTQueryRegion = @"298";//枣庄
     }
     //设置分类
     if ((delegate.categorylist ==nil)||([delegate.categorylist isEqualToString:@""]))
@@ -839,7 +839,7 @@
     _isConnected = true;
     NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:_datas options:NSJSONReadingAllowFragments error:nil];
     
-    //NSLog( @"Result: %@", [dict description] );
+    NSLog( @"Result: %@", [dict description] );
     //激活数据列表的刷新
     [self reloadView:dict];
 }

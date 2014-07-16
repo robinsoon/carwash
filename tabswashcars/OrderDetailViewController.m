@@ -1168,9 +1168,6 @@
             [self performSegueWithIdentifier:@"ShowPay" sender:self];
         }
         
-        
-        
-        
     }else if ([resultCodeObj integerValue] ==1)
     {
         NSString *strError = [res objectForKey:@"err_msg"];

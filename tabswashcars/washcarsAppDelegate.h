@@ -42,6 +42,7 @@ static NSString * staticURL  = @"http://www.2345mall.com/"; //@"http://taotao400
 
 @property (nonatomic) double usermoney;
 @property (nonatomic) double userpoints;
+@property (nonatomic) double userbonus;     //红包个数
 @property (strong, nonatomic) NSString * useremail;
 @property (strong, nonatomic) NSString * userphone;
 

@@ -316,6 +316,7 @@ BMKMapManager* _mapManager;
 
     _userpoints = [[self readUserDefaults:@"userpoints"] doubleValue];
     _usermoney = [[self readUserDefaults:@"usermoney"] doubleValue];
+    _userbonus = [[self readUserDefaults:@"userbonus"] doubleValue];
     
     //位置信息
     _userProvince = [self readUserDefaults:@"userprovince"];
@@ -345,6 +346,9 @@ BMKMapManager* _mapManager;
     [self saveUserDefaults:@"userpoints" setValue:lsValue];
     lsValue = [NSString  stringWithFormat:@"%f",_usermoney];
     [self saveUserDefaults:@"usermoney" setValue:lsValue];
+    
+    lsValue = [NSString  stringWithFormat:@"%f",_userbonus];
+    [self saveUserDefaults:@"userbonus" setValue:lsValue];
     
     [self saveUserDefaults:@"userlatitude" setValue:_userlatitude];
     [self saveUserDefaults:@"userlongitude" setValue:_userlongitude];

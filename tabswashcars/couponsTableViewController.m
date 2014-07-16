@@ -9,6 +9,7 @@
 #import "couponsTableViewController.h"
 #import "MJRefresh.h"
 #import "UIButton+Bootstrap.h"
+#import "bonusTableViewController.h"
 
 @interface couponsTableViewController (){
     MJRefreshHeaderView *_header;
@@ -202,6 +203,13 @@
         _btnLogin.titleLabel.text = @"登录";
     }
     
+    if(delegate.userbonus > 0){
+        _txtBonus.text = [[NSString alloc] initWithFormat:@"红包 [ %1.0f ]",delegate.userbonus];
+        
+    }else{
+    
+        _txtBonus.text = @"红包";
+    }
     _withnoLogin = @"";
     _CellBgColor =[UIColor colorWithRed:49/255.0 green:155/255.0 blue:205/255.0 alpha:0.15];
 
@@ -580,6 +588,18 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if([segue.identifier isEqualToString:@"showbonus"])
+    {
+        //红包列表
+        //bonusTableViewController *itemlist = segue.destinationViewController;
+        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+        
+    }
+    
     if([segue.identifier isEqualToString:@"showcoupons"])
     {
         couponsDetailViewController *itemdetail = segue.destinationViewController;
@@ -677,6 +697,17 @@
         _iPageIndex = 0;
     }
 
+}
+
+//点击红包
+- (IBAction)btnShowBonusClicked:(id)sender {
+    
+    [self performSegueWithIdentifier:@"showbonus" sender:self];
+    
+}
+
+- (IBAction)btnShowBonusArea:(id)sender {
+    [self performSegueWithIdentifier:@"showbonus" sender:self];
 }
 
 
