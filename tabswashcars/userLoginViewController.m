@@ -304,12 +304,12 @@
     
     delegate.usermoney = 0;
     delegate.userpoints = 0;
-    
+    delegate.userbonus = 0;
     //存档配置
     [delegate SaveConfig];
     
     [self dismissViewControllerAnimated:YES completion:^{
-        NSLog(@"Modal View done");
+        //NSLog(@"Modal View done");
         //构造消息
         
         NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"0", @"isLogin",@"", @"ID",@"", @"name", nil];

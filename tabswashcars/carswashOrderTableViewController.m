@@ -60,6 +60,12 @@
         [self startRequest];
     }
     
+    if (![_iPs_POSTQueryOption isEqualToString:_filterType]) {
+        _iPs_POSTQueryOption = _filterType;
+        //重新加载数据
+        [self startRequest];
+    }
+    
 }
 //页面基本元素已载入,开始增添个性化的功能
 - (void)viewDidLoad
@@ -119,6 +125,9 @@
     // 0 未付款; 1 已付款
     _iPs_POSTQueryOption=@"1"; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
+    if (([_filterType isEqualToString:@""])||(_filterType ==nil)) {
+        _filterType=@"1"; // 0 未付款; 1 已付款
+    }
     
     //不随页面类型改变的部分
     _iPageIndex = 1;//初始化页面序号
@@ -487,10 +496,12 @@
         case 0:
             _iPs_POSTQueryOption = @"0";
             lsButtonTitle = @"未付款订单";
+            _filterType=@"0"; // 0 未付款; 1 已付款
             break;
         case 1:
             _iPs_POSTQueryOption = @"1";
             lsButtonTitle = @"已支付订单";
+            _filterType=@"1"; // 0 未付款; 1 已付款
             break;
         case 2:
             return;
@@ -602,15 +613,18 @@
     
     //NSString *post = [NSString stringWithFormat:@"act=wash_list&cat_id=139&page=%d&sel_attr=0&region_id=%@",_iPageIndex,@"298"];
     NSString *post = @"";
-    if ([_iPs_POSTQueryOption isEqual:@"0"]) {
+    
+    //_filterType   //_iPs_POSTQueryOption
+    if ([_filterType isEqual:@"0"]) {
         //默认显示未付款订单
         post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID];
+        
     }else{
         //显示已付款订单
         post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction2,_iPs_POSTID];
     }
     
-    
+    _iPs_POSTQueryOption = _filterType;
     
 	NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
 	

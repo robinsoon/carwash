@@ -31,7 +31,7 @@
     self.frame = CGRectMake(0, - MJRefreshViewHeight, scrollView.frame.size.width, MJRefreshViewHeight);
     
     // 2.加载时间
-    self.lastUpdateTime = [[NSUserDefaults standardUserDefaults] objectForKey:MJRefreshHeaderTimeKey];
+    //self.lastUpdateTime = [[NSUserDefaults standardUserDefaults] objectForKey:MJRefreshHeaderTimeKey];
 }
 
 #pragma mark - 状态相关
@@ -45,7 +45,7 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     // 2.更新时间
-    [self updateTimeLabel];
+    //[self updateTimeLabel];
 }
 
 #pragma mark 更新时间字符串
@@ -117,7 +117,7 @@
             // 刷新完毕
             if (MJRefreshStateRefreshing == oldState) {
                 // 保存刷新时间
-                self.lastUpdateTime = [NSDate date];
+                //self.lastUpdateTime = [NSDate date];
             }
 			break;
         }

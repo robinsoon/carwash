@@ -57,6 +57,7 @@ static NSString * staticURL  = @"http://www.2345mall.com/"; //@"http://taotao400
 
 @property (nonatomic) BOOL isreachChanged;        //网络连接变更
 @property (strong, nonatomic) NSString *reachStatus; //网络连接状态
+@property (nonatomic) BOOL isLimited;           //功能受限的版本
 
 //需要初始化
 @property (nonatomic) BOOL isFixedPosition;        //定位开关，限制定位次数(开启应用只定位一次)
@@ -69,8 +70,9 @@ static NSString * staticURL  = @"http://www.2345mall.com/"; //@"http://taotao400
 @property (nonatomic,strong) NSString *userDistrict;//具体的区县市
 @property (nonatomic,strong) NSString *userAddress;
 @property (nonatomic,strong) NSString *userAreaID;  //存储定位ID
+@property (nonatomic,strong) NSString *userCitySupported; //标记用户在服务区内
 
-
+@property (nonatomic,strong) NSString *userServiceName;    //首页选取的服务名称
 //存档本地配置信息
 - (void)saveUserDefaults;
 //读取本地配置信息

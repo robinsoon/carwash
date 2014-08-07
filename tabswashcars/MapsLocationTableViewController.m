@@ -156,7 +156,7 @@
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
     
     _defaultCode = @"298";
-    _defaultArea = @"枣庄市";
+    _defaultArea = @"枣庄";
     
     _lbAddress.text = delegate.userAddress;
     _AreaID = delegate.userAreaID;
@@ -165,6 +165,19 @@
     _iPageIndex = 1;//初始化页面序号
     _selectedRow = -1;
     _CellBgColor =[UIColor colorWithRed:49/255.0 green:155/255.0 blue:205/255.0 alpha:0.15];
+    
+    if (delegate.isLimited) {
+        _btnCityList.hidden = true;
+
+        //将定位修正到服务区域下
+        _City = @"枣庄";
+        _District = @"滕州市";
+        
+        _PostCity = _City;
+        _PostDistrict = _District;
+
+    }
+    
 }
 
 //增加向下滑动刷新下页功能
@@ -328,15 +341,19 @@
         cell.lbisOpen.text = @"已开通";
         cell.lbName.textColor = [UIColor darkTextColor];
     }else{
-        cell.lbisOpen.text = @"";
+        cell.lbisOpen.text = @"  ×";
         cell.lbName.textColor = [UIColor grayColor];
     }
 
     
     
     if(_selectedRow == indexPath.row){
+        if([strisopen isEqualToString:@"1"]){
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         cell.selected = YES;
+        }else{
+            _selectedRow = -1;
+        }
         _CurrentCity = strName;
         _AreaID = strID;
         _isOpenCurrent = strisopen;
@@ -380,7 +397,6 @@
         _selectedRow = -1;
     }else{
         _selectedRow = indexPath.row;
-
     }
     
     [self.tableView reloadData];
@@ -411,6 +427,13 @@
     _iPageIndex = 0;
     _lbAddress.text =_Address;
     
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    
+    if (delegate.isLimited) {
+        //将定位修正到服务区域下
+        _City = @"枣庄";
+        _District = @"滕州市";
+    }
     //
     NSLog(@"定位完成后识别位置,%@",_Address);
     
@@ -453,6 +476,15 @@
     //询问变更定位信息
     //NSString *strMsg = [[NSString alloc ] initWithFormat:@"当前城市定位至:%@", _CurrentCity];
     if([lsOpened isEqualToString:@"1"]){
+        
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+        
+        if([delegate.userDistrict isEqualToString:_District]){
+            //没有变化不需要提示
+            [self findedAreaID];
+            return;
+        }
+        
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"位置服务提醒"
                                                             message:strMsg
                                                            delegate:self
@@ -507,11 +539,19 @@
     if ((_AreaID != nil)&&(![_AreaID isEqualToString:@""])) {
         NSLog(@"地区变更为 %@ ",_AreaID);
         washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
-        delegate.userAreaID = _AreaID;
-        [delegate saveUserDefaults:@"userareaid" setValue:_AreaID];
-        
+
         //每次选中展开后增加层级
-        _iFindLevel = _iFindLevel + 1;
+        if([_isOpenCurrent isEqualToString:@"1"]){
+            _iFindLevel = _iFindLevel + 1;
+            if (_iFindLevel!=2) {//只选择省无法选定服务
+            delegate.userAreaID = _AreaID;
+            delegate.userDistrict = _CurrentCity;
+            delegate.userCitySupported = _isOpenCurrent;
+            [delegate saveUserDefaults:@"userareaid" setValue:_AreaID];
+            [delegate saveUserDefaults:@"userdistrict" setValue:_CurrentCity];
+            [delegate saveUserDefaults:@"usercitysupported" setValue:_isOpenCurrent];
+            }
+        }
         
         if (_iFindLevel>=4) {
             //已经进入到具体区域，不需要再展开
@@ -538,11 +578,17 @@
         }else{
             //展开区域
             NSLog(@"展开下一级: %@ , %@",_CurrentCity ,_AreaID);
-            _PostCity = _CurrentCity;
-            _PostDistrict = @"";
+
             _selectedRow = -1;
             //发出请求
-            [self startRequest];
+            if([_isOpenCurrent isEqualToString:@"1"]){
+                _PostCity = _CurrentCity;
+                _PostDistrict = @"";
+                //只能展开已开通地区
+                [self startRequest];
+            }else{
+                _PostCity = @"";
+            }
         }
     }
     
@@ -554,22 +600,28 @@
     if ((_AreaID != nil)&&(![_AreaID isEqualToString:@""])) {
         NSLog(@"地区变更为 %@ ,%@ ", _CurrentCity,_AreaID);
         washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
-        delegate.userAreaID = _AreaID;
-        if (_iFindLevel>=4) {
-            //已经进入到具体区域，不需要再展开
-            //NSString *strMsg = [[NSString alloc ] initWithFormat:@"当前城市定位至:%@", _CurrentCity];
-            //[delegate showNotify:strMsg HoldTimes:2];
-            [delegate saveUserDefaults:@"userareaid" setValue:_AreaID];
+        if([_isOpenCurrent isEqualToString:@"1"]){
+            delegate.userAreaID = _AreaID;
+            delegate.userDistrict = _CurrentCity;
+            delegate.userCitySupported = _isOpenCurrent;
             
-            //刷新服务列表
-            //self.tabBarController.selectedIndex = 2;
+            if (_iFindLevel>=4) {
+                //已经进入到具体区域，不需要再展开
+                //NSString *strMsg = [[NSString alloc ] initWithFormat:@"当前城市定位至:%@", _CurrentCity];
+                //[delegate showNotify:strMsg HoldTimes:2];
+                [delegate saveUserDefaults:@"userareaid" setValue:_AreaID];
+                [delegate saveUserDefaults:@"userdistrict" setValue:_CurrentCity];
+                [delegate saveUserDefaults:@"usercitysupported" setValue:_isOpenCurrent];
+                //刷新服务列表
+                //self.tabBarController.selectedIndex = 2;
+                
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:@"ServiceRefreshNotification"
+                 object:nil
+                 userInfo:nil];
+                
             
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:@"ServiceRefreshNotification"
-             object:nil
-             userInfo:nil];
-            
-        
+            }
         }
     }
     
@@ -647,8 +699,23 @@
         _PostDistrict = _District;
     }else{
         //默认城市、可以是中国，然后选择省，再选则市，区县
+        
+        
         _PostCity = @"中国";
         _PostDistrict = @"";
+        
+    }
+    
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    
+    if (delegate.isLimited) {
+        //将定位修正到服务区域下
+        _City = @"枣庄";
+        _District = @"滕州市";
+        
+        _PostCity = _City;
+        _PostDistrict = _District;
+        
     }
     
 }
@@ -669,9 +736,17 @@
     //NSString *post = [NSString stringWithFormat:@"act=wash_list&cat_id=139&page=%d&sel_attr=0&region_id=%@",_iPageIndex,@"298"];
     //NSString *post = [NSString stringWithFormat:_iPs_POST,_iPs_POSTAction,_iPs_POSTID];
     
-    if (_PostCity==nil) {
+    if ((_PostCity==nil)||([_PostCity isEqualToString:@""])||([_PostCity isEqualToString:@"中国"])) {
         _PostCity = @"中国";
         _iFindLevel = 1;
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+
+        if (delegate.isLimited) {
+            //将定位修正到服务区域下
+            _PostCity = @"枣庄";
+            _PostDistrict = @"滕州市";
+            
+        }
     }
     
     NSString * strCity = _PostCity;
@@ -761,6 +836,7 @@
     _Province = delegate.userProvince;
     _City = delegate.userCity;
     _District = delegate.userDistrict;
+    
     if (_Address!=nil) {
         _lbAddress.text = _Address;
     }

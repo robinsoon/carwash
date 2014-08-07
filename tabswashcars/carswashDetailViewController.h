@@ -27,6 +27,7 @@
 @property (nonatomic,strong) NSMutableArray* detailData;  //商品详情数据
 
 @property (nonatomic,strong) NSMutableArray* listcommit;  //商品评论
+@property (nonatomic,strong) NSMutableArray* listSell;  //销售记录
 @property (nonatomic,strong) NSString * iPs_URL;
 
 
@@ -40,6 +41,9 @@
 @property (weak, nonatomic) IBOutlet UIView *subViewPrice;
 @property (weak, nonatomic) IBOutlet UIView *subViewComment;
 @property (weak, nonatomic) IBOutlet UIView *subViewDescribe;
+
+@property (weak, nonatomic) IBOutlet UIWebView *subWebContent;
+
 
 @property (weak, nonatomic) IBOutlet UILabel *lbDiscount;
 @property (weak, nonatomic) IBOutlet UITextField *lbPrice;

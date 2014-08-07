@@ -155,8 +155,12 @@
     _iPs_POSTID=@"139"; //请求数据POST参数ID1
     _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=delegate.userAreaID ; //请求数据POST参数ID3
+    
+    _defaultCode = @"298";
+    _defaultArea = @"枣庄市";
+    _CityName = _defaultArea;
     if (_iPs_POSTQueryRegion==nil) {
-        _iPs_POSTQueryRegion = @"298";//枣庄
+        _iPs_POSTQueryRegion = _defaultCode;//枣庄
     }
     //设置分类
     if ((delegate.categorylist ==nil)||([delegate.categorylist isEqualToString:@""]))
@@ -186,7 +190,6 @@
 
         //[vc->_fakeData addObject:[NSString stringWithFormat:@"随机数据---%d", random]];
 
-        
         // 模拟延迟加载数据，因此2秒后才调用）
         // 这里的refreshView其实就是footer
         [vc performSelector:@selector(doneWithView:) withObject:refreshView afterDelay:0.1];
@@ -391,8 +394,26 @@
         
         
     }
-    
+
+        
         cell.cellDistance.text = [dict objectForKey:@"distance"];
+        
+        if ([_iPs_POSTQueryOption isEqualToString:@"2"]) {
+            NSString * clicked = [dict objectForKey:@"click_count"];
+            
+ 
+            NSString *strTips = clicked;
+            if ([clicked length]>3) {
+                double p = [clicked doubleValue]/1000.0;
+                strTips = [[NSString alloc] initWithFormat:@"%1.1fK",p];
+                
+            }
+            
+            cell.cellDistance.text = [[NSString alloc] initWithFormat:@"人气%@",strTips];
+
+            
+        }
+        
         //cell.cellDistance.text = @"<500m";
         
         //调整文本位置
@@ -441,6 +462,12 @@
         _iPs_POSTID = delegate.categorylist;
         
     }
+    
+    if ((delegate.userCitySupported ==nil)||([delegate.userCitySupported isEqualToString:@""]))
+    {
+        _iPs_POSTQueryRegion = _defaultCode;
+    }
+    
     NSLog(@"服务列表页面刷新通知,%@", _iPs_POSTID );
     
     [self setServiceTitle];
@@ -595,6 +622,7 @@
                 
                 [delegate showNotify:lsMsg HoldTimes:2.5];
                 self.tabBarController.selectedIndex = 1;
+                _iPs_POSTQueryOption = @"0";
                 return;
             }
 
@@ -633,7 +661,13 @@
     }else if ( [_iPs_POSTID isEqualToString:@"181" ]) {
         self.title = @"推荐套餐";
     }else{
-        self.title = @"服务列表";
+        
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+        //NSString *strTips = [[NSString alloc] initWithFormat:@"%@ %@",delegate.userDistrict,delegate.userServiceName];
+        NSString *strTips = delegate.userServiceName;
+        self.title = strTips;
+        
+        //self.title = @"服务列表";
     }
 }
 /*
@@ -714,7 +748,7 @@
         itemdetail.iSellNumber = [dict objectForKey:@"total"];
         
         itemdetail.itemid = [dict objectForKey:@"goods_id"];
-        NSLog(@"进入明细页面 %d",selectedRow);
+        NSLog(@"进入明细页面 %d", selectedRow );
         
         UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
         backItem.title=@"";
@@ -732,9 +766,7 @@
 -(void)startRequest
 {
     _isConnected = false;
-    
-    
-    
+
     NSString *strURL = [[NSString alloc] initWithFormat:@"%@%@",_iPs_URL,_iPs_PAGE];
     
     NSURL *url = [NSURL URLWithString:[strURL URLEncodedString]];
@@ -746,7 +778,11 @@
         _iPs_POSTID = @"139";
     }else{
         _iPs_POSTID = delegate.categorylist;
-        
+    }
+    
+    if ((delegate.userCitySupported ==nil)||([delegate.userCitySupported isEqualToString:@""]))
+    {
+        _iPs_POSTQueryRegion = _defaultCode;
     }
 
     //NSString *post = [NSString stringWithFormat:@"act=wash_list&cat_id=139&page=%d&sel_attr=0&region_id=%@",_iPageIndex,@"298"];
@@ -850,70 +886,76 @@
 //重新加载表视图
 -(void)reloadView:(NSDictionary*)res
 {
-    NSNumber *resultCodeObj = [res objectForKey:@"count"];
-    if ([resultCodeObj integerValue] >=0)
-    {
-        NSArray *results = [res objectForKey:@"goods_list"];
-        
-        self.listData = [res objectForKey:@"goods_list"];
-
-        //[self.listSort addObjectsFromArray:self.listData ];
-        //self.listSort = [res objectForKey:@"goods_list"];
-//        for (id item in self.listSort){
-//            [self.listData insertObject:item ];
-//        }
-        
-        //NSNumber *nIndex = [[NSNumber alloc] initWithInt:0];
-        /*
-        if (results && results.count > 0)
+    @try{
+        NSNumber *resultCodeObj = [res objectForKey:@"count"];
+        if ([resultCodeObj integerValue] >=0)
         {
-            int nIndex;
-            for(nIndex = 0;nIndex <results.count; nIndex++)
+            NSArray *results = [res objectForKey:@"goods_list"];
+
+            //[self.listSort addObjectsFromArray:self.listData ];
+            //self.listSort = [res objectForKey:@"goods_list"];
+            //for (id item in self.listSort){
+            //    [self.listData insertObject:item ];
+            //}
+            //NSNumber *nIndex = [[NSNumber alloc] initWithInt:0];
+            
+            if (results && results.count > 0)
             {
-                NSDictionary *goods_id = [[results objectAtIndex:nIndex] objectForKey:@"goods_id"];
-                NSDictionary *goods_name = [[results objectAtIndex:nIndex]objectForKey:@"goods_name"];
-                NSDictionary *address = [[results objectAtIndex:nIndex]objectForKey:@"address_street"];
-                NSLog(@"id = %@, name = %@, address = %@",goods_id.description,goods_name.description, address.description);
+                self.listData = [res objectForKey:@"goods_list"];
+                [self.tableView reloadData];
+                NSLog(@"列表视图加载数据...共 %d 条",results.count);
+                if (_iPageIndex>1 && _listData.count>0) {
+                    //移动到首行
+                    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]
+                                                animated:YES
+                                          scrollPosition:UITableViewScrollPositionMiddle];
+                    
+                }
             }
-        }*/
-        NSLog(@"列表视图加载数据...共 %d 条",results.count);
-        if (results.count == 0) {
-            if (_iPageIndex != 1){
-                _iPageIndex = 1;
-                NSLog(@"列表视图将循环到首行记录");
-                [self startRequest];
+
+            if (results.count == 0) {
+                if (_iPageIndex != 1){
+                    _iPageIndex = 1;
+                    NSLog(@"列表视图将循环到首行记录");
+                    [self startRequest];
+                    return;
+                }else if (_iPageIndex <=1){
+                    NSLog(@"当前列表下无数据");
+ 
+                    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+                    if (delegate.isLimited) {
+                        return;
+                    }
+                    NSString *strTips = [[NSString alloc] initWithFormat:@"%@ 没有发现开通 %@ 的商户，请试试其它分类",delegate.userDistrict,delegate.userServiceName];
+                    
+                    if ([_iPs_POSTQueryOption isEqualToString:@"6" ]) {
+                        strTips = [[NSString alloc] initWithFormat:@"根据我的位置没有找到最近的 %@，请试试其它排序方式",delegate.userServiceName];
+                        _iPs_POSTQueryOption = @"0";
+                    }
+                    
+                    [delegate showNotify:strTips HoldTimes:1];
+                }
+            }
+        }else {
+            //{"state":0}
+            NSNumber *resultStateObj = [res objectForKey:@"state"];
+            if ([resultStateObj integerValue] ==0){
+                self.iPageIndex = 1;
+                NSLog(@"列表视图页面下次滚动将返回首行...");
                 return;
             }
-        }
-        
-        [self.tableView reloadData];
-        
-        if (_iPageIndex>1) {
-            //移动到首行
-            [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]
-                                        animated:YES
-                                  scrollPosition:UITableViewScrollPositionMiddle];
-
-        }
-        
-    } else {
-        //{"state":0}
-        NSNumber *resultStateObj = [res objectForKey:@"state"];
-        if ([resultStateObj integerValue] ==0){
+            NSString *errorStr = @"Service Error";
             self.iPageIndex = 1;
-            NSLog(@"列表视图页面下次滚动将返回首行...");
-            return;
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误信息"
+                                                                message:errorStr
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles: nil];
+            [alertView show];
         }
-        NSString *errorStr = @"Service Error";
-        self.iPageIndex = 1;
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误信息"
-                                                            message:errorStr
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles: nil];
-        [alertView show];
+    }@catch( NSException *ec1){
+        NSLog(@"Exception: %@", [ec1 description]);
     }
-    
     
 }
 
@@ -923,7 +965,7 @@
 	const int N = 15;
 	int nextPage = 0;
     nextPage = _iPageIndex + 1;
-    if (nextPage>N) {
+    if ((nextPage>N)||(_listData.count<10)) {
         nextPage = 1;
     }
     _iPageIndex = nextPage;

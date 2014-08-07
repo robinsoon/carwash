@@ -55,6 +55,11 @@
                                              selector:@selector(AccountRefresh:)
                                                  name:@"AccountRefreshNotification"
                                                object:nil];
+    //刷新服务列表的消息
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(ServiceRefresh:)
+                                                 name:@"ServiceRefreshNotification"
+                                               object:nil];
     
 }
 
@@ -74,17 +79,18 @@
         
         //判断用户是否需要定位信息，如果已有存档则不执行定位。
         //延迟执行定位
-        if((delegate.userAreaID==nil)||([delegate.userAreaID isEqualToString:@""]))
-        {
-            [self performSelector:@selector(DelayLocation) withObject:nil afterDelay:1.8f];
+        if (!delegate.isLimited ) {
+            //非限制版有自动定位
+            if((delegate.userAreaID==nil)||([delegate.userAreaID isEqualToString:@""]))
+            {
+                [self performSelector:@selector(DelayLocation) withObject:nil afterDelay:1.8f];
+            }
         }
         
         if ((delegate.userid!=nil)&&(![delegate.userid isEqualToString:@""] )) {
             //存在userid 说明有记录登录用户，允许自动登录校验身份
             [self performSelector:@selector(DelayLogin) withObject:nil afterDelay:2.3f];
         }
-        
-        
         
         _isInital = true;
     }else{
@@ -146,6 +152,83 @@
     [LoginView autoLogin:delegate.username password:delegate.password ];
 }
 
+//根据位置和开通城市对数据访问控制
+- (void)LoactionViewControl{
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    
+    //delegate.userDistrict
+    //delegate.userCitySupported
+    //delegate.userAreaID
+    
+    if ((delegate.userAreaID == nil)||([delegate.userAreaID isEqualToString:@""])) {
+        return;
+    }
+
+    //枣庄等地
+    if (([delegate.userAreaID isEqualToString:@"2464"])||([delegate.userAreaID isEqualToString:@"298"])) {
+        //枣庄，滕州
+        _btnItem4.hidden = false;
+        _btnItem3.hidden = false;
+        _btnItem5.hidden = false;
+        
+        _subviewnext.hidden = false;
+
+        _txtItem2.hidden = false;
+        _txtItem3.hidden = false;
+        _txtItem4.hidden = false;
+
+        return;
+    }
+    
+    
+    
+    
+    if ((delegate.userCitySupported ==nil)||([delegate.userCitySupported isEqualToString:@""]))
+    {
+        
+    }
+    
+    delegate.categorylist = @"139";
+    _btnItem4.hidden = true;
+    _btnItem3.hidden = true;
+    _btnItem5.hidden = true;
+    
+    _txtItem2.hidden = true;
+    _txtItem3.hidden = true;
+    _txtItem4.hidden = true;
+
+    
+    _subviewnext.hidden = true;
+    
+    _subview1.hidden = true;
+    _subview2.hidden = true;
+    _subview3.hidden = true;
+    _subview4.hidden = true;
+    
+    //_btnItem9.hidden = true;
+    //_btnItem10.hidden = true;
+    //_btnItem8.hidden = true;
+    //_btnItem1.hidden = true;
+    
+    if (([delegate.userAreaID isEqualToString:@"2463"])||([delegate.userAreaID isEqualToString:@"0"])) {
+        //薛城
+        _btnItem3.hidden = false;
+        _btnItem4.hidden = false;
+        _btnItem5.hidden = false;
+        
+        _txtItem2.hidden = false;
+        _txtItem3.hidden = false;
+        _txtItem4.hidden = false;
+
+    }
+
+
+}
+
+-(void)ServiceRefresh:(NSNotification*)notification {
+    [self LoactionViewControl];
+}
+
 //首页按钮
 //小类点击事件
 - (void)gotoSubService:(NSString *)serviceID PageName:(NSString *)itemname {
@@ -155,6 +238,7 @@
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
     //[delegate showNotify:_lsNotifyTitle HoldTimes:2];
     delegate.categorylist = serviceID;
+    delegate.userServiceName =itemname;
     self.tabBarController.selectedIndex = 2;
     
     [[NSNotificationCenter defaultCenter]
@@ -230,7 +314,7 @@
     
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
     //[delegate showNotify:_lsNotifyTitle HoldTimes:2];
-    
+    delegate.userServiceName =@"洗车服务";
     delegate.categorylist = @"139";
     self.tabBarController.selectedIndex = 2;
     
@@ -247,6 +331,7 @@
     
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
     //[delegate showNotify:_lsNotifyTitle HoldTimes:2];
+    delegate.userServiceName =@"打蜡服务";
     delegate.categorylist = @"141";
     self.tabBarController.selectedIndex = 2;
     
@@ -263,6 +348,7 @@
     
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
     //[delegate showNotify:_lsNotifyTitle HoldTimes:2];
+    delegate.userServiceName =@"贴膜服务";
     delegate.categorylist = @"176";
     self.tabBarController.selectedIndex = 2;
     
@@ -466,7 +552,7 @@
     [self gotoSubService:@"189" PageName:@"玻璃贴膜"];////
 }
 - (IBAction)btnsubitem22Clicked:(id)sender {
-    [self gotoSubService:@"187" PageName:@"底盘装甲"];////
+    [self gotoSubService:@"176" PageName:@"贴膜装饰"];////
 }
 - (IBAction)btnsubitem23Clicked:(id)sender {
     [self gotoSubService:@"182" PageName:@"真皮座椅"];////

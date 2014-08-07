@@ -95,21 +95,23 @@
     
     //[self.btnmyCoupons successStyle];
     //[self.btnmyCoupons addAwesomeIcon:FAIconAsterisk beforeTitle:YES];
-    //用户登录的消息
+    /*//用户登录的消息
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loginCompletion:)
                                                  name:@"LoginCompletionNotification"
                                                object:nil];
     
-    //订单的消息
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(OrderCompletion:)
-                                                 name:@"OrderCompletionNotification"
-                                               object:nil];
+    
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(OrderWithLogin:)
                                                  name:@"OrderWithLoginNotification"
+                                               object:nil];
+    */
+    //订单的消息
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(OrderCompletion:)
+                                                 name:@"OrderCompletionNotification"
                                                object:nil];
     //刷新列表的消息
     [[NSNotificationCenter defaultCenter] addObserver:self

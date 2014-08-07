@@ -49,7 +49,7 @@
     
 	_cityText.text = @"滕州";
 	_keyText.text  = @"洗车";
-    curPage = 1;
+    curPage = 0;
     _isShowPoiLabel = true;
     _HeadView.hidden = true;
     // 设置地图级别 // 地图比例尺级别，在手机上当前可使用的级别为3-19级
@@ -172,6 +172,7 @@
 
 -(IBAction)textFiledReturnEditing:(id)sender {
     [sender resignFirstResponder];
+
 }
 
 - (void)viewDidUnload {
@@ -188,7 +189,7 @@
 
 -(IBAction)onClickOk
 {
-    curPage = 1;
+    curPage = 0;
     BMKCitySearchOption *citySearchOption = [[BMKCitySearchOption alloc]init];
     citySearchOption.pageIndex = curPage;
     citySearchOption.pageCapacity = 10;
@@ -213,7 +214,7 @@
 
 -(IBAction)onClickNextPage
 {
-    curPage++;
+    
     
     //法一：城市内检索，请求发送成功返回YES，请求发送失败返回NO
     BMKCitySearchOption *citySearchOption = [[BMKCitySearchOption alloc]init];
@@ -223,6 +224,9 @@
     
     citySearchOption.city= _cityText.text;              //城市是BMKCitySearchOption的属性
     BOOL flag = [_poisearch poiSearchInCity:citySearchOption];
+    
+    curPage++;
+    
     //[citySearchOption release];
     
     /*
@@ -506,11 +510,15 @@
         NSLog(@"起始点有歧义");
     } else {
         // 各种情况的判断。。。
-        NSLog(@"数据结果未预测");
         if (result.poiInfoList.count == 0) {
             curPage = 0;
             
-            NSLog(@"未发现新标记,搜索将返回首页");
+            NSString *strMsg = [[NSString alloc] initWithFormat:@"未发现新标记,%@ 搜索 %@", _cityText.text,_keyText.text ];
+            NSLog(@"%@", strMsg );
+            washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+            [delegate showNotify:strMsg HoldTimes:2];
+            
+            
             _showMsgLabel.text = @"未发现新标记,搜索将返回首页";
             _nextPageButton.titleLabel.text = @"搜索";
             [self.btnSearch primaryStyle];

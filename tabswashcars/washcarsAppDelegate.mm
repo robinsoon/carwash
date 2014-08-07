@@ -39,10 +39,18 @@ BMKMapManager* _mapManager;
     _isAutoLogin = true;
     _isreachChanged = false;        //网络连接变更
     _reachStatus=@"";               //网络连接状态
+    
+    _userServiceName = @"洗车服务";
     //_userAreaID = @"298";
     //禁止加载应用的过程中做复杂的业务，以防卡死在黑屏阶段
     //首页加载完成以后再去处理初始化工作
-
+    _isLimited = false;
+    _userAreaID = @"298";
+    _userCitySupported = @"1";
+    _userCity = @"枣庄";
+    _userDistrict = @"枣庄";
+    _userServiceName = @"洗车服务";
+    
     return YES;
 }
 
@@ -112,8 +120,8 @@ BMKMapManager* _mapManager;
     
     //授权码1 公司
 	BOOL ret = [_mapManager start:@"Y4CpZgkKGjylsjOAXgsNa329" generalDelegate:self];
-    
-    //授权码1 私人
+
+    //授权码2 私人
     //BOOL ret = [_mapManager start:@"ZW1T9NczNV0pIY0yjd3e06qM" generalDelegate:self];
     
 	if (!ret) {
@@ -259,8 +267,6 @@ BMKMapManager* _mapManager;
     return @"";
 }
 
-
-
 //修改某个参数
 - (void)saveUserDefaults:(NSString*)ItemKey setValue:(NSString*)ParamValue
 {
@@ -324,6 +330,8 @@ BMKMapManager* _mapManager;
     _userDistrict = [self readUserDefaults:@"userdistrict"];
     _userAddress  = [self readUserDefaults:@"useraddress"];
     _userAreaID  = [self readUserDefaults:@"userareaid"];
+    
+    _userCitySupported = [self readUserDefaults:@"usercitysupported"];
     [self ReadUserLocation];
 }
 
@@ -358,6 +366,8 @@ BMKMapManager* _mapManager;
     [self saveUserDefaults:@"userdistrict" setValue:_userDistrict];
     [self saveUserDefaults:@"useraddress" setValue:_userAddress];
     [self saveUserDefaults:@"userareaid" setValue:_userAreaID];
+    
+    [self saveUserDefaults:@"usercitysupported" setValue:_userCitySupported];
 }
 
 //更新坐标

@@ -50,6 +50,9 @@
 		width = [unselectedImage size].width;
 	}
 	
+    width = width * 0.7;
+    height = height * 0.7;
+    
 	starRating = 0;
 	lastRating = 0;
 	s1 = [[UIImageView alloc] initWithImage:unselectedImage];

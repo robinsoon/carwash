@@ -70,6 +70,11 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnsubitem45;
 @property (weak, nonatomic) IBOutlet UIButton *btnsubitem46;
 
+@property (weak, nonatomic) IBOutlet UILabel *txtItem1;
+@property (weak, nonatomic) IBOutlet UILabel *txtItem2;
+@property (weak, nonatomic) IBOutlet UILabel *txtItem3;
+@property (weak, nonatomic) IBOutlet UILabel *txtItem4;
+
 
 @property (nonatomic) int iSelectedIndex;//选中序号
 

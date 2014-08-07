@@ -136,7 +136,15 @@
     
 }
 - (IBAction)txtPhoneChanged:(id)sender {
-    _phone = _txtPhone.text;
+    if ([_phone isEqualToString:_txtPhone.text ]) {
+        //没有变化
+        return;
+    }else{
+        
+        _phone = _txtPhone.text;
+        _phoneCheckNum = @"";//忘记手机验证码
+    }
+
     
     if ((_phone == nil)||([_phone isEqualToString:@""])) {
         return;
@@ -222,14 +230,25 @@
 }
 
 - (IBAction)btnSendCheckPhoneClicked:(id)sender {
-    _phone = _txtPhone.text;
-    if (([_phone isEqualToString:@""])||(_phone==nil)) {
-        return;
-    }
-    _RegAction = @"1";
-    [self startRequest];
     
     _btnSendCheckNum.enabled = false;
+    if (_isAllowCheckCode) {
+        _RegAction = @"1";
+        [self startRequest];
+        _isAllowCheckCode = false;
+    }else{
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+        NSString *lsTips = [[NSString alloc] initWithFormat:@"已发送过短信验证，请您 %d 秒后再试。",_Ticktimers];
+        
+        [delegate showNotify:lsTips HoldTimes:3];
+        
+        return;
+    }
+    
+    _Ticktimers = 60;
+    _tickTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(onTimer) userInfo:nil repeats:YES];
+    
+    
     _txtCheckNum.enabled = true;
 }
 
@@ -266,6 +285,38 @@
          object:nil
          userInfo:dataDict];
     }];
+}
+
+
+- (void) onTimer{
+    
+    _Ticktimers -= 1;
+    if (_Ticktimers > 0) {
+        _btnSendCheckNum.titleLabel.text = [[NSString alloc] initWithFormat:@"稍候 %d秒",_Ticktimers];
+    }else{
+        _Ticktimers = 0;
+        [self DelayCheckPhone];
+        
+        [self stopTimer];
+    }
+    
+}
+
+- (void)stopTimer
+{
+    if(_tickTimer != nil){
+        [_tickTimer invalidate];
+        _tickTimer = nil;
+    }
+}
+
+//重新开启短信验证
+- (void)DelayCheckPhone{
+    _btnSendCheckNum.titleLabel.text = @"获取验证码";
+    _btnSendCheckNum.enabled = true;
+    _isAllowCheckCode = true;
+    
+    
 }
 
 - (BOOL)validateMobile:(NSString *)mobileNum
@@ -559,15 +610,16 @@
                                                           cancelButtonTitle:@"确定"
                                                           otherButtonTitles:nil];
                 [alertView show];
-
                 _btnSendCheckNum.enabled = false;
                 _txtCheckNum.enabled = false;
+                [self stopTimer];
                 
             }else{
                 //提示已注册
                 NSLog(@"手机校验存在 %@",_phone);
                 _btnSendCheckNum.enabled = true;
                 _txtCheckNum.enabled = true;
+                [self stopTimer];
             }
             
         }else{

@@ -29,6 +29,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnFilter;
 @property (strong, nonatomic) NSString *userid;           //传入参数id
 @property (strong, nonatomic)UIColor *CellBgColor;  //单元格背景色
+
+@property (strong, nonatomic) NSString *filterType;           //分类方式
+
 //重新加载表视图
 -(void)reloadView:(NSDictionary*)res;
 

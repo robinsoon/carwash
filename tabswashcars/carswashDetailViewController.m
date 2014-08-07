@@ -11,7 +11,10 @@
 #import "navMapsViewController.h"
 #import "PoiSearchViewController.h"
 #import "OrderDetailViewController.h"
-#import "OrderSubmitViewController.h"
+//#import "OrderSubmitViewController.h"
+#import "moreInforTableViewController.h"
+#import "sellRecordTableViewController.h"
+
 @interface carswashDetailViewController ()
 //定义可配置的数据参数（对于简单查询只需1组配置）
 //命名规则： i 表示实例变量；P 表示 页面变量； s 表示 数据类型为String；
@@ -28,6 +31,8 @@
 @property (strong, nonatomic) NSString *iPs_POSTID; //请求数据POST参数ID1
 @property (strong, nonatomic) NSString *iPs_POSTQueryOption; //请求数据POST参数ID2
 @property (strong, nonatomic) NSString *iPs_POSTQueryRegion; //请求数据POST参数ID3
+@property (strong, nonatomic) NSString *iPs_WebPAGE;
+@property (strong, nonatomic) NSString *iPs_WebGet;
 
 @end
 
@@ -64,8 +69,10 @@
     //[self.btnAddCart addAwesomeIcon:FAIconStar beforeTitle:NO];
     [self.btnAddCart addAwesomeIcon:FAIconShoppingCart beforeTitle:NO];
     
-    self.detailscrollview.contentSize = CGSizeMake(320,750);
+    self.detailscrollview.contentSize = CGSizeMake(320,1050);
     [self.detailscrollview addSubview:self.subViewPrice];
+    
+    [self.detailscrollview addSubview:self.subWebContent];
     
     [self.detailscrollview addSubview:self.subViewComment];
     
@@ -83,6 +90,7 @@
     _iPs_POSTQueryOption = @"0";
     [self startRequestItem];
     
+    [self loadWebContent];
 }
 
 //页面即将展示
@@ -139,7 +147,11 @@
     
     _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2：0 详情 1评论 2销售记录
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
+    //http://www.2345mall.com/description_app.php?act=goodsdesc&goods_id=",参数传商品ID
+    _iPs_WebPAGE = @"description_app.php";
+    _iPs_WebGet = @"act=goodsdesc&goods_id=";
     
+    _subWebContent.delegate = self;
 }
 
 -(void)ratingChanged:(float)newRating {
@@ -188,6 +200,39 @@
     }
     
     //OrderSubmitViewController *ordersubmit = [];
+    
+    if([segue.identifier isEqualToString:@"morelist"])
+    {
+        moreInforTableViewController *itemlist = segue.destinationViewController;
+        
+        itemlist.listData = self.listcommit;
+        itemlist.itemid = self.itemid;
+        
+        NSLog(@"进入扩展信息列表 %d",self.listcommit.count );
+        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+        
+    }
+    
+    if([segue.identifier isEqualToString:@"sellrecordlist"])
+    {
+        sellRecordTableViewController *itemlist = segue.destinationViewController;
+        
+        itemlist.listData = self.listSell;
+        itemlist.itemid = self.itemid;
+        
+        NSLog(@"进入销售记录列表 %d",self.listSell.count );
+        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+        
+    }
+
     
     
 }
@@ -260,7 +305,7 @@
 }
 
 - (void) connectionDidFinishLoading: (NSURLConnection*) connection {
-    NSLog(@"请求完成...");
+    
     _isConnected = true;
     NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:_Requestdata options:NSJSONReadingAllowFragments error:nil];
     
@@ -271,11 +316,11 @@
         [self reloadCommit:dict];
         
         //请求购买记录
-        
-        //暂不开启
-        //_iPs_POSTQueryOption = @"2";
-        //[self startRequestItem];
-        
+        if(_iSellNumber > 0){
+            //暂不开启
+            _iPs_POSTQueryOption = @"2";
+            [self startRequestItem];
+        }
     }else if([_iPs_POSTQueryOption isEqualToString:@"2"]){
         
         [self reloadSellRecord:dict];
@@ -406,6 +451,10 @@
     
     //销量
     self.lbNumber.text = _iSellNumber;//[res objectForKey:@"goods_number"];
+        if((_iSellNumber == nil)||([_iSellNumber isEqualToString:@"0"])){
+        }else{
+            _lbNumber.textColor = [UIColor blueColor];
+        }
     
     //库存
     NSInteger goodsnumber = [[res objectForKey:@"goods_number"] integerValue];
@@ -481,7 +530,8 @@
         double ldRank = 0;
         double ldRankSum = 0;
         
-        
+        _listcommit = [[NSMutableArray alloc] initWithArray:results];
+        [enumerator allObjects];
         if (results.count > 0)
         {
             for (int i=0; i<results.count; i++) {
@@ -507,7 +557,7 @@
             if (ldRank<=0.5) {
                 ldRank = 1;
             }
-            
+            _lbCommitCount.textColor = [UIColor blueColor];
             [_starView displayRating:ldRank];
             NSLog(@"加载评论数据...共 %d 条",results.count);
 
@@ -532,6 +582,7 @@
     NSString *lsBuyCount = @"";
     NSString *lsDate = @"";
     NSString *lsAmount = @"";
+    NSString *lsuserid = @"";
     
     @try{
         NSEnumerator *enumerator = [res objectEnumerator];
@@ -539,9 +590,10 @@
         NSArray *results = [enumerator allObjects];
         NSDictionary* dict;
         double ldSellSum = 0;
-        
+        _listSell = [[NSMutableArray alloc] initWithArray:results];
         if (results.count > 0)
         {
+            
             for (int i=0; i<results.count; i++) {
                 dict = [results objectAtIndex:i];
                 lsName = [dict objectForKey:@"user_name"];
@@ -554,6 +606,7 @@
                 lsBuyCount =[dict objectForKey:@"goods_number"];
                 
                 lstatus =[dict objectForKey:@"order_status"];
+                lsuserid =[dict objectForKey:@"user_id"];
                 ldSellSum+=[lsAmount doubleValue];
                 
             }
@@ -563,7 +616,11 @@
             
         } else {
             NSLog(@"暂无购买记录");
-            
+            _iSellNumber = @"0";
+
+            _lbNumber.textColor = [UIColor blackColor];
+
+
         }
         
     }@catch(NSException *exp1){
@@ -581,6 +638,48 @@
     roundedOunces = [ouncesDecimal decimalNumberByRoundingAccordingToBehavior:roundingBehavior];
     
     return [NSString stringWithFormat:@"%@",roundedOunces];
+}
+
+//加载基于Web页面的描述信息
+- (void)loadWebContent{
+    //http://www.2345mall.com/description_app.php?act=goodsdesc&goods_id=",参数传商品ID
+    NSString *strURL = [[NSString alloc] initWithFormat:@"%@%@?%@%@",_iPs_URL,_iPs_WebPAGE,_iPs_WebGet,_itemid];
+    
+    NSURL *url = [NSURL URLWithString:[strURL URLEncodedString]];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [_subWebContent loadRequest:request];
+    
+    
+}
+
+#pragma mark ---- 数据加载完调用webView代理方法
+- (void)webViewDidFinishLoad:(UIWebView *)aWebView {
+    NSLog(@"加载基于Web页面的描述信息");
+
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    CGRect frame = aWebView.frame;
+    //webView的宽度
+    frame.size = CGSizeMake(300, 0);
+    aWebView.frame = frame;
+    float content_height = [[aWebView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight;"] floatValue];
+    frame = aWebView.frame;
+    //webView的宽度和高度
+    frame.size = CGSizeMake(300, content_height+40);
+    aWebView.frame = frame;
+    
+    //NSLog(@"-----%d",(int) frame.size.height);
+    
+    //移动下面两个View的位置
+    int ypos = aWebView.frame.origin.y + frame.size.height + 20;
+    
+    _subViewComment.frame = CGRectMake( 0, ypos, _subViewComment.frame.size.width, _subViewComment.frame.size.height ); // set new position exactly
+    
+    ypos = ypos + _subViewComment.frame.size.height;
+    
+    _subViewDescribe.frame = CGRectMake( 0, ypos, _subViewDescribe.frame.size.width, _subViewDescribe.frame.size.height ); // set new position exactly
+    
+    self.detailscrollview.contentSize = CGSizeMake(320,ypos + _subViewDescribe.frame.size.height - 100);
 }
 
 //图片的处理
@@ -613,6 +712,27 @@
     return result;
 }
 
+- (IBAction)btnCommitClicked:(id)sender {
+    if ( _listcommit.count>0) {
+        [self performSegueWithIdentifier:@"morelist" sender:self];
+    }else{
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+
+        NSString *lsMsg = [[NSString alloc]initWithFormat:@"当前商品暂无评论"];
+        
+        [delegate showNotify:lsMsg HoldTimes:2.5];
+    }
+
+}
+- (IBAction)btnSellRecordClicked:(id)sender {
+    if((_iSellNumber == nil)||([_iSellNumber isEqualToString:@"0"])){
+    }else{
+        //暂不开启
+        [self performSegueWithIdentifier:@"sellrecordlist" sender:self];
+    }
+
+    
+}
 
 //定位到地图
 - (IBAction)btnLocation:(id)sender {

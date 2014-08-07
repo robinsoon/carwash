@@ -34,11 +34,15 @@
 
 @property (strong, nonatomic) NSString *phoneCheckNum;
 @property (nonatomic) BOOL isRegisted;           //是否注册
+@property (nonatomic) BOOL isAllowCheckCode;
 
 @property (nonatomic) BOOL isLogin;           //传入参数id
 @property (nonatomic) BOOL isConnected;
 @property (strong, nonatomic) NSString *PageReturn;           //登录结果
 @property (nonatomic,strong) NSString *RegAction;  //注册动作(1验证手机，2发手机码，3注册)
+
+@property (strong, nonatomic) NSTimer *tickTimer;  //timer对象
+@property (nonatomic) int Ticktimers;
 
 //保存数据列表[表现层所依赖的内部数据集合]
 @property (nonatomic,strong) NSMutableArray* listData;  //商品列表

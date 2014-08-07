@@ -29,6 +29,8 @@
 @property (strong, nonatomic) NSString *iPs_POSTID; //请求数据POST参数ID1
 @property (strong, nonatomic) NSString *iPs_POSTQueryOption; //请求数据POST参数ID2
 @property (strong, nonatomic) NSString *iPs_POSTQueryRegion; //请求数据POST参数ID3
+
+
 @end
 
 @implementation RegisterViewController
@@ -54,6 +56,8 @@
     
     self.scrollMain.contentSize = CGSizeMake(320,550);
     [self.scrollMain addSubview:self.subView];
+    
+    _isAllowCheckCode = true;
 }
 
 - (void)didReceiveMemoryWarning
@@ -121,6 +125,7 @@
     _RegAction = @"0";
     _btnSendCheckNum.enabled = false;
     _isDebug = false;
+    _Ticktimers = 0;
 }
 
 
@@ -146,11 +151,20 @@
     
 }
 - (IBAction)txtPhoneChanged:(id)sender {
-    _phone = _txtPhone.text;
+    
+    if ([_phone isEqualToString:_txtPhone.text ]) {
+        //没有变化
+        return;
+    }else{
+    
+        _phone = _txtPhone.text;
+        _phoneCheckNum = @"";
+    }
     
     if ((_phone == nil)||([_phone isEqualToString:@""])) {
         return;
     }
+    
     //校验手机号
     if([self validateMobile:_phone]){
         
@@ -162,11 +176,12 @@
         [self startRequest];
         
     }else{
-        _phone = @"";
+        
         //_txtPhone.text = @"";
         washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
         [delegate showNotify:@"您的手机号不能通过校验。号码仅识别中国手机用户。" HoldTimes:2];
         _btnSendCheckNum.enabled = false;
+        _phone = @"";
         
     }
     
@@ -228,12 +243,57 @@
 
 
 - (IBAction)btnSendCheckPhoneClicked:(id)sender {
-    
-    _RegAction = @"1";
-    [self startRequest];
-    
     _btnSendCheckNum.enabled = false;
+    if (_isAllowCheckCode) {
+        _RegAction = @"1";
+        [self startRequest];
+        _isAllowCheckCode = false;
+    }else{
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+        NSString *lsTips = [[NSString alloc] initWithFormat:@"已发送过短信验证，请您 %d 秒后再试。",_Ticktimers];
+
+        [delegate showNotify:lsTips HoldTimes:3];
+        
+        return;
+    }
+    
+    _Ticktimers = 60;
+    _tickTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(onTimer) userInfo:nil repeats:YES];
+    
+    
     _txtCheckNum.enabled = true;
+    //[self performSelector:@selector(DelayCheckPhone) withObject:nil afterDelay:15.0];
+}
+
+- (void) onTimer{
+    
+    _Ticktimers -= 1;
+    if (_Ticktimers > 0) {
+        _btnSendCheckNum.titleLabel.text = [[NSString alloc] initWithFormat:@"稍候 %d秒",_Ticktimers];
+    }else{
+        _Ticktimers = 0;
+        [self DelayCheckPhone];
+        
+        [self stopTimer];
+    }
+    
+}
+
+- (void)stopTimer
+{
+    if(_tickTimer != nil){
+        [_tickTimer invalidate];
+        _tickTimer = nil;
+    }
+}
+
+//重新开启短信验证
+- (void)DelayCheckPhone{
+    _btnSendCheckNum.titleLabel.text = @"获取验证码";
+    _btnSendCheckNum.enabled = true;
+    _isAllowCheckCode = true;
+    
+    
 }
 
 //用户注册信息
@@ -246,8 +306,10 @@
         return;
     }
 
+    
     _RegAction = @"0"; //注册
     [self startRequest];
+    
     
     //[self RegDone:_btnSubmit];
     
@@ -374,6 +436,44 @@
     
     return  @"";
 
+}
+
+//将登录信息跟新到全局变量供页面共享
+- (BOOL)userLogin{
+    
+    _isAutoLogin = true ;
+    
+    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+    
+    delegate.isLogin= _isLogin;
+    delegate.userid = _userID;
+    delegate.username = _username;
+    delegate.password = _password;
+    delegate.isAutoLogin = _isAutoLogin;
+    
+    delegate.usermoney = _usermoney;
+    delegate.userpoints = _userpoints;
+    
+    //存档配置
+    [delegate SaveConfig];
+    
+    NSString *strMoney = [[NSString alloc]initWithFormat:@"%1.2f",_usermoney];
+    NSString *strpoints = [[NSString alloc]initWithFormat:@"%1.0f",_userpoints];
+    [self dismissViewControllerAnimated:YES completion:^{
+        NSLog(@"Modal View done");
+        //构造消息
+        
+        NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"isLogin",_userID, @"ID",_username, @"name",_password,@"user_pass",strMoney,@"user_money",strpoints,@"pay_points", nil];
+        //传递消息
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"LoginCompletionNotification"
+         object:nil
+         userInfo:dataDict];
+    }];
+    
+    
+    return true;
+    
 }
 
 #pragma mark- Web Request Function
@@ -509,13 +609,25 @@
             _usermoney = [[userinf objectForKey:@"user_money"] doubleValue];
             _userpoints = [[userinf objectForKey:@"pay_points" ]doubleValue];
             
+            
+            
+            
             //NSNumber * num =[userinf objectForKey:@"user_id"];
             //[userinf objectForKey:@"email"];
             _isRegisted = true;
             _btnSendCheckNum.enabled = false;
             //跳转
             NSLog(@"注册成功 %@",_userID);
-            
+            NSNumber *bonusCodeObj = [dict objectForKey:@"has_bonus"];
+            if ([bonusCodeObj intValue]==1) {
+                NSMutableDictionary*  bonusinf = [dict objectForKey:@"bonus_info"];
+                NSString * bonus_name = [bonusinf objectForKey:@"bonus_name"];
+                NSString * bonus_money = [bonusinf objectForKey:@"bonus_money"];
+                NSString *strTitleMsg = [[NSString alloc] initWithFormat:@"恭喜您获得了奖励:%@ 价值 %@ 元。",bonus_name,bonus_money];
+                NSLog(@"注册送红包提示： %@",strTitleMsg);
+                [delegate showNotify:strTitleMsg HoldTimes:4];
+            }
+
             [self dismissViewControllerAnimated:YES completion:^{
                 //构造消息
                 NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"isRegist",_userID, @"ID",_username, @"name",_txtPassword.text, @"password",_phone, @"phone",_usermoney,@"user_money",_userpoints,@"pay_points", nil];
@@ -525,8 +637,10 @@
                  postNotificationName:@"RegisterCompletionNotification"
                  object:nil
                  userInfo:dataDict];
+                
+                [self userLogin];
             }];
-
+            
             
         }else{
             //注册失败
@@ -565,7 +679,7 @@
         if ((_phoneCheckNum==nil)||([_phoneCheckNum isEqualToString:@""])) {
             NSLog(@"获取短信验证码错误！");
             [delegate showNotify:@"没有获取短信验证码！" HoldTimes:2];
-            _btnSendCheckNum.enabled = true;
+            //_btnSendCheckNum.enabled = true;
             //_txtCheckNum.enabled = false;
         }else{
             NSLog(@"手机验证码 %@",_phoneCheckNum);
@@ -585,8 +699,9 @@
             if ([_txtUserName.text isEqualToString:@""]) {
                 _txtUserName.text = _txtPhone.text;
             }
-            _btnSendCheckNum.enabled = true;
-            
+            //_btnSendCheckNum.enabled = true;
+            [self DelayCheckPhone];
+            [self stopTimer];
         }else{
             //提示已注册
             NSLog(@"手机校验失败 %@",_phone);
@@ -598,6 +713,7 @@
             [alertView show];
             _btnSendCheckNum.enabled = false;
             _txtCheckNum.enabled = false;
+            [self stopTimer];
         }
         
     }else{

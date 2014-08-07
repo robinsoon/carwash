@@ -546,10 +546,16 @@
         if ((_usedmoney>0)&&(_selectUserMoney.isOn)) {
             //抵消余额
             _usedmoney = _totalpaylimit - _usedbonus - _usedpoints/100;
+            if (_usedmoney < 0 ) {
+                _usedmoney = 0;
+            }
             _lbUsedMoney.text = [[NSString alloc]initWithFormat:@"%1.2f",_usedmoney];
         }else if((_usedpoints>0)&&(_selectPoints.isOn)){
             //抵消积分
             _usedpoints = (_totalpaylimit - _usedbonus)*100;
+            if (_usedpoints < 0 ) {
+                _usedpoints = 0;
+            }
             _lbUserPoints.text = [[NSString alloc]initWithFormat:@"可用%1.0f积分抵用%1.2f元",_usedpoints, _usedpoints/100];
         }
         
@@ -561,7 +567,9 @@
         //用户取消了红包，应该先增加余额再增加支付金额
         _usedmoney = _totalpaylimit - _usedpoints/100 - _usedbonus;
         if(_usedmoney>_usedmoneylimit){_usedmoney=_usedmoneylimit;}
-        
+        if (_usedmoney < 0 ) {
+            _usedmoney = 0;
+        }
         _lbUsedMoney.text =[[NSString alloc]initWithFormat:@"%1.2f",_usedmoney];
         _totalpay = _totalpaylimit - _usedmoney - _usedpoints/100 - _usedbonus;
         

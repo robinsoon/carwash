@@ -35,6 +35,11 @@
 @property (nonatomic, retain) UIBarButtonItem *barButtonItem; //定义一个条件按钮
 @property (nonatomic) CLLocationCoordinate2D Locationpt; //初始坐标位置
 @property (strong, nonatomic)UIColor *CellBgColor;  //单元格背景色
+
+@property (nonatomic,strong) NSString *CityName;
+
+@property (nonatomic,strong) NSString *defaultCode;
+@property (nonatomic,strong) NSString *defaultArea;
 //重新加载表视图
 -(void)reloadView:(NSDictionary*)res;
 

@@ -60,8 +60,13 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
+    
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(BonusCompletion:)
+                                                 name:@"BonusRefreshNotification"
+                                               object:nil];
+}
 
 //页面即将展示
 -(void) viewWillAppear:(BOOL)animated{
@@ -289,8 +294,6 @@
         cell.lbStatus.textColor = [UIColor darkTextColor];
     }
 
-    
-    
     return cell;
 }
 
@@ -343,6 +346,13 @@
 }
 */
 
+//红包刷新事件
+-(void)BonusCompletion:(NSNotification*)notification {
+
+    [self startRequest];
+}
+
+
 /*
  * 开始请求Web Service
  */
@@ -350,7 +360,11 @@
 {
     _isConnected = false;
     
-    
+    if (([_iPs_POSTID isEqualToString:@""])||(_iPs_POSTID == nil)) {
+        washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+        [delegate showNotify:@"无法查看账户数据，请您先登录！" HoldTimes:2];
+        return;
+    }
     
     NSString *strURL = [[NSString alloc] initWithFormat:@"%@%@",_iPs_URL,_iPs_PAGE];
     
