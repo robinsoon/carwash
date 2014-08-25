@@ -159,6 +159,10 @@
     _defaultCode = @"298";
     _defaultArea = @"枣庄市";
     _CityName = _defaultArea;
+    
+    _rowlimit = 40;
+    _currentrowcount = 0;
+    
     if (_iPs_POSTQueryRegion==nil) {
         _iPs_POSTQueryRegion = _defaultCode;//枣庄
     }
@@ -642,6 +646,7 @@
 
     //重新加载数据
     _iPageIndex = 1;
+    [_listData removeAllObjects ];
     [self startRequest];
     
     NSString *lsNotifyTitle = [[NSString alloc]initWithFormat:@"按照 %@ 筛选数据" ,lsButtonTitle];
@@ -873,7 +878,7 @@
 - (void) connectionDidFinishLoading: (NSURLConnection*) connection {
     NSLog(@"请求数据完成接收,准备解析");
     _isConnected = true;
-    NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:_datas options:NSJSONReadingAllowFragments error:nil];
+    NSMutableDictionary* dict = [NSJSONSerialization JSONObjectWithData:_datas options:NSJSONReadingAllowFragments error:nil];
     
     NSLog( @"Result: %@", [dict description] );
     //激活数据列表的刷新
@@ -884,13 +889,13 @@
 
 
 //重新加载表视图
--(void)reloadView:(NSDictionary*)res
+-(void)reloadView:(NSMutableDictionary*)res
 {
     @try{
         NSNumber *resultCodeObj = [res objectForKey:@"count"];
         if ([resultCodeObj integerValue] >=0)
         {
-            NSArray *results = [res objectForKey:@"goods_list"];
+            NSMutableArray *results = [res objectForKey:@"goods_list"];
 
             //[self.listSort addObjectsFromArray:self.listData ];
             //self.listSort = [res objectForKey:@"goods_list"];
@@ -901,15 +906,75 @@
             
             if (results && results.count > 0)
             {
-                self.listData = [res objectForKey:@"goods_list"];
+                //如果是更换了查询过滤条件则不应保留数据
+                
+                NSMutableArray* ComboData = [NSMutableArray arrayWithCapacity:30];
+
+                //NSLog(@"-:%@",ComboData.description);
+                //处理数据的合并
+                NSMutableDictionary * objRow;
+                //1.要避免重复的数据
+                //2.要限制每页最多显示的数据行 _rowlimit
+                //3.向前翻页的控制需要重写
+                int postion = 0;
+                _currentrowcount = _listData.count;
+                if ( _currentrowcount + results.count <= _rowlimit ){
+                    postion = 0;
+                }else{
+                    postion = _rowlimit - results.count;
+                    if(postion<0){postion = 0;}
+                }
+                
+                    
+                for (int i = postion; i< _listData.count;  i++) {
+                    
+                    objRow = [[_listData objectAtIndex:i] mutableCopy];
+                    if(![ ComboData containsObject:objRow]){
+                    [ComboData addObject:objRow ];
+                    }
+                    //[ComboData insertObject:objRow atIndex:ComboData.count];
+                    
+                }
+
+                for (int i = 0; i< results.count;  i++) {
+                    
+                    objRow = [[results objectAtIndex:i] mutableCopy];
+                    if(![ ComboData containsObject:objRow]){
+                    [ComboData addObject:objRow ];
+                    }
+                    //[ComboData insertObject:objRow atIndex:ComboData.count];
+                    
+                }
+                
+                NSLog(@"+:%@",ComboData.description);
+
+                
+                _currentrowcount = ComboData.count;
+                //self.listData = [res objectForKey:@"goods_list"];
+                self.listData = ComboData;
+                //刷新Table重新加载Cell表格
                 [self.tableView reloadData];
+                
+                
+                
+                
                 NSLog(@"列表视图加载数据...共 %d 条",results.count);
                 if (_iPageIndex>1 && _listData.count>0) {
+                    int scrollpos = _listData.count - 10;
+                    if (scrollpos<1) {
+                        scrollpos = 1;
+                    }
+                    //移动到首行
+                    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:scrollpos inSection:0]
+                                                animated:YES
+                                          scrollPosition:UITableViewScrollPositionMiddle];
+                    
+                    /*
                     //移动到首行
                     [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]
                                                 animated:YES
                                           scrollPosition:UITableViewScrollPositionMiddle];
-                    
+                    */
                 }
             }
 

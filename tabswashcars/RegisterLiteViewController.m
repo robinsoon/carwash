@@ -51,6 +51,8 @@
     [self.btnSubmit successStyle];
     
     [self.btnSubmit addAwesomeIcon:FAIconKey beforeTitle:YES];
+    
+    _isAllowCheckCode = true;
 }
 
 - (void)didReceiveMemoryWarning

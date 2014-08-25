@@ -239,7 +239,7 @@
     
     if (cell == nil) {
         NSLog(@"表格初始化错误");
-        NSArray * nib = [[NSBundle mainBundle] loadNibNamed:@"commitCell" owner:self options:nil] ;
+        NSArray * nib = [[NSBundle mainBundle] loadNibNamed:@"sellRecordCell" owner:self options:nil] ;
         
         cell = [nib objectAtIndex:0];
     }

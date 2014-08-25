@@ -408,14 +408,20 @@
             annotationView = [[BMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:AnnotationViewID];
 
             //创建自定义的图标
-            UIView *viewForImage=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 69, 80)];
-            UIImageView *imageview=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 60, 49)];
-            [imageview setImage:[UIImage imageNamed:@"Acarwash60.png"]];
+            //UIView *viewForImage=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 69, 80)];
+            //UIImageView *imageview=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 60, 49)];
+            //[imageview setImage:[UIImage imageNamed:@"Acarwash60.png"]];
+            
+            UIView *viewForImage=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 69, 100)];
+            UIImageView *imageview=[[UIImageView alloc]initWithFrame:CGRectMake(12, 0, 45, 70)];
+            [imageview setImage:[UIImage imageNamed:@"quxiche.png"]];
+            
             [viewForImage addSubview:imageview];
             
             //增加标注的文本名称
             if (_isShowPoiLabel) {
-                UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake(0, 45, 69, 31)];
+                //UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake(0, 45, 69, 31)];
+                UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake(0, 65, 69, 31)];
                 label.text=[annotationView.annotation title];
                 label.textColor = [UIColor blueColor];
                 label.backgroundColor=[UIColor clearColor];

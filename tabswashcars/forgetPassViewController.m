@@ -50,6 +50,7 @@
     
     [self.btnSubmit addAwesomeIcon:FAIconKey beforeTitle:YES];
     
+    _isAllowCheckCode = true;
 }
 
 - (void)didReceiveMemoryWarning
@@ -109,6 +110,7 @@
     _iPs_POSTQueryRegion=@""; //请求数据POST参数ID3
     
     _RegAction = @"0";
+    
     _btnSendCheckNum.enabled = false;
     
 }

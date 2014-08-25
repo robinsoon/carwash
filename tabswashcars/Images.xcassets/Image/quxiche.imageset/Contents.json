@@ -3,11 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "推荐好友送红包.png"
+      "filename" : "quxiche.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "quxiche@2X.png"
     }
   ],
   "info" : {

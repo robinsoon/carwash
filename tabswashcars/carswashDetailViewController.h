@@ -13,7 +13,7 @@
 #import "washcarsAppDelegate.h"
 
 
-@interface carswashDetailViewController : UIViewController<RatingViewDelegate>{
+@interface carswashDetailViewController : UIViewController<RatingViewDelegate,UIWebViewDelegate>{
     RatingView *starView;
 }
 

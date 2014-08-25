@@ -40,6 +40,10 @@
 
 @property (nonatomic,strong) NSString *defaultCode;
 @property (nonatomic,strong) NSString *defaultArea;
+
+@property (nonatomic) int rowlimit;
+@property (nonatomic) int currentrowcount;
+
 //重新加载表视图
 -(void)reloadView:(NSDictionary*)res;
 

@@ -220,6 +220,7 @@
 
     
     [_txtUserName becomeFirstResponder];
+    
 }
 
 

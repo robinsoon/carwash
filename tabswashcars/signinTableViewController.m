@@ -332,9 +332,7 @@
         //cellPricePoint.x = cellPricePoint.x - 20;
         
         //cell.cellPrice.center = cellPricePoint;
-        
-        
-        
+
     }@catch (NSException *exception) {
         
     }
@@ -705,6 +703,13 @@
             _signincount = [has_sign intValue];
             _signinneed = [need_sign doubleValue];
             [_progressbar setProgress:(_signincount/_signinneed) animated:YES];
+            
+            //传递消息
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"SigninCompletionNotification"
+             object:nil
+             userInfo:nil];
+            
             //判断是否需要查询红包
             if ([signState integerValue]==0){
                 _btnSignin.enabled = true;

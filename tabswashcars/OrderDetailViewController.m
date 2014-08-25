@@ -498,7 +498,7 @@
 
     //订单申请退款
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"退款申请"
-                                                        message:@"您确实要申请退款吗？红包使用后将不会退还。订单退款后，金额将返回到您的账户余额。"
+                                                        message:@"您确实要申请退款吗？订单退款后，金额将返回到您的账户余额。"
                                                        delegate:self
                                               cancelButtonTitle:@"取消"
                                               otherButtonTitles:@"退款",nil];
