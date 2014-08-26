@@ -57,6 +57,7 @@
 		9C397C37192616D7006C586F /* ShopCartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C397C36192616D7006C586F /* ShopCartViewController.m */; };
 		9C50C0B8196FCADA00553596 /* bonusTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C50C0B7196FCADA00553596 /* bonusTableViewController.m */; };
 		9C50C0BE196FDF1000553596 /* bonuslistViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C50C0BD196FDF0F00553596 /* bonuslistViewCell.m */; };
+		9C5422B819AC6AE2004E2CF2 /* CIFilterEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422B719AC6AE2004E2CF2 /* CIFilterEffect.m */; };
 		9C94C5FA192B33230064E20F /* payViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C94C5F9192B33230064E20F /* payViewController.m */; };
 		9C94C600192B337E0064E20F /* SysMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C94C5FF192B337E0064E20F /* SysMessageViewController.m */; };
 		9C94C63C192B4D670064E20F /* AlipayRsaLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C94C606192B4D670064E20F /* AlipayRsaLib.a */; };
@@ -268,6 +269,9 @@
 		9C50C0B7196FCADA00553596 /* bonusTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bonusTableViewController.m; sourceTree = "<group>"; };
 		9C50C0BC196FDF0F00553596 /* bonuslistViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bonuslistViewCell.h; sourceTree = "<group>"; };
 		9C50C0BD196FDF0F00553596 /* bonuslistViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bonuslistViewCell.m; sourceTree = "<group>"; };
+		9C5422A919AC3493004E2CF2 /* libqrencoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libqrencoder.a; path = tabswashcars/libqrencoder.a; sourceTree = "<group>"; };
+		9C5422B219AC69CB004E2CF2 /* CIFilterEffect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CIFilterEffect.h; sourceTree = "<group>"; };
+		9C5422B719AC6AE2004E2CF2 /* CIFilterEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIFilterEffect.m; sourceTree = "<group>"; };
 		9C94C5F8192B33230064E20F /* payViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = payViewController.h; sourceTree = "<group>"; };
 		9C94C5F9192B33230064E20F /* payViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = payViewController.m; sourceTree = "<group>"; };
 		9C94C5FE192B337E0064E20F /* SysMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SysMessageViewController.h; sourceTree = "<group>"; };
@@ -497,6 +501,7 @@
 				9C179642191C5C210027F552 /* tabswashcarsTests */,
 				9C179619191C5C200027F552 /* Frameworks */,
 				9C179618191C5C200027F552 /* Products */,
+				9C5422A919AC3493004E2CF2 /* libqrencoder.a */,
 			);
 			sourceTree = "<group>";
 		};
@@ -568,6 +573,8 @@
 				9CBAAC8E1945485400A15E74 /* couponsTableViewController.m */,
 				9CBAACAA19499E4600A15E74 /* couponsDetailViewController.h */,
 				9CBAACAB19499E4600A15E74 /* couponsDetailViewController.m */,
+				9C5422B219AC69CB004E2CF2 /* CIFilterEffect.h */,
+				9C5422B719AC6AE2004E2CF2 /* CIFilterEffect.m */,
 				9C50C0B6196FCADA00553596 /* bonusTableViewController.h */,
 				9C50C0B7196FCADA00553596 /* bonusTableViewController.m */,
 				9CBAAC961945BB2F00A15E74 /* userLoginViewController.h */,
@@ -1167,6 +1174,7 @@
 				9C397C301925E345006C586F /* NSString+FontAwesome.m in Sources */,
 				9CB44A431991CC3500309952 /* signinTableViewCell.m in Sources */,
 				9C94C640192B4D670064E20F /* AlixPayOrder.m in Sources */,
+				9C5422B819AC6AE2004E2CF2 /* CIFilterEffect.m in Sources */,
 				9C397C011925AF91006C586F /* Anim2ViewController.m in Sources */,
 				9C17968719245EB50027F552 /* SDImageCache.m in Sources */,
 				9CBAAC8F1945485400A15E74 /* couponsTableViewController.m in Sources */,
@@ -1307,6 +1315,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "tabswashcars/tabswashcars-Prefix.pch";
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "tabswashcars/tabswashcars-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -1337,6 +1346,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "tabswashcars/tabswashcars-Prefix.pch";
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "tabswashcars/tabswashcars-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -1347,6 +1357,7 @@
 					"$(PROJECT_DIR)/tabswashcars/AlipaySdk/AlipaySdk/alipay/RSA",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

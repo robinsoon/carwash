@@ -10,6 +10,10 @@
 #import "UIButton+Bootstrap.h"
 #import "navMapsViewController.h"
 #import "PoiSearchViewController.h"
+#import "CIFilterEffect.h" //生成二维码
+
+
+
 @interface couponsDetailViewController ()
 
 @end
@@ -64,7 +68,17 @@
     [self.btnShowOrder primaryStyle];
     [self.btnShowOrder addAwesomeIcon:FAIconTags beforeTitle:NO];
 
+    //生成二维码
     
+    UIImage *imgCode = [[CIFilterEffect alloc] initWithQRCodeString:_CouponsCode width:215].QRCodeImage;
+
+    [_btntoMap setImage:imgCode forState:UIControlStateNormal];//给button添加image
+    
+    _btntoMap.layer.cornerRadius = 6;
+    _btntoMap.layer.masksToBounds = YES;
+    _btntoMap.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _btntoMap.layer.borderWidth = 1;
+    //_btntoMap.delegate = self ;
 }
 
 - (void)didReceiveMemoryWarning

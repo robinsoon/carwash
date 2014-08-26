@@ -153,7 +153,7 @@
     _iPs_POSTAction =@"wash_list";
     
     _iPs_POSTID=@"139"; //请求数据POST参数ID1
-    _iPs_POSTQueryOption=@"0"; //请求数据POST参数ID2
+    _iPs_POSTQueryOption=@"1"; //请求数据POST参数ID2
     _iPs_POSTQueryRegion=delegate.userAreaID ; //请求数据POST参数ID3
     
     _defaultCode = @"298";
@@ -239,7 +239,6 @@
         //        NSLog(@"页面初始化忽略上拉动作 %d",_iPageIndex);
         //        return;
         //    }
-
         
         // 这里的refreshView其实就是header
         [vc performSelector:@selector(doneWithView:) withObject:refreshView afterDelay:0.5];
@@ -477,6 +476,8 @@
     [self setServiceTitle];
     
     _iPageIndex = 0;
+    [_listData removeAllObjects ];
+
     [self startRequest];
 }
 
@@ -598,7 +599,7 @@
 
     switch (buttonIndex) {
         case 0:
-            _iPs_POSTQueryOption = @"0";
+            _iPs_POSTQueryOption = @"1";
             lsButtonTitle = @"销量排序";
             break;
         case 1:
