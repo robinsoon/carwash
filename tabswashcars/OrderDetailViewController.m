@@ -554,7 +554,7 @@
     
     self.tabBarController.selectedIndex = 4;
     
-    [self performSelector:@selector(couponsDelay) withObject:nil afterDelay:0.5f];
+    //[self performSelector:@selector(couponsDelay) withObject:nil afterDelay:0.5f];
 
     /*NSDictionary *dataDict = [NSDictionary dictionaryWithObjectsAndKeys:_itemname, @"name", _OrderID,@"ID", nil];
     
@@ -566,7 +566,7 @@
     
     
     //重要：主动调用 Segue 呈现页面
-    //[self performSegueWithIdentifier:@"ordercoupons" sender:self];
+    [self performSegueWithIdentifier:@"ordercoupons" sender:self];
     /*
     //传递消息
     UIStoryboard* mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];

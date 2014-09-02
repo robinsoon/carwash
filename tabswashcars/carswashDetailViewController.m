@@ -12,6 +12,7 @@
 #import "PoiSearchViewController.h"
 #import "OrderDetailViewController.h"
 //#import "OrderSubmitViewController.h"
+#import "commitListViewController.h"
 #import "moreInforTableViewController.h"
 #import "sellRecordTableViewController.h"
 
@@ -200,6 +201,23 @@
     }
     
     //OrderSubmitViewController *ordersubmit = [];
+    
+    if([segue.identifier isEqualToString:@"showcommittable"])
+    {
+        commitListViewController *itemlist = segue.destinationViewController;
+        
+        //itemlist.listData = self.listcommit;
+        itemlist.itemid = self.itemid;
+        itemlist.itemRank = _lbCommitCount.text;
+        NSLog(@"进入评论列表 %d",self.listcommit.count );
+        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+        
+    }
+    
     
     if([segue.identifier isEqualToString:@"morelist"])
     {
@@ -660,12 +678,12 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     CGRect frame = aWebView.frame;
     //webView的宽度
-    frame.size = CGSizeMake(300, 0);
+    frame.size = CGSizeMake(320, 0);
     aWebView.frame = frame;
     float content_height = [[aWebView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight;"] floatValue];
     frame = aWebView.frame;
     //webView的宽度和高度
-    frame.size = CGSizeMake(300, content_height+40);
+    frame.size = CGSizeMake(320, content_height+40);
     aWebView.frame = frame;
     
     //NSLog(@"-----%d",(int) frame.size.height);
@@ -714,7 +732,9 @@
 
 - (IBAction)btnCommitClicked:(id)sender {
     if ( _listcommit.count>0) {
-        [self performSegueWithIdentifier:@"morelist" sender:self];
+        
+        [self performSegueWithIdentifier:@"showcommittable" sender:self];
+        //[self performSegueWithIdentifier:@"morelist" sender:self];
     }else{
         washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
 

@@ -20,6 +20,11 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *lbName;
 
+@property (weak, nonatomic) IBOutlet UILabel *lbCommitstatus;
+
+@property (weak, nonatomic) IBOutlet UIButton *btnCommit;
+
+
 @property (strong, nonatomic) NSString * orderID;   //订单ID
 @property (strong, nonatomic) NSString * orderSn;   //订单Sn
 @property (strong, nonatomic) NSString * orderName;   //订单名称
@@ -28,7 +33,9 @@
 
 @property (nonatomic) CLLocationCoordinate2D Locationpt; //初始坐标位置
 
+@property (strong, nonatomic) NSString *isCommit;           //是否有评论功能
 
-
+- (void)initCell;
+- (void)setCellCommitStyle:(BOOL)asCommit;
 
 @end

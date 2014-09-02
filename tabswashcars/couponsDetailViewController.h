@@ -34,6 +34,9 @@
 @property (strong, nonatomic) NSString * Address;
 @property (strong, nonatomic) NSString * Phone;
 
+@property (strong, nonatomic) NSString * goodsid;
+@property (strong, nonatomic) NSString * commitStatus;
+
 @property (nonatomic) CLLocationCoordinate2D Locationpt; //初始坐标位置
 
 @end

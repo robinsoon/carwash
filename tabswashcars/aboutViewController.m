@@ -30,6 +30,10 @@
     
     self.scrollview1.contentSize = CGSizeMake(320,480);
     [self.scrollview1 addSubview:self.subview1];
+    
+    //标记出版本号
+    _txtAppName.text = [NSString stringWithFormat:@"去洗车 v%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey]];
+    
 }
 
 - (void)didReceiveMemoryWarning

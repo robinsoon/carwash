@@ -117,9 +117,11 @@
     //询问用户是否继续
     NSLog(@"启动延迟定位，识别所在城市!");
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
-    [delegate showNotify:@"欢迎您安装了去洗车应用，本地服务需要定位您当前的位置。" HoldTimes:1.8f];
-    self.tabBarController.selectedIndex = 1;
-    
+    if((delegate.userAreaID==nil)||([delegate.userAreaID isEqualToString:@""]))
+    {
+        [delegate showNotify:@"欢迎您安装了去洗车应用，本地服务需要定位您当前的位置。" HoldTimes:1.8f];
+        self.tabBarController.selectedIndex = 1;
+    }
 }
 
 //延迟登录

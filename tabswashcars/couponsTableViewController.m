@@ -10,6 +10,7 @@
 #import "MJRefresh.h"
 #import "UIButton+Bootstrap.h"
 #import "bonusTableViewController.h"
+#import "commiteditViewController.h"
 
 @interface couponsTableViewController (){
     MJRefreshHeaderView *_header;
@@ -362,7 +363,7 @@
             //翻页控制逻辑这里后退1页
             _iPageIndex = _iPageIndex - 1;
             //加载数据
-            [self startRequest];
+            //[self startRequest];
         }
         //    if (_iPageIndex==0) {
         //        NSLog(@"页面初始化忽略上拉动作 %d",_iPageIndex);
@@ -430,6 +431,7 @@
     }else{
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     }
+    
     //使用自定义的单元格
     
     if (cell == nil) {
@@ -438,7 +440,6 @@
         //cell = [[CouponsViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         [[NSBundle mainBundle] loadNibNamed:@"CouponsViewCell" owner:self options:nil];
         
-
         //NSArray * nib = [[NSBundle mainBundle] loadNibNamed:@"couponsTableViewController" owner:self options:nil] ;
         
         //cell = [nib objectAtIndex:0];
@@ -446,20 +447,20 @@
     //开始解析数据
     
     
-
     NSMutableDictionary*  dict = self.listData[indexPath.row];
     
     //修改单元格背景色
-    UIView *bgColorView = [[UIView alloc] init];
-
-    bgColorView.backgroundColor = _CellBgColor;
-    bgColorView.layer.masksToBounds = YES;
-    cell.selectedBackgroundView = bgColorView;
+//    UIView *bgColorView = [[UIView alloc] init];
+//
+//    bgColorView.backgroundColor = _CellBgColor;
+//    bgColorView.layer.masksToBounds = YES;
+//    cell.selectedBackgroundView = bgColorView;
     
     //填充单元格
     cell.lbNumber.text = [NSString stringWithFormat:@"%d", indexPath.row + 1];
     cell.lbCouponsCode.text =[dict objectForKey:@"code"];
     //cell.lbBuyDate.text =[dict objectForKey:@"use_time"];
+    cell.btnCommit.tag = indexPath.row;
     
     NSString *strStatus = [dict objectForKey:@"status"];
     //0 未消费；1 已消费； 2 密码券过期失效； 3 密码券无效；4 退款，密码券无效；
@@ -468,19 +469,24 @@
         cell.lbCouponsCode.textColor = [UIColor redColor];
     }else if([strStatus isEqual: @"1"]){
         cell.lbStatus.text = @"已消费";
-        cell.lbCouponsCode.textColor = [UIColor darkGrayColor];
+        cell.lbCouponsCode.textColor = [UIColor darkTextColor];
+        cell.lbStatus.textColor = [UIColor darkTextColor];
     }else if([strStatus isEqual: @"2"]){
         cell.lbStatus.text = @"已过期";
         cell.lbCouponsCode.textColor = [UIColor lightGrayColor];
+        cell.lbStatus.textColor = [UIColor lightGrayColor];
     }else if([strStatus isEqual: @"3"]){
         cell.lbStatus.text = @"无效";
         cell.lbCouponsCode.textColor = [UIColor lightGrayColor];
+        cell.lbStatus.textColor = [UIColor lightGrayColor];
     }else if([strStatus isEqual: @"4"]){
         cell.lbStatus.text = @"无效，已申请退款";
         cell.lbCouponsCode.textColor = [UIColor darkTextColor];
+        cell.lbStatus.textColor = [UIColor darkTextColor];
     }else{
         cell.lbStatus.text = @"无效";
         cell.lbCouponsCode.textColor = [UIColor lightGrayColor];
+        cell.lbStatus.textColor = [UIColor lightGrayColor];
     }
     
     if ([_FromOrder isEqualToString:@"1"]) {
@@ -528,6 +534,22 @@
 
     }
 
+    [cell initCell];
+    //评论
+    NSString *strComment = [dict objectForKey:@"is_comment"];
+
+    if([strStatus isEqual: @"1"]){
+        //已消费
+        if ([strComment isEqualToString:@"0"]) {
+            //可以评价
+            [cell setCellCommitStyle:true];
+        }else if ([strComment isEqualToString:@"1"]) {
+            //已评价
+            [cell setCellCommitStyle:false];
+        }else{
+            [cell setCellCommitStyle:true];
+        }
+    }
     //以上已完成单元格修改
     return cell;
 
@@ -590,26 +612,41 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    if([segue.identifier isEqualToString:@"showbonus"])
+    UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+    backItem.title=@"";
+    backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+    self.navigationItem.backBarButtonItem = backItem;
+
+    if([segue.identifier isEqualToString:@"submitCommit"])
     {
-        //红包列表
-        //bonusTableViewController *itemlist = segue.destinationViewController;
+        //提交评论
+        commiteditViewController *itemdetail = segue.destinationViewController;
+
+        //NSInteger selectedRow = [[self.tableView indexPathForSelectedRow] row];
         
-        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
-        backItem.title=@"";
-        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
-        self.navigationItem.backBarButtonItem = backItem;
+        NSMutableDictionary*  dict = self.listData[_editRow];
+        
+        itemdetail.itemid = [dict objectForKey:@"goods_id"];
+        itemdetail.CouponsCode = [dict objectForKey:@"code"];
+        itemdetail.CouponsStatus = [dict objectForKey:@"status"];
+        itemdetail.orderid = [dict objectForKey:@"order_id"];//_orderID;
+        itemdetail.CouponsName = [dict objectForKey:@"goods_name"];//_orderName;
+        itemdetail.Address = [dict objectForKey:@"address_street"];//_Address;
+        itemdetail.Phone = [dict objectForKey:@"phone"];//_Phone;
+
+        itemdetail.commitStatus = [dict objectForKey:@"is_comment"];
+        
+        
         
     }
     
     if([segue.identifier isEqualToString:@"showcoupons"])
     {
+        //展示消费码详情
         couponsDetailViewController *itemdetail = segue.destinationViewController;
         
         NSInteger selectedRow = [[self.tableView indexPathForSelectedRow] row];
-        
-        
-        
+
         NSMutableDictionary*  dict = self.listData[selectedRow];
         itemdetail.CouponsCode = [dict objectForKey:@"code"];
         itemdetail.CouponsStatus = [dict objectForKey:@"status"];
@@ -629,7 +666,10 @@
         itemdetail.Address = _Address;
         itemdetail.Phone = _Phone;
         itemdetail.Locationpt = _Locationpt;
-
+        
+        itemdetail.goodsid = [dict objectForKey:@"goods_id"];
+        itemdetail.commitStatus = [dict objectForKey:@"is_comment"];
+        
         UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
         backItem.title=@"";
         backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
@@ -779,6 +819,16 @@
 
 }
 
+
+- (IBAction)btnAddCommitClicked:(id)sender {
+    //NSString *lsTag = @"";
+    
+    UIButton *btn = (UIButton *)sender;
+    _editRow = btn.tag;
+    NSLog(@"评价：%d",_editRow);
+    [self performSegueWithIdentifier:@"submitCommit" sender:self];
+}
+
 /*
  * 开始请求Web Service
  */
@@ -815,8 +865,8 @@
     }else{
         //带订单号过滤[防止使用过OrderID后，过滤不全]
         if ([_FromOrder isEqualToString:@"1"]) {
-            _iPageIndex = _iPageIndex + 1;
-            if (_iPageIndex > 3) {
+            
+            if (_iPageIndex > 4) {
                 //滑动3次显示全部
                 _FromOrder=@"0";
                 _btnmyCoupons.titleLabel.text = @"我的消费券";

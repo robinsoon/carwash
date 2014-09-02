@@ -12,4 +12,6 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollview1;
 @property (weak, nonatomic) IBOutlet UIView *subview1;
 
+@property (weak, nonatomic) IBOutlet UILabel *txtAppName;
+
 @end

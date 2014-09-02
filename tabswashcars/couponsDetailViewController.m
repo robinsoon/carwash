@@ -11,7 +11,7 @@
 #import "navMapsViewController.h"
 #import "PoiSearchViewController.h"
 #import "CIFilterEffect.h" //生成二维码
-
+#import "commiteditViewController.h"
 
 
 @interface couponsDetailViewController ()
@@ -41,15 +41,34 @@
     if ([strStatus isEqual: @"0"]) {
         _lbStatus.text = @"有效,未消费";
     }else if([strStatus isEqual: @"1"]){
+        
         _lbStatus.text = @"已消费";
+        _lbStatus.textColor = [UIColor darkTextColor];
+        
+        if ([_commitStatus isEqualToString:@"0"]) {
+            
+            _lbStatus.text = @"已消费,未评价";
+            _lbStatus.textColor = [UIColor lightGrayColor];
+        }else if ([_commitStatus isEqualToString:@"1"]) {
+            
+            _lbStatus.text = @"已消费,已评价";
+            _lbStatus.textColor = [UIColor darkTextColor];
+        }else{
+            //_lbStatus.text = @"已消费,已评价";
+        }
+        
     }else if([strStatus isEqual: @"2"]){
         _lbStatus.text = @"已过期";
+        _lbStatus.textColor = [UIColor redColor];
     }else if([strStatus isEqual: @"3"]){
         _lbStatus.text = @"无效";
+        _lbStatus.textColor = [UIColor redColor];
     }else if([strStatus isEqual: @"4"]){
         _lbStatus.text = @"无效，已申请退款";
+        _lbStatus.textColor = [UIColor redColor];
     }else{
         _lbStatus.text = @"无效";
+        _lbStatus.textColor = [UIColor redColor];
     }
     
     _lbnote.text = _CouponsNote;
@@ -69,8 +88,8 @@
     [self.btnShowOrder addAwesomeIcon:FAIconTags beforeTitle:NO];
 
     //生成二维码
-    
-    UIImage *imgCode = [[CIFilterEffect alloc] initWithQRCodeString:_CouponsCode width:215].QRCodeImage;
+    //长宽设定取43的倍数，4X== 172 ，5X== 215
+    UIImage *imgCode = [[CIFilterEffect alloc] initWithQRCodeString:_CouponsCode width:172].QRCodeImage;
 
     [_btntoMap setImage:imgCode forState:UIControlStateNormal];//给button添加image
     
@@ -258,7 +277,26 @@
         self.navigationItem.backBarButtonItem = backItem;
     }
     
-    
+    if([segue.identifier isEqualToString:@"submitCommitDetail"])
+    {
+        
+        NSLog(@"从消费券到评价页面 %@",self.orderID);
+        
+        //方法有特殊之处，调试发现直接 实例化并push会导致 cell错误，所以只传值。
+        //跳转到消费券列表(已付款)
+        OrderDetailViewController *orderview =  [segue destinationViewController];
+        orderview.OrderID = _orderID;
+        orderview.OrderAction = @"已付款";
+        orderview.PayStatus = @"2";
+        //缺乏订单信息
+        orderview.PageAction = @"1";    //强制刷新
+        
+        UIBarButtonItem *backItem=[[UIBarButtonItem alloc]init];
+        backItem.title=@"";
+        backItem.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
+        self.navigationItem.backBarButtonItem = backItem;
+    }
+
     //取消订单 or 申请退款
     
 }

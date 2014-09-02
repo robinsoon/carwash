@@ -58,6 +58,16 @@
 		9C50C0B8196FCADA00553596 /* bonusTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C50C0B7196FCADA00553596 /* bonusTableViewController.m */; };
 		9C50C0BE196FDF1000553596 /* bonuslistViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C50C0BD196FDF0F00553596 /* bonuslistViewCell.m */; };
 		9C5422B819AC6AE2004E2CF2 /* CIFilterEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422B719AC6AE2004E2CF2 /* CIFilterEffect.m */; };
+		9C5422BD19AC7B47004E2CF2 /* commitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422BA19AC7B47004E2CF2 /* commitListViewController.m */; };
+		9C5422BE19AC7B47004E2CF2 /* suggestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422BC19AC7B47004E2CF2 /* suggestionViewController.m */; };
+		9C5422C119AC7BC8004E2CF2 /* commitDetailListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422C019AC7BC8004E2CF2 /* commitDetailListCell.m */; };
+		9C5422C719ADAD55004E2CF2 /* AMWaveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422C419ADAD55004E2CF2 /* AMWaveTransition.m */; };
+		9C5422C819ADAD55004E2CF2 /* AMWaveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422C619ADAD55004E2CF2 /* AMWaveViewController.m */; };
+		9C5422CB19AF026C004E2CF2 /* mycarTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422CA19AF026C004E2CF2 /* mycarTableViewController.m */; };
+		9C5422D319AF0A44004E2CF2 /* MagnifierView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422CE19AF0A44004E2CF2 /* MagnifierView.m */; };
+		9C5422D419AF0A44004E2CF2 /* MyPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422D019AF0A44004E2CF2 /* MyPickerView.m */; };
+		9C5422D519AF0A44004E2CF2 /* WheelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422D219AF0A44004E2CF2 /* WheelView.m */; };
+		9C5422DB19B03055004E2CF2 /* commiteditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5422DA19B03055004E2CF2 /* commiteditViewController.m */; };
 		9C94C5FA192B33230064E20F /* payViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C94C5F9192B33230064E20F /* payViewController.m */; };
 		9C94C600192B337E0064E20F /* SysMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C94C5FF192B337E0064E20F /* SysMessageViewController.m */; };
 		9C94C63C192B4D670064E20F /* AlipayRsaLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C94C606192B4D670064E20F /* AlipayRsaLib.a */; };
@@ -272,6 +282,26 @@
 		9C5422A919AC3493004E2CF2 /* libqrencoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libqrencoder.a; path = tabswashcars/libqrencoder.a; sourceTree = "<group>"; };
 		9C5422B219AC69CB004E2CF2 /* CIFilterEffect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CIFilterEffect.h; sourceTree = "<group>"; };
 		9C5422B719AC6AE2004E2CF2 /* CIFilterEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIFilterEffect.m; sourceTree = "<group>"; };
+		9C5422B919AC7B47004E2CF2 /* commitListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = commitListViewController.h; sourceTree = "<group>"; };
+		9C5422BA19AC7B47004E2CF2 /* commitListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = commitListViewController.m; sourceTree = "<group>"; };
+		9C5422BB19AC7B47004E2CF2 /* suggestionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = suggestionViewController.h; sourceTree = "<group>"; };
+		9C5422BC19AC7B47004E2CF2 /* suggestionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = suggestionViewController.m; sourceTree = "<group>"; };
+		9C5422BF19AC7BC8004E2CF2 /* commitDetailListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = commitDetailListCell.h; sourceTree = "<group>"; };
+		9C5422C019AC7BC8004E2CF2 /* commitDetailListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = commitDetailListCell.m; sourceTree = "<group>"; };
+		9C5422C319ADAD55004E2CF2 /* AMWaveTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMWaveTransition.h; sourceTree = "<group>"; };
+		9C5422C419ADAD55004E2CF2 /* AMWaveTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMWaveTransition.m; sourceTree = "<group>"; };
+		9C5422C519ADAD55004E2CF2 /* AMWaveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMWaveViewController.h; sourceTree = "<group>"; };
+		9C5422C619ADAD55004E2CF2 /* AMWaveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMWaveViewController.m; sourceTree = "<group>"; };
+		9C5422C919AF026C004E2CF2 /* mycarTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mycarTableViewController.h; sourceTree = "<group>"; };
+		9C5422CA19AF026C004E2CF2 /* mycarTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mycarTableViewController.m; sourceTree = "<group>"; };
+		9C5422CD19AF0A44004E2CF2 /* MagnifierView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagnifierView.h; sourceTree = "<group>"; };
+		9C5422CE19AF0A44004E2CF2 /* MagnifierView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifierView.m; sourceTree = "<group>"; };
+		9C5422CF19AF0A44004E2CF2 /* MyPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPickerView.h; sourceTree = "<group>"; };
+		9C5422D019AF0A44004E2CF2 /* MyPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPickerView.m; sourceTree = "<group>"; };
+		9C5422D119AF0A44004E2CF2 /* WheelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WheelView.h; sourceTree = "<group>"; };
+		9C5422D219AF0A44004E2CF2 /* WheelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WheelView.m; sourceTree = "<group>"; };
+		9C5422D919B03055004E2CF2 /* commiteditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = commiteditViewController.h; sourceTree = "<group>"; };
+		9C5422DA19B03055004E2CF2 /* commiteditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = commiteditViewController.m; sourceTree = "<group>"; };
 		9C94C5F8192B33230064E20F /* payViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = payViewController.h; sourceTree = "<group>"; };
 		9C94C5F9192B33230064E20F /* payViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = payViewController.m; sourceTree = "<group>"; };
 		9C94C5FE192B337E0064E20F /* SysMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SysMessageViewController.h; sourceTree = "<group>"; };
@@ -553,6 +583,12 @@
 				9C94C626192B4D670064E20F /* AliPayViewController.m */,
 				9CC00B72197762B20035F203 /* moreInforTableViewController.h */,
 				9CC00B73197762B20035F203 /* moreInforTableViewController.m */,
+				9C5422B919AC7B47004E2CF2 /* commitListViewController.h */,
+				9C5422BA19AC7B47004E2CF2 /* commitListViewController.m */,
+				9C5422BB19AC7B47004E2CF2 /* suggestionViewController.h */,
+				9C5422BC19AC7B47004E2CF2 /* suggestionViewController.m */,
+				9C5422C919AF026C004E2CF2 /* mycarTableViewController.h */,
+				9C5422CA19AF026C004E2CF2 /* mycarTableViewController.m */,
 				9CC00B821979220F0035F203 /* sellRecordTableViewController.h */,
 				9CC00B831979220F0035F203 /* sellRecordTableViewController.m */,
 				9CB44A32198741B000309952 /* activityListViewController.h */,
@@ -573,6 +609,8 @@
 				9CBAAC8E1945485400A15E74 /* couponsTableViewController.m */,
 				9CBAACAA19499E4600A15E74 /* couponsDetailViewController.h */,
 				9CBAACAB19499E4600A15E74 /* couponsDetailViewController.m */,
+				9C5422D919B03055004E2CF2 /* commiteditViewController.h */,
+				9C5422DA19B03055004E2CF2 /* commiteditViewController.m */,
 				9C5422B219AC69CB004E2CF2 /* CIFilterEffect.h */,
 				9C5422B719AC6AE2004E2CF2 /* CIFilterEffect.m */,
 				9C50C0B6196FCADA00553596 /* bonusTableViewController.h */,
@@ -634,6 +672,8 @@
 		9C179621191C5C200027F552 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9C5422CC19AF0A44004E2CF2 /* PickerView */,
+				9C5422C219ADAD55004E2CF2 /* AMWaveTransition */,
 				9CC23F241970C98D00A917AC /* StarRating */,
 				9CBAACA31949491800A15E74 /* FXForms */,
 				9CB2C0FA1933397000697A8B /* BaiduMapAPI */,
@@ -656,6 +696,8 @@
 				9CB44A361987476F00309952 /* activityViewCell.m */,
 				9CC00B751977AAC70035F203 /* commitViewCell.h */,
 				9CC00B761977AAC70035F203 /* commitViewCell.m */,
+				9C5422BF19AC7BC8004E2CF2 /* commitDetailListCell.h */,
+				9C5422C019AC7BC8004E2CF2 /* commitDetailListCell.m */,
 				9CBAACA719499AE600A15E74 /* CouponsViewCell.h */,
 				9CBAACA819499AE600A15E74 /* CouponsViewCell.m */,
 				9C179667192216B30027F552 /* serviceViewCell.h */,
@@ -763,6 +805,30 @@
 				9C397C001925AF91006C586F /* ViewController.xib */,
 			);
 			path = PullShowAnim;
+			sourceTree = "<group>";
+		};
+		9C5422C219ADAD55004E2CF2 /* AMWaveTransition */ = {
+			isa = PBXGroup;
+			children = (
+				9C5422C319ADAD55004E2CF2 /* AMWaveTransition.h */,
+				9C5422C419ADAD55004E2CF2 /* AMWaveTransition.m */,
+				9C5422C519ADAD55004E2CF2 /* AMWaveViewController.h */,
+				9C5422C619ADAD55004E2CF2 /* AMWaveViewController.m */,
+			);
+			path = AMWaveTransition;
+			sourceTree = "<group>";
+		};
+		9C5422CC19AF0A44004E2CF2 /* PickerView */ = {
+			isa = PBXGroup;
+			children = (
+				9C5422CD19AF0A44004E2CF2 /* MagnifierView.h */,
+				9C5422CE19AF0A44004E2CF2 /* MagnifierView.m */,
+				9C5422CF19AF0A44004E2CF2 /* MyPickerView.h */,
+				9C5422D019AF0A44004E2CF2 /* MyPickerView.m */,
+				9C5422D119AF0A44004E2CF2 /* WheelView.h */,
+				9C5422D219AF0A44004E2CF2 /* WheelView.m */,
+			);
+			path = PickerView;
 			sourceTree = "<group>";
 		};
 		9C94C604192B4D670064E20F /* AlipaySdk */ = {
@@ -1096,6 +1162,7 @@
 				9C1796601921F6DB0027F552 /* UserTableViewController.m in Sources */,
 				9C1796A41924A5910027F552 /* SDWebImageCompat.m in Sources */,
 				9C17968D19245EB50027F552 /* UIImageView+WebCache.m in Sources */,
+				9C5422D319AF0A44004E2CF2 /* MagnifierView.m in Sources */,
 				9CB8CC86194F1BFE003CA815 /* OrderForm.m in Sources */,
 				9C17965A1921F6910027F552 /* carswashOrderTableViewController.m in Sources */,
 				9CC00B771977AAC70035F203 /* commitViewCell.m in Sources */,
@@ -1104,6 +1171,7 @@
 				9C17969E1924A5910027F552 /* UIImage+WebP.m in Sources */,
 				9C94C643192B4D670064E20F /* NSString+SBJSON.m in Sources */,
 				9C94C64C192B4D670064E20F /* AliPayViewController.m in Sources */,
+				9C5422C819ADAD55004E2CF2 /* AMWaveViewController.m in Sources */,
 				9CC00B841979220F0035F203 /* sellRecordTableViewController.m in Sources */,
 				9C17968A19245EB50027F552 /* SDWebImageManager.m in Sources */,
 				9CB8CC9519519CE1003CA815 /* shoppingCartViewController.m in Sources */,
@@ -1118,10 +1186,13 @@
 				9C50C0B8196FCADA00553596 /* bonusTableViewController.m in Sources */,
 				9CB44A34198741B000309952 /* activityListViewController.m in Sources */,
 				9C1796A11924A5910027F552 /* NSData+ImageContentType.m in Sources */,
+				9C5422D419AF0A44004E2CF2 /* MyPickerView.m in Sources */,
+				9C5422C119AC7BC8004E2CF2 /* commitDetailListCell.m in Sources */,
 				9CB44A481993077700309952 /* DeviceDetection.m in Sources */,
 				9C179654191E0FB00027F552 /* washcarsNavigationViewController.m in Sources */,
 				9C17968819245EB50027F552 /* SDWebImageDecoder.m in Sources */,
 				9C17968B19245EB50027F552 /* SDWebImagePrefetcher.m in Sources */,
+				9C5422CB19AF026C004E2CF2 /* mycarTableViewController.m in Sources */,
 				9CB85A1A1952CB6000475F81 /* navServiceViewController.m in Sources */,
 				9CB1F688192EF05700D2713A /* MJRefreshFooterView.m in Sources */,
 				9C94C641192B4D670064E20F /* AlixPayResult.m in Sources */,
@@ -1130,8 +1201,10 @@
 				9C397C311925E345006C586F /* UIButton+Bootstrap.m in Sources */,
 				9CBAACA61949491800A15E74 /* FXForms.m in Sources */,
 				9CC1CB4C1964F335007AB0AD /* RegisterLiteViewController.m in Sources */,
+				9C5422DB19B03055004E2CF2 /* commiteditViewController.m in Sources */,
 				9C17968919245EB50027F552 /* SDWebImageDownloader.m in Sources */,
 				9CC1CB4F196557A6007AB0AD /* forgetPassViewController.m in Sources */,
+				9C5422D519AF0A44004E2CF2 /* WheelView.m in Sources */,
 				9CB44A3A1988CE9400309952 /* recommendViewController.m in Sources */,
 				9CC23F271970C98D00A917AC /* RatingView.m in Sources */,
 				9CB85A28195849BC00475F81 /* navMapsViewController.m in Sources */,
@@ -1145,10 +1218,12 @@
 				9C17968C19245EB50027F552 /* UIButton+WebCache.m in Sources */,
 				9C94C64D192B4D670064E20F /* AppDelegate.m in Sources */,
 				9C17962B191C5C200027F552 /* washcarsAppDelegate.mm in Sources */,
+				9C5422BE19AC7B47004E2CF2 /* suggestionViewController.m in Sources */,
 				9C1796A01924A5910027F552 /* MKAnnotationView+WebCache.m in Sources */,
 				9C94C642192B4D670064E20F /* NSObject+SBJSON.m in Sources */,
 				9CC00B8A197A3D450035F203 /* sellRecordViewCell.m in Sources */,
 				9C179669192216B30027F552 /* serviceViewCell.m in Sources */,
+				9C5422C719ADAD55004E2CF2 /* AMWaveTransition.m in Sources */,
 				9CBAAC9B1946EDA300A15E74 /* RegisterViewController.m in Sources */,
 				9CB44A3D198B73E000309952 /* expirydateTableViewController.m in Sources */,
 				9CB85A111952CB2800475F81 /* navUserViewController.m in Sources */,
@@ -1172,6 +1247,7 @@
 				9C94C600192B337E0064E20F /* SysMessageViewController.m in Sources */,
 				9CC289D2197E65CC003B5D7F /* opengiftViewController.m in Sources */,
 				9C397C301925E345006C586F /* NSString+FontAwesome.m in Sources */,
+				9C5422BD19AC7B47004E2CF2 /* commitListViewController.m in Sources */,
 				9CB44A431991CC3500309952 /* signinTableViewCell.m in Sources */,
 				9C94C640192B4D670064E20F /* AlixPayOrder.m in Sources */,
 				9C5422B819AC6AE2004E2CF2 /* CIFilterEffect.m in Sources */,
@@ -1317,7 +1393,7 @@
 				GCC_PREFIX_HEADER = "tabswashcars/tabswashcars-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "tabswashcars/tabswashcars-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/tabswashcars",
 					"$(PROJECT_DIR)/tabswashcars/Release-iphoneos",
@@ -1327,7 +1403,7 @@
 				);
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "6ABB371C-292D-4278-8C99-D05F0126FFA0";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1342,13 +1418,13 @@
 				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: 玉斌 孙 (RB8QS892A5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 玉斌 孙 (RB8QS892A5)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "tabswashcars/tabswashcars-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "tabswashcars/tabswashcars-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/tabswashcars",
 					"$(PROJECT_DIR)/tabswashcars/Release-iphoneos",
@@ -1360,7 +1436,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "6ABB371C-292D-4278-8C99-D05F0126FFA0";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

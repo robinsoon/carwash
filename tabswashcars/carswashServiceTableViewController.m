@@ -11,15 +11,16 @@
 #import "MJRefresh.h"
 #import "navMapsViewController.h"
 #import "PoiSearchViewController.h"
+#import "AMWaveTransition.h"
 
-@interface carswashServiceTableViewController (){
+@interface carswashServiceTableViewController ()<UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate>{
     MJRefreshHeaderView *_header;
     MJRefreshFooterView *_footer;
 
 }
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
-
+@property (strong, nonatomic) IBOutlet AMWaveTransition *interactive;
 //重点说明
 //2014-5-25  Created By Robin
 //定义可配置的数据参数（对于简单查询只需1组配置）
@@ -91,6 +92,20 @@
     
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.navigationController setDelegate:self];
+    
+    [self.interactive attachInteractiveGestureToNavigationController:self.navigationController];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self.interactive detachInteractiveGesture];
+}
+
 //页面基本元素已载入,开始增添个性化的功能
 - (void)viewDidLoad
 {
@@ -104,13 +119,20 @@
     
     // 1.手动注册cell
     //[self.tableView registerClass:[serviceViewCell class] forCellReuseIdentifier:@"serviceCell"];
-
+    //[self.navigationController.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]]];
+    [self.navigationController.view setBackgroundColor:[UIColor whiteColor]];
+    
+    [self.view setBackgroundColor:[UIColor clearColor]];
+    [self.tableView setBackgroundColor:[UIColor clearColor]];
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.rowHeight = 78;//68;
+    
+    //_isplayAnimation = true;
     //self.tableView.allowsSelection = NO; // We essentially implement our own selection
     //self.tableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0); // Makes the horizontal row seperator stretch the entire length of the table view
-    
+    _interactive = [[AMWaveTransition alloc] init];
     //刷新列表的消息
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(ServiceRefresh:)
@@ -137,6 +159,36 @@
     [self startRequest];
 }
 
+- (void)dealloc
+{
+    [self.navigationController setDelegate:nil];
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                  animationControllerForOperation:(UINavigationControllerOperation)operation
+                                               fromViewController:(UIViewController*)fromVC
+                                                 toViewController:(UIViewController*)toVC
+{
+    if (operation != UINavigationControllerOperationNone) {
+        AMWaveTransition *transition = [AMWaveTransition transitionWithOperation:operation];
+        [transition setTransitionType:AMWaveTransitionTypeNervous];//AMWaveTransitionTypeSubtle
+        return transition;
+
+    }
+    return nil;
+}
+
+- (NSArray*)visibleCells
+{
+    NSMutableArray *cells = [@[] mutableCopy];
+
+    [cells addObjectsFromArray:[self.tableView visibleCells]];
+    
+    return cells;
+    //return [self.tableView visibleCells];
+}
+
+
 //初始化页面变量组和参数
 - (void)initPage
 {
@@ -160,9 +212,9 @@
     _defaultArea = @"枣庄市";
     _CityName = _defaultArea;
     
-    _rowlimit = 40;
+    _rowlimit = 60;
     _currentrowcount = 0;
-    
+    _isCategorychanged = false;
     if (_iPs_POSTQueryRegion==nil) {
         _iPs_POSTQueryRegion = _defaultCode;//枣庄
     }
@@ -186,8 +238,9 @@
     MJRefreshFooterView *footer = [MJRefreshFooterView footer];
     footer.scrollView = self.tableView;
     footer.beginRefreshingBlock = ^(MJRefreshBaseView *refreshView) {
-        NSLog(@"下拉请求更多数据 %d",_iPageIndex);
+        
         [self setPageNext];
+        NSLog(@"下拉请求更多数据 %d",_iPageIndex);
         //加载数据
         [self startRequest];
         
@@ -284,6 +337,31 @@
 {
     // Return the number of rows in the section.
     return self.listData.count;
+}
+
+#pragma mark - UITableView delegate methods
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat rotationAngleDegrees = 0;
+    CGFloat rotationAngleRadians = rotationAngleDegrees * (M_PI/180);
+    //CGPoint offsetPositioning = CGPointMake(-200, -20);//左侧移入效果
+    CGPoint offsetPositioning = CGPointMake(420, 20);//右侧移入效果
+    CATransform3D transform = CATransform3DIdentity;
+    transform = CATransform3DRotate(transform, rotationAngleRadians, 0.0, 0.0, 1.0);
+    transform = CATransform3DTranslate(transform, offsetPositioning.x, offsetPositioning.y, 0.0);
+    
+    
+    UIView *card = [cell contentView];
+    card.layer.transform = transform;
+    card.layer.opacity = 0.8;
+    
+    
+    //控制滑入的速度 秒
+    [UIView animateWithDuration:0.5f animations:^{
+        card.layer.transform = CATransform3DIdentity;
+        card.layer.opacity = 1;
+    }];
 }
 
 //表格的定制化操作
@@ -397,9 +475,12 @@
         
         
     }
-
         
+
         cell.cellDistance.text = [dict objectForKey:@"distance"];
+        if ([[dict objectForKey:@"distance"] isEqualToString:@"0"]){
+            cell.cellDistance.text = @"";
+        }
         
         if ([_iPs_POSTQueryOption isEqualToString:@"2"]) {
             NSString * clicked = [dict objectForKey:@"click_count"];
@@ -426,7 +507,8 @@
         //cellPricePoint.x = cellPricePoint.x - 20;
         
         //cell.cellPrice.center = cellPricePoint;
-        
+        [cell setBackgroundColor:[UIColor clearColor]];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         
         
     }@catch (NSException *exception) {
@@ -476,8 +558,8 @@
     [self setServiceTitle];
     
     _iPageIndex = 0;
-    [_listData removeAllObjects ];
-
+    //[_listData removeAllObjects ];
+    _isCategorychanged = true;
     [self startRequest];
 }
 
@@ -746,6 +828,10 @@
         carswashDetailViewController *itemdetail = segue.destinationViewController;
         NSInteger selectedRow = [[self.tableView indexPathForSelectedRow] row];
         
+        if (self.listData.count == 0){
+            return;
+        }
+        
         NSMutableDictionary*  dict = self.listData[selectedRow];
         
         //NSString *strName = [dict objectForKey:@"goods_name"];
@@ -881,7 +967,7 @@
     _isConnected = true;
     NSMutableDictionary* dict = [NSJSONSerialization JSONObjectWithData:_datas options:NSJSONReadingAllowFragments error:nil];
     
-    NSLog( @"Result: %@", [dict description] );
+    //NSLog( @"Result: %@", [dict description] );
     //激活数据列表的刷新
     [self reloadView:dict];
 }
@@ -918,6 +1004,12 @@
                 //2.要限制每页最多显示的数据行 _rowlimit
                 //3.向前翻页的控制需要重写
                 int postion = 0;
+                if (_isCategorychanged) {
+                    [_listData removeAllObjects ];
+                    _isCategorychanged = false;
+                }
+                //
+
                 _currentrowcount = _listData.count;
                 if ( _currentrowcount + results.count <= _rowlimit ){
                     postion = 0;
@@ -947,17 +1039,17 @@
                     
                 }
                 
-                NSLog(@"+:%@",ComboData.description);
+                //NSLog(@"+:%@",ComboData.description);
 
                 
                 _currentrowcount = ComboData.count;
                 //self.listData = [res objectForKey:@"goods_list"];
                 self.listData = ComboData;
                 //刷新Table重新加载Cell表格
+                
                 [self.tableView reloadData];
-                
-                
-                
+                _isCategorychanged = false;
+                //[self.view setNeedsDisplay];
                 
                 NSLog(@"列表视图加载数据...共 %d 条",results.count);
                 if (_iPageIndex>1 && _listData.count>0) {
@@ -976,14 +1068,27 @@
                                                 animated:YES
                                           scrollPosition:UITableViewScrollPositionMiddle];
                     */
+                    
+                    //最末行自动归位
+                    if (results.count < 10){
+                        NSLog(@"列表视图将循环到首行记录,共 %d 条 Page= %d",results.count, _iPageIndex);
+                        _iPageIndex = 0;
+                        /*washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+                        NSString *strTips = [[NSString alloc] initWithFormat:@"%@ 没有更多 %@ 了，\n总计：%d 。请试试其它分类吧",delegate.userDistrict,delegate.userServiceName,_listData.count];
+                        [delegate showNotify:strTips HoldTimes:1];*/
+                    }
+                    
                 }
             }
 
             if (results.count == 0) {
                 if (_iPageIndex != 1){
+                    NSLog(@"列表视图将循环到首行记录 Page= %d" ,_iPageIndex);
                     _iPageIndex = 1;
-                    NSLog(@"列表视图将循环到首行记录");
-                    [self startRequest];
+                    washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
+                    NSString *strTips = [[NSString alloc] initWithFormat:@"%@ 没有更多 %@ 了，\n总计：%d 。请试试其它分类吧",delegate.userDistrict,delegate.userServiceName,_listData.count];
+                    [delegate showNotify:strTips HoldTimes:1];
+                    //[self startRequest];
                     return;
                 }else if (_iPageIndex <=1){
                     NSLog(@"当前列表下无数据");

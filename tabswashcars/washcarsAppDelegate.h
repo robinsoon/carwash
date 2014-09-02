@@ -14,7 +14,8 @@
 @class PayViewController;
 
 //全局变量
-static NSString * staticURL  = @"http://www.2345mall.com/"; //@"http://taotao400.com/";
+static NSString * staticURL  = @"http://www.2345mall.com/"; //应用服务器
+//static NSString * staticURL  = @"http://115.29.149.9:8088/yz/";  //测试服务器
 
 
 @interface washcarsAppDelegate : UIResponder <UIApplicationDelegate, BMKGeneralDelegate>{

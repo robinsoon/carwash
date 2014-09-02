@@ -287,6 +287,31 @@
     return self.listData.count;
 }
 
+
+#pragma mark - UITableView delegate methods
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat rotationAngleDegrees = 0;
+    CGFloat rotationAngleRadians = rotationAngleDegrees * (M_PI/180);
+    //CGPoint offsetPositioning = CGPointMake(-200, -20);//左侧移入效果
+    CGPoint offsetPositioning = CGPointMake(420, 20);//右侧移入效果
+    CATransform3D transform = CATransform3DIdentity;
+    transform = CATransform3DRotate(transform, rotationAngleRadians, 0.0, 0.0, 1.0);
+    transform = CATransform3DTranslate(transform, offsetPositioning.x, offsetPositioning.y, 0.0);
+    
+    
+    UIView *card = [cell contentView];
+    card.layer.transform = transform;
+    card.layer.opacity = 0.8;
+    
+    
+    //控制滑入的速度 秒
+    [UIView animateWithDuration:0.5f animations:^{
+        card.layer.transform = CATransform3DIdentity;
+        card.layer.opacity = 1;
+    }];
+}
+
 //表格的定制化操作
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

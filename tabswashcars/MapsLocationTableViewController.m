@@ -481,6 +481,7 @@
         
         if([delegate.userDistrict isEqualToString:_District]){
             //没有变化不需要提示
+            _isOpenCurrent = @"1";
             [self findedAreaID];
             return;
         }
@@ -604,6 +605,8 @@
             delegate.userAreaID = _AreaID;
             delegate.userDistrict = _CurrentCity;
             delegate.userCitySupported = _isOpenCurrent;
+            
+            
             
             if (_iFindLevel>=4) {
                 //已经进入到具体区域，不需要再展开
@@ -866,6 +869,7 @@
                 //找到唯一结果
                 _iFindLevel = 4;
                 _CityFinded = @"1";
+                
                 NSMutableDictionary*  dict = self.listData[0];
                 _AreaID =[dict objectForKey:@"region_id"];
                 _CurrentCity =[dict objectForKey:@"region_name"];

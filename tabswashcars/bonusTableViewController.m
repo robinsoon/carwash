@@ -92,7 +92,7 @@
 - (void)initPage
 {
     //根据页面类型不同需要配置的部分
-    _iPs_PageName=@"服务列表"; //页面名称(用于标记页面参数配置)
+    _iPs_PageName=@"红包列表"; //页面名称(用于标记页面参数配置)
     //_iPs_URL=@"http://114.112.73.223:8080/"; //请求数据接口模板--地址
     washcarsAppDelegate *delegate=(washcarsAppDelegate*)[[UIApplication sharedApplication]delegate];
     _iPs_URL=delegate.iPs_URL; //请求数据接口模板--地址

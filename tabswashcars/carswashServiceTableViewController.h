@@ -44,6 +44,10 @@
 @property (nonatomic) int rowlimit;
 @property (nonatomic) int currentrowcount;
 
+@property (nonatomic) BOOL isplayAnimation;
+
+@property (nonatomic) BOOL isCategorychanged;
+
 //重新加载表视图
 -(void)reloadView:(NSDictionary*)res;
 

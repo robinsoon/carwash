@@ -38,6 +38,13 @@
 @property (strong, nonatomic) NSString * useremail;
 @property (strong, nonatomic) NSString * userphone;
 
+@property (strong, nonatomic) NSString *itemid;           //传入参数id
+
+@property (nonatomic,strong) NSString *itemname;  //商品名称
+
+@property (strong, nonatomic) NSString *editTag;            //按钮区分：修改还是回复
+@property (nonatomic) int editRow;
+
 @property (weak, nonatomic) IBOutlet UILabel *lbUsername;
 @property (weak, nonatomic) IBOutlet UILabel *lbUserInfo;
 @property (weak, nonatomic) IBOutlet UIButton *btnLogin;
