@@ -30,6 +30,7 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView *myscrollView;
 
+@property (weak, nonatomic) IBOutlet UIButton *btnSubmit;
 
 
 //接收从服务器返回数据 Json包

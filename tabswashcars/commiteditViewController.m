@@ -68,6 +68,14 @@
     [_starView setImagesDeselected:@"Star0.png" partlySelected:@"Star1.png" fullSelected:@"Star2.png" andDelegate:self];
 	[_starView displayRating:5.0];
 
+    if ([_commitStatus isEqualToString:@"0"]) {
+        //可以评论
+        _btnSubmit.enabled = true;
+    }else{
+        //不允许评论
+        _btnSubmit.enabled = false;
+        _btnSubmit.hidden = true;
+    }
 }
 
 //页面即将展示
@@ -205,8 +213,23 @@
         return;
     }
     
+    if ([_commitStatus isEqualToString:@"0"]) {
+        //可以评论
+        _btnSubmit.enabled = true;
+        
+    }else{
+        //不允许评论
+        _btnSubmit.enabled = false;
+        _btnSubmit.hidden = true;
+        NSString *lsMsg = [[NSString alloc]initWithFormat:@"您已评论，不允许重复评论"];
+        [delegate showNotify:lsMsg HoldTimes:2.0];
+        return;
+    }
+    
     NSLog(@"提交评论数据");
     [self startRequest];
+    _btnSubmit.enabled = false;
+    _btnSubmit.hidden = true;
 }
 
 //由于数字键盘没有Return键，当点击界面其它元素自动释放焦点以隐藏键盘
@@ -386,27 +409,44 @@
             _txtContent.text = @"";
             
             
-            [self dismissViewControllerAnimated:NO completion:^{
+            _commitStatus = @"1";                //不允许评论
+            _btnSubmit.enabled = false;
+            _btnSubmit.hidden = true;
+            
+            //传递消息
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"couponsRefreshNotification"
+             object:nil
+             userInfo:nil];
+            
+            /*[self presentViewController:navigationController
+                               animated:YES
+                             completion:^(void){
+                                 // Code
+                             }];*/
+            
+            [self dismissViewControllerAnimated:YES completion:^{
                 NSLog(@"提交评价成功");
-                //传递消息
-                 [[NSNotificationCenter defaultCenter]
-                 postNotificationName:@"couponsRefreshNotification"
-                 object:nil
-                 userInfo:nil];
             }];
         } else {
             _iPageIndex = 0;
             NSString *Errormsg = [res objectForKey:@"err_msg"];
             //NSString *isMsg = [res objectForKey:@"is_login"];
+            if ([Errormsg isEqualToString:@"您已经评论过此商品"]) {
+                _commitStatus = @"1";                //不允许评论
+                _btnSubmit.enabled = false;
+                _btnSubmit.hidden = true;
+            }else{
             
+                _btnSubmit.enabled = true;
+                _btnSubmit.hidden = false;
+                
+            }
             NSLog(@"数据请求错误：%@",Errormsg);
             
             NSString *lsMsg = [[NSString alloc]initWithFormat:@"无法提交评价\n%@", Errormsg];
             
-            
             [delegate showNotify:lsMsg HoldTimes:2.5];
-            
-            
         }
         
     }@catch(NSException *exp1){

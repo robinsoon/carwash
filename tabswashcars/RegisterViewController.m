@@ -610,9 +610,6 @@
             _usermoney = [[userinf objectForKey:@"user_money"] doubleValue];
             _userpoints = [[userinf objectForKey:@"pay_points" ]doubleValue];
             
-            
-            
-            
             //NSNumber * num =[userinf objectForKey:@"user_id"];
             //[userinf objectForKey:@"email"];
             _isRegisted = true;

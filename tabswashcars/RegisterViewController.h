@@ -49,6 +49,7 @@
 
 //保存数据列表[表现层所依赖的内部数据集合]
 @property (nonatomic,strong) NSMutableArray* listData;  //商品列表
+@property (nonatomic,strong) NSMutableArray* CodeData;  //验证码列表
 //接收从服务器返回数据 Json包
 @property (strong,nonatomic) NSMutableData *datas;
 
